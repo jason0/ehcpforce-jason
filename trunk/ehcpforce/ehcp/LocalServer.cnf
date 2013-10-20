@@ -1,0 +1,11 @@
+[ req ]
+prompt			= no
+distinguished_name	= server_distinguished_name
+
+[ server_distinguished_name ]
+commonName		= somename.somewhere.com
+stateOrProvinceName	= Some State
+countryName		= US
+emailAddress		= root@somename.somewhere.com
+organizationName	= My Large Organization Name
+organizationalUnitName	= My Subunit of Large Organization

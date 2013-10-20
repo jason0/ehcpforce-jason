@@ -1,0 +1,103 @@
+<script type="text/javascript" src="{templatedir}/js/jquery.min.js"></script>
+<script type="text/javascript" src="{templatedir}/js/animatedcollapse.js"></script>
+<script type="text/javascript">
+animatedcollapse.addDiv('domains', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('ftpusers', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('system', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.ontoggle=function($, divobj, state){ //fires each time a DIV is expanded/contracted
+}
+animatedcollapse.init()
+</script>
+<div class="content_block_info">
+    <div class="title_info"><img src="{templatedir}/info.png" alt="" /> Info</div>
+</div>
+<table width="100%" border="0" cellspacing="20" cellpadding="0">
+  <tr>
+    <td width="50%" valign="top"><div class="content_block">
+      <div class="title"> 
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Domains</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[domains]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table>
+      </div>
+      <div id="domains">
+        <ul id="button">
+          <li class="selectdomain"><span><a href="?op=selectdomain" class="addToolTip" title="List all domains on the webserver">List domains</a></span></li>
+          <li class="adddomaintothispaneluser"><span><a href="?op=addDomainToThisPaneluser" class="addToolTip" title="Easy add a domain to this ftp user">Easy add domain to this ftp user</a></span></li>
+          <li class="adddomaineasy"><span><a href="?op=adddomaineasy" class="addToolTip" title="Easy add a domain with his own ftp user">Easy add domain</b></a></span></li>
+          <li class="adddomain"><span><a href="?op=adddomain" class="addToolTip" title="Normal add a domain defining limits, panel and ftp users">Normal add</b></a></span></li>
+          <li class="bulkadddomain"><span><a href="?op=bulkadddomain" class="addToolTip" title="Bulk add domains to this panel and ftp user">Bulk add domains</a></span></li>
+          <li class="adddnsonlydomain"><span><a href="?op=adddnsonlydomain" class="addToolTip" title="Add dns only hosting to this panel user">Add dns only hosting</a></span></li>
+          <li class="adddnsonlydomainwithpaneluser"><span><a href="?op=adddnsonlydomainwithpaneluser" class="addToolTip" title="Add dns only with his own panel user">Add dns only with paneluser</a></span></li>
+          <li class="listpassivedomains"><span><a href="?op=listpassivedomains" class="addToolTip" title="List passive domains (wating for activation or disabled)">List passive domains</a></span></li>
+        </ul>
+      </div>
+    </div>
+      <div class="content_block">
+        <div class="title"> 
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">System</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[system]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table>
+      </div>
+        <div id="system">
+        <ul id="button">
+          <li class="doupdatediskquota"><span><a href="?op=doupdatediskquota" class="addToolTip" title="Update disk quota for domains">Update disk quota for domains</a></span></li>
+          <li class="dosyncdns"><span><a href="?op=dosyncdns" class="addToolTip" title="Reload all the dns zones">Reload dns zones</a></span></li>
+          <li class="dosyncdomains"><span><a href="?op=dosyncdomains" class="addToolTip" title="Syncronize all domains">Sync domains</a></span></li>
+          <li class="dobackup"><span><a href="index.php?op=dobackup" class="addToolTip" title="Create a backup of the server (databases, sites files, echp itself)">Backup server</a></span></li>
+          <li class="listbackups"><span><a href="index.php?op=listbackups" class="addToolTip" title="List all backups created">List backups</a></span></li>
+          <li class="dorestore"><span><a href="index.php?op=dorestore" class="addToolTip" title="Restore a backup">Restore backup</a></span></li>
+
+          <li class="operations"><span><a href="?op=operations" class="addToolTip" title="Completed/pending daemon operations">Completed/pending daemon operations</a></span></li>
+          <li class="options"><span><a href="?op=options" class="addToolTip" title="Options such as IP address, default theme, default language">Options</a></span></li>
+          <li class="changetemplate"><span><a href="?op=changetemplate" class="addToolTip" title="Change the default theme for EHCP">Change default templates</a></span></li>
+          <li class="changemypass"><span><a href="?op=changemypass" class="addToolTip" title="Change the panel user password">Change password</a></span></li>
+
+          <li class="serverstatus"><span><a href="?op=serverstatus" class="addToolTip" title="Server status (Services, Memory in use)">Server status</a></span></li>
+        </ul>
+        </div>
+    </div></td>
+    <td width="50%" valign="top">
+    <div class="content_block">
+      <div class="title"> 
+      	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Users</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[ftpusers]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table> 
+      </div>
+      <div id="ftpusers">
+        <ul id="button">
+          <li class="listallftpusers"><span><a href="?op=listallftpusers" class="addToolTip" title="List all ftp users">List all ftp users</a></span></li>
+          <li class="addftpuser"><span><a href="?op=addftpuser" class="addToolTip" title="Add new ftp user<br />/var/www/vhosts/<b>ftpusername</b>">Add new ftp user</a></span></li>
+          <li class="addftptothispaneluser"><span><a href="?op=addftptothispaneluser" class="addToolTip" title="Add under my ftp<br />/var/www/vhosts/<b>paneluser</b>/<b>ftpusername</b>">Add under my ftp</a></span></li>
+          <li class="addsubdirectorywithftp"><span><a href="?op=addsubdirectorywithftp" class="addToolTip" title="Add a ftp user under a specific domain">Add under domainname</a></span></li>
+          <li class="addsubdomainwithftp"><span><a href="?op=addsubdomainwithftp" class="addToolTip" title="Add subdomain of a specific domain with ftp">Add subdomain with ftp</a></span></li>
+
+          
+          <li class="listallemailusers"><span><a href="?op=listallemailusers" class="addToolTip" title="List all email users">List all email users</a></span></li>
+          <li class="addemailuser"><span><a href="?op=addemailuser" class="addToolTip" title="Add email user to specific domain">Add email user</a></span></li>
+
+          <li class="listpanelusers"><span><a href="?op=listpanelusers" class="addToolTip" title="List all panel users or clients">List panel users or clients</a></span></li>
+          <li class="addpaneluser"><span><a href="?op=addpaneluser" class="addToolTip" title="Add a new panel user or client">Add panel user or client</a></span></li>
+
+          <li class="domainop_listdb"><span><a href="?op=domainop&amp;action=listdb" class="addToolTip" title="List all mysql databases">List mysql databases</a></span></li>
+          <li class="addmysqldb"><span><a href="?op=addmysqldb" class="addToolTip" title="Add mysql database &amp; user to a domain">Add mysql db&amp;user</a></span></li>
+          <li class="addmysqldbtouser"><span><a href='?op=addmysqldbtouser' class="addToolTip" title="Add mysql database to an existing database user">Add mysql db to existing user</a></span></li>
+          <li class="dbadduser"><span><a href='?op=dbadduser' class="addToolTip" title="Add mysql user to existing database">Add mysql user to existing db</a></span></li>
+        </ul>
+      </div>
+    </div>
+    </td>
+  </tr>
+</table>
+<div class="info"> <font><b> {dynamicinfo}</b></font></div>

@@ -1,0 +1,144 @@
+body {
+	background-color: #FFFFFF;
+	background-image: url(MainBG.gif);
+	background-position: bottom right;
+	background-repeat: no-repeat;
+	font-family: Tahoma, sans-serif;
+	font-weight: normal;
+	font-size: 11px;
+	color: #000000;
+}
+
+h1 {
+	color: #535353;
+	font-family: Arial, Tahoma, sans-serif;
+}
+
+input, textarea, select {
+        border: 1px solid #cccccc;
+        background-color: #f2f2f2;
+}
+
+.topnavigator {
+	border: 1px solid #cccccc;
+	margin: 0;
+	margin-bottom: 10px;
+	padding: 10px;
+	background-color: #f2f2f2;
+}
+
+#divLeft {
+	position: absolute; 
+	top: 0px;
+	left: 0px;
+	width: 209px;
+	height: 100%;
+	background-color: #C3C7D3;
+	filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#C3C7D3', EndColorStr='#B1B3C8');
+}
+
+#divMenu {
+	position: relative; 
+	top: 28px;
+	left: 12px;
+	width: 185px;
+}
+#divCopy {
+	font-family: Tahoma, sans-serif;
+	color: #555555;
+	font-size: 11px;
+	position: absolute;
+	bottom: 3px;
+	left: 0px;
+	width: 209px;
+	text-align: center;
+}
+
+#divMainRightHeader {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 32px;
+	width: 100%;
+	/*padding-left: 240px;
+	padding-top: 2px;*/
+	padding: 0;
+	border: 0;
+	font-family: Tahoma, sans-serif;
+	/*font-weight: bold;
+	font-size: 15px;
+	color: #000000;*/
+	background-color: #f2f2f2;
+	border-bottom: 1px solid #cccccc;
+	z-index: -1;
+	overflow: hidden;
+}
+
+#divBanner {
+	padding-left: 240px;
+	padding-top: 2px;
+}
+
+#divMain {
+	position: absolute;
+	top: 40px;
+	left: 230px;
+}
+
+a{
+	color: #3F3D3D;
+	text-decoration: none;
+}
+a:hover {
+	color: #7E7C7C;
+	text-decoration: underline;
+}
+
+td.InfoPaneHeader {
+	background-image: url(InfoPaneHeaderOpen.gif);
+	background-position: top left;
+	background-repeat: no-repeat;
+	font-family: Tahoma, sans-serif;
+	font-weight: bold;
+	padding-left: 12px;
+	padding-top: 0px;
+	font-size: 11px;
+	color: #000000;
+	height: 23px;
+	cursor: hand;
+}
+td.InfoPaneHeaderClosed {
+	background-image: url(InfoPaneHeaderClosed.gif);
+	background-position: top left;
+	background-repeat: no-repeat;
+	font-family: Tahoma, sans-serif;
+	font-weight: bold;
+	padding-left: 12px;
+	padding-top: 0px;
+	font-size: 11px;
+	color: #000000;
+	height: 23px;
+	cursor: hand;
+}
+td.InfoPaneRow {
+	background-color: #F0F1F5;
+	font-family: Tahoma, sans-serif;
+	font-weight: normal;
+	padding-left: 12px;
+	padding-top: 2px;
+	font-size: 11px;
+	height: 20px;
+	color: #000000;
+}
+a.InfoPaneRow {
+	color: #000000;
+	text-decoration: none;
+}
+a.InfoPaneRow:hover {
+	color: #000000;
+	text-decoration: underline;
+}
+td.InfoPaneFrame {
+	background-color: #FFFFFF;
+}
+

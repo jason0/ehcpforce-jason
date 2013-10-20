@@ -1,0 +1,76 @@
+#____________start of {domainname}__paneluser:{panelusername}_reseller:{reseller}_id:{id}____________
+# Comment:  {aciklama}
+# this file used in Easy Hosting Control Panel (ehcp), www.ehcp.net
+
+# bu kısım aslında bir defa olsa olur.
+<VirtualHost {webserverip}>
+ServerName {webserverip}
+DocumentRoot /var/www/new
+</VirtualHost>
+
+
+<VirtualHost {webserverip}>
+	ServerName  webmail.{domainname}
+	ServerAlias  mail.{domainname}
+	ServerAlias  email.{domainname}
+
+	DocumentRoot {ehcpdir}/webmail
+
+	LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+	LogFormat "%v:%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+	CustomLog  {homedir}/logs/access_log combined
+	CustomLog  /var/log/apache_common_access_log vhost_combined
+
+	php_admin_value open_basedir {ehcpdir}/webmail
+	php_admin_value upload_tmp_dir {ehcpdir}/webmail/data
+	php_admin_value session.save_path 0;660;{ehcpdir}/webmail/data
+
+</VirtualHost>
+
+
+<VirtualHost {webserverip}>
+	ServerName  cpanel.{domainname}
+	ServerAlias  panel.{domainname}
+	ServerAlias  ehcp.{domainname}
+	ServerAlias  cp.{domainname}
+
+	DocumentRoot {ehcpdir}
+
+	LogFormat "%v:%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+	CustomLog  /var/log/apache_common_access_log vhost_combined
+
+	php_admin_value open_basedir {ehcpdir}
+
+</VirtualHost>
+
+
+<VirtualHost {webserverip}>
+    ServerName   {domainname}
+    ServerAlias  www.{domainname} {wildcarddomain} # this is changed to *.{domainname} within classapp.php
+	# buraya aliaslar yazilacak..
+	{aliases}
+		
+	UseCanonicalName Off
+	DocumentRoot {homedir}/httpdocs
+	
+	# this combined log format is understandable by webalizer... some other formats are not recognised by webalizer.. thats why, specified here explicitly.. 
+	
+	LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+	LogFormat "%v:%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+	CustomLog  {homedir}/logs/access_log combined
+	CustomLog  /var/log/apache_common_access_log vhost_combined
+	
+	# this is pear compatible:
+	php_admin_value open_basedir "{homedir}:/usr/share/php:/usr/share/pear"
+	php_admin_value upload_tmp_dir {homedir}/phptmpdir
+	php_admin_value session.save_path 0;660;{homedir}/phptmpdir
+
+	AccessFileName .htaccess
+	    
+
+	{customhttp}
+
+</VirtualHost>
+
+
+#____________end of {domainname}__paneluser:{panelusername}_reseller:{reseller}_id:{id}____________

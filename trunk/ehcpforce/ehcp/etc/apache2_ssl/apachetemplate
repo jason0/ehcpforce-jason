@@ -1,0 +1,154 @@
+#____________start of {domainname}__paneluser:{panelusername}_reseller:{reseller}_id:{id}____________
+# Comment:  {aciklama}
+# template with ssl
+# this file used in Easy Hosting Control Panel (ehcp), www.ehcp.net
+
+# bu kısım aslında bir defa olsa olur.
+<VirtualHost {webserverip}:80>
+ServerName {webserverip}
+DocumentRoot /var/www/new
+</VirtualHost>
+
+
+<VirtualHost {webserverip}:80>
+ServerName  webmail.{domainname}
+ServerAlias  email.{domainname}
+ServerAlias  mail.{domainname}
+
+DocumentRoot /var/www/vhosts/ehcp/webmail
+
+        LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+		LogFormat "%v:%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+	    CustomLog  {homedir}/logs/access_log combined
+	    CustomLog  /var/log/apache_common_access_log vhost_combined
+
+php_admin_value open_basedir /var/www/vhosts/ehcp/webmail
+php_admin_value upload_tmp_dir /var/www/vhosts/ehcp/webmail/data
+php_admin_value session.save_path /var/www/vhosts/ehcp/webmail/data
+
+</VirtualHost>
+
+
+<VirtualHost {webserverip}:80>
+ServerName  cpanel.{domainname}
+ServerAlias  panel.{domainname}
+ServerAlias  ehcp.{domainname}
+ServerAlias  cp.{domainname}
+
+DocumentRoot /var/www/vhosts/ehcp/
+
+        LogFormat "%v:%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+	    CustomLog  /var/log/apache_common_access_log vhost_combined
+
+php_admin_value open_basedir /var/www/vhosts/ehcp/
+
+</VirtualHost>
+
+<VirtualHost {webserverip}:80>
+	
+        ServerName   {domainname}
+        ServerAlias  www.{domainname} {wildcarddomain} # this is changed to *.{domainname} within classapp.php
+	# buraya aliaslar yazilacak..
+	{aliases}
+		
+        UseCanonicalName Off
+        DocumentRoot {homedir}/httpdocs
+        
+        # this combined log format is understandable by webalizer... some other formats are not recognised by webalizer.. thats why, specified here explicitly.. 
+        
+        LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+		LogFormat "%v:%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+	    CustomLog  {homedir}/logs/access_log combined
+	    CustomLog  /var/log/apache_common_access_log vhost_combined
+	    
+	    php_admin_value open_basedir {homedir}
+	    php_admin_value upload_tmp_dir {homedir}/phptmpdir
+		php_admin_value session.save_path 0;660;{homedir}/phptmpdir
+
+        AccessFileName .htaccess
+	    
+
+{customhttp}
+
+</VirtualHost>
+
+
+#  burdan asagisi ssl icin yazildi
+
+<VirtualHost {webserverip}:443>
+ServerName  webmail.{domainname}
+ServerAlias  email.{domainname}
+ServerAlias  mail.{domainname}
+
+DocumentRoot /var/www/vhosts/ehcp/webmail
+
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%v:%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+CustomLog  {homedir}/logs/access_log combined
+CustomLog  /var/log/apache_common_access_log vhost_combined
+
+php_admin_value open_basedir /var/www/vhosts/ehcp/webmail
+php_admin_value upload_tmp_dir /var/www/vhosts/ehcp/webmail/data
+php_admin_value session.save_path /var/www/vhosts/ehcp/webmail/data
+
+SSLEngine on
+SSLCertificateFile /etc/ssl/certs/server.crt
+SSLCertificateKeyFile /etc/ssl/private/server.key
+
+
+</VirtualHost>
+
+
+<VirtualHost {webserverip}:443>
+ServerName  cpanel.{domainname}
+ServerAlias  panel.{domainname}
+ServerAlias  ehcp.{domainname}
+ServerAlias  cp.{domainname}
+
+DocumentRoot /var/www/vhosts/ehcp/
+
+LogFormat "%v:%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+CustomLog  /var/log/apache_common_access_log vhost_combined
+
+php_admin_value open_basedir /var/www/vhosts/ehcp/
+
+SSLEngine on
+SSLCertificateFile /etc/ssl/certs/server.crt
+SSLCertificateKeyFile /etc/ssl/private/server.key
+
+</VirtualHost>
+
+
+<VirtualHost {webserverip}:443>
+	
+        ServerName   {domainname}
+        ServerAlias  www.{domainname} *.{domainname} 
+	# buraya aliaslar yazilacak..
+	{aliases}
+		
+        UseCanonicalName Off
+        DocumentRoot {homedir}/httpdocs
+        
+        # this combined log format is understandable by webalizer... some other formats are not recognised by webalizer.. thats why, specified here explicitly.. 
+        
+        LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+		LogFormat "%v:%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+	    CustomLog  {homedir}/logs/access_log combined
+	    CustomLog  /var/log/apache_common_access_log vhost_combined
+	    
+	    php_admin_value open_basedir {homedir}
+	    php_admin_value upload_tmp_dir {homedir}/phptmpdir
+		php_admin_value session.save_path 0;660;{homedir}/phptmpdir
+
+        AccessFileName .htaccess
+        SSLEngine on
+        SSLCertificateFile /etc/ssl/certs/server.crt
+        SSLCertificateKeyFile /etc/ssl/private/server.key
+	    
+
+{customhttp}
+
+</VirtualHost>
+
+#____________end of {domainname}__paneluser:{panelusername}_reseller:{reseller}_id:{id}____________
+# end template with ssl

@@ -1,0 +1,31 @@
+# this file used in Easy Hosting Control Panel (ehcp), www.ehcp.net
+
+<VirtualHost {webserverip}:443>
+
+	ServerName ssl
+	DocumentRoot /var/www
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+
+	<Directory /var/www/vhosts/>
+		Options -Indexes FollowSymLinks MultiViews
+		AllowOverride All
+		Order Allow,Deny
+		Allow from All
+	</Directory>
+
+	<FilesMatch "access_log|error_log">
+		Deny from All
+	</FilesMatch>
+
+	ErrorLog /var/log/apache2/error.log
+	LogLevel debug
+	CustomLog /var/log/apache2/access.log combineddefault
+
+	SSLEngine on
+	SSLCertificateFile /etc/ssl/certs/server.crt
+	SSLCertificateKeyFile /etc/ssl/private/server.key
+
+</VirtualHost>

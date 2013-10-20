@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="content-Type" content="text/html; charset=ISO-8859-9">
+<title> EHCP login</title>
+<style type="text/css" media="screen">
+input {
+	border: 1px solid #cccccc;
+	background-color: #fcfcfc;
+}
+a {
+	color: 535353;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+h2 {
+	color: 333333;
+	margin-top: 5px;
+}
+</style>
+</head>
+<body>
+<div style="margin-left: auto; margin-right: auto; margin-top:50px; width: 500px; background-color: #f2f2f2; border: 1px solid #cccccc; padding: 5px;">
+<h2>Ehcp autenticação</h2>
+	      <form id="loginForm" name="loginForm" method="post">
+		  <table>
+		  <tbody><tr><td>utilizador </td><td> <input name="username" id="username" value="" type="text"></td></tr>
+		  <tr><td>palavra-chave </td><td> <input name="password" value="" type="password"></td></tr>
+		  <tr><td><input name="op" value="dologin" type="hidden"></td></tr>
+		   </tbody></table>
+		   <input value="Submit" type="submit">
+	    </form>
+	    <script type="text/javascript">
+		document.loginForm.username.focus();
+	    </script>
+	    <br><a href="?op=applyforaccount">Aplicar para Contas ftp/dominios/painel</a><br>
+		<a href="?op=sifrehatirlat">Recuperar Palavra Chave</a><b><br><br>
+</div>
+</body>
+</html>

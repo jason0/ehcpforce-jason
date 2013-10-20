@@ -1,0 +1,67 @@
+#!/bin/bash
+# ehcp (Easy Hosting Control Panel) start/stop script
+# www.ehcp.net
+
+
+
+echo
+echo
+
+show_ehcp(){
+	ps aux | grep ehcpdaemon2  | grep -v grep
+	ps aux | grep "index.php daemon"  | grep -v grep
+	ps aux | grep "ehcp_daemon.py" | grep -v grep
+}
+
+
+ehcp_start(){
+	echo "Your OS info:"
+	cat /etc/*ele*
+	
+	echo "starting ehcp.."
+	echo "starting ehcp_daemon.py"
+	nohup /etc/init.d/ehcp_daemon.py >> /var/log/ehcp.log 2>&1 & 
+	
+	cd /var/www/new/ehcp
+	./ehcpdaemon.sh
+	show_ehcp
+		
+
+}
+
+ehcp_stop(){
+	echo "stopping ehcp.."
+	echo "stopping ehcpdaemon2.sh"
+	ps aux | grep ehcpdaemon2 | grep -v grep | awk '{print $2}' | xargs kill -9  > /dev/null 2>&1
+	echo "stopping index.php daemon"
+	ps aux | grep "index.php daemon" | grep -v grep | awk '{print $2}' | xargs kill -9 > /dev/null 2>&1
+	echo "stopping ehcp_daemon.py, python background server process"
+	ps aux | grep ehcp_daemon.py | grep -v grep | awk '{print $2}' | xargs kill > /dev/null 2>&1
+		
+	show_ehcp
+}
+
+
+case $1 in
+	start)
+		ehcp_start
+	;;
+
+	stop)
+		ehcp_stop
+	;;
+
+	restart)
+		ehcp_stop
+		ehcp_start
+	;;
+	
+	status)
+		show_ehcp
+	
+	;;
+
+	*)
+		echo "Usage: /etc/init.d/ehcp {start|stop|restart|status}"
+	;;
+esac

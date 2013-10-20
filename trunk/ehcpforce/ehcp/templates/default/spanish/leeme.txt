@@ -1,0 +1,12 @@
+ubica tus imágenes y estilos en el directorio imágenes en el directorio de ehcp
+normalmente /var/www/vhosts/ehcp/images/
+
+no ubiques imágenes/estilos adentro de este directorio de plantillas,
+este directorio es solo para los archivos html.
+
+El programa corre adentro del directorio ehcp/ por lo tanto todas las referencias a archivos deberán ser respecto a este directorio.
+
+Por ejemplo: para ubicar una imagen en tu html, pon la imagen en echp/images/ y en el html pon: <img src='images/x.gif'>
+
+ 
+

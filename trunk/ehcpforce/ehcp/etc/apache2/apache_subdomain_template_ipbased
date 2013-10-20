@@ -1,0 +1,23 @@
+#____________start of {subdomain}.{domainname}__paneluser:{panelusername}_reseller:{reseller}_id:{id}____________
+# this file used in Easy Hosting Control Panel (ehcp), www.ehcp.net
+
+<VirtualHost {webserverip}>
+
+        ServerName   {subdomain}.{domainname}
+        ServerAlias  www.{subdomain}.{domainname}
+        UseCanonicalName Off
+        DocumentRoot {homedir}
+	    #CustomLog  {homedir}/logs/access_log combined   # homedir yerine, domainhomedir gibi bisey olmali...
+	    CustomLog  /var/log/apache_common_access_log combined
+		
+		php_admin_value open_basedir {homedir}
+	    php_admin_value upload_tmp_dir {homedir}/phptmpdir
+		php_admin_value session.save_path 0;660;{homedir}/phptmpdir
+		
+
+{customsubdomainhttp}
+
+</VirtualHost>
+
+
+

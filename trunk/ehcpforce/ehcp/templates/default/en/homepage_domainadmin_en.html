@@ -1,0 +1,166 @@
+<script type="text/javascript" src="{templatedir}/js/jquery.min.js"></script>
+<script type="text/javascript" src="{templatedir}/js/animatedcollapse.js"></script>
+<script type="text/javascript">
+animatedcollapse.addDiv('domainsoperations', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('ftpusersoperations', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('otherreseller', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('ehcpstatusinfo', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('mysqloperations', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('emailoperations', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.ontoggle=function($, divobj, state){ //fires each time a DIV is expanded/contracted
+}
+animatedcollapse.init()
+</script>
+<div class="content_block_info">
+  <div class="title_info"></div>
+</div>
+<table width="100%" border="0" cellspacing="20" cellpadding="0">
+  <tr>
+    <td width="50%" valign="top"><div class="content_block">
+      <div class="title"> 
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Domains operations</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[domainsoperations]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table>
+      </div>
+      <div id="domainsoperations">
+        <ul id="button">
+          <li class="customhttp"><span><a href="?op=customhttp" class="addToolTip" title="List Custom http">List Custom http</a></span></li>
+          <li class="customdns"><span><a href="?op=customdns" class="addToolTip" title="List Custom dns">List Custom dns</a></span></li>
+          <li class="subdomains"><span><a href="?op=subdomains" class="addToolTip" title="List SubDomains">List SubDomains</a></span></li>
+          <li class="addcustomhttp"><span><a href="?op=addcustomhttp" class="addToolTip" title="Add Custom http">Add Custom http</a></span></li>
+          <li class="addcustomdns"><span><a href="?op=addcustomdns" class="addToolTip" title="Add Custom dns">Add Custom dns</a></span></li>
+          <li class="addsubdomain"><span><a href="?op=addsubdomain" class="addToolTip" title="Add SubDomain">Add SubDomain</a></span></li>
+          <li class="directories"><span><a href="?op=directories" class="addToolTip" title="List Password Protected Directories">List Password Protected Directories</a></span></li>
+          <li class="adddirectory"><span><a href="?op=adddirectory" class="addToolTip" title="Add Password Protected Directories">Add Password Protected Directories</a></span></li>
+
+
+          <li class="editdnstemplate"><span><a href="?op=editdnstemplate" class="addToolTip" title="Edit dns template for this domain">Edit dns template for this domain</a></span></li>
+          <li class="editapachetemplate"><span><a href="?op=editapachetemplate" class="addToolTip" title="Edit apache template for this domain">Edit apache template for this domain</a></span></li>
+          <li class="editdomainaliases"><span><a href="?op=editdomainaliases" class="addToolTip" title="Edit Aliases for this domain">Edit Aliases for this domain</a></span></li>
+          
+
+        </ul>
+      </div>
+    </div>
+    
+    
+    <div class="content_block">
+      <div class="title"> 
+      	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Email</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[emailoperations]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table> 
+      </div>
+      <div id="emailoperations">
+        <ul id="button">
+          
+          <li class="listallemailusers"><span><a href="?op=listallemailusers" class="addToolTip" title="List All Email Users">List All Email Users</a></span></li>
+          <li class="addemailuser"><span><a href="?op=addemailuser" class="addToolTip" title="Add Email User">Add Email User</a></span></li>
+
+          <li class="emailforwardings"><span><a href="?op=emailforwardings" class="addToolTip" title="List email forwardings">List email forwardings/email lists</a></span></li>
+          <li class="addemailforwarding"><span><a href="?op=addemailforwarding" class="addToolTip" title="Add email forwardings">Add email forwardings/email lists</a></span></li>
+
+        </ul>
+      </div>
+    </div>
+    
+    
+      <div class="content_block">
+        <div class="title"> 
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Other</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[otherreseller]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table>
+      </div>
+        <div id="otherreseller">
+        <ul id="button">
+          <li class="addscript"><span><a href="?op=addscript" class="addToolTip" title="Easy Install Scripts">Easy Install Scripts</a></span></li>          
+          <li class="webstats"><span><a href="http://www.{selecteddomain}/webstats" target="_blank" class="addToolTip" title="Statistics (Webstats)">Statistics (Webstats)</a></span></li>
+          <li><span><a href="?op=backups" class="addToolTip" title="Do/List Backups">Do/List Backups of {selecteddomain}</a></span></li>
+        </ul>
+        </div>
+    </div></td>
+    <td width="50%" valign="top">
+    <div class="content_block">
+      <div class="title"> 
+      	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">ftp</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[ftpusersoperations]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table> 
+      </div>
+      <div id="ftpusersoperations">
+        <ul id="button">
+          <li class="editftpuser"><span><a href="?op=editftpuser" class="addToolTip" title="Change FTP Password / Settings">Change FTP Password / Settings</a></span></li>
+          <li class="addsubdomainwithftp"><span><a href="?op=addsubdomainwithftp" class="addToolTip" title="Add subdomain with ftp">Add subdomain with ftp</a></span></li>
+          <li class="addsubdirectorywithftp"><span><a href="?op=addsubdirectorywithftp" class="addToolTip" title="Add subdirectory with ftp (Under domainname)">Add subdirectory with ftp (Under domainname)</a></span></li>
+          <li class="addftptothispaneluser"><span><a href="?op=addftptothispaneluser" class="addToolTip" title="Add extra Ftp Under my ftp space freely">Add extra Ftp Under my ftp space freely</a></span></li>
+          <li class="listallftpusers"><span><a href="?op=listallftpusers" class="addToolTip" title="List Ftp Users">List Ftp Users</a></span></li>
+          <li class="webftp"><span><a href="net2ftp" class="addToolTip" title="WebFTP">WebFTP</a></span></li>
+        </ul>
+      </div>
+    </div>
+    
+    
+    
+    <div class="content_block">
+      <div class="title"> 
+      	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Mysql</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[mysqloperations]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table> 
+      </div>
+      <div id="mysqloperations">
+        <ul id="button">
+
+          <li class="domainop_listdb"><span><a href="?op=domainop&amp;action=listdb" class="addToolTip" title="List Mysql Databases">List Mysql Databases</a></span></li>
+          <li class="addmysqldb"><span><a href="?op=addmysqldb" class="addToolTip" title="Add Mysql db&amp;User">Add Mysql db&amp;User</a></span></li>
+          <li class="addmysqldbtouser"><span><a href='?op=addmysqldbtouser' class="addToolTip" title="add Mysql db to existing user">add Mysql db to existing user</a></span></li>
+          <li class="dbadduser"><span><a href='?op=dbadduser' class="addToolTip" title="add mysql user to existing db">add mysql user to existing db</a></span></li>
+          <li class="phpmyadmin"><span><a target="_blank" href='http://{myip}/phpmyadmin' class="addToolTip" title="phpMyadmin">phpMyadmin</a></span></li>
+        </ul>
+      </div>
+    </div>
+    
+    
+    
+    
+    <div class="content_block">
+      <div class="title"> 
+      	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Domain Settings</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[ehcpstatusinfo]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table> 
+      </div>
+      <div id="ehcpstatusinfo">
+        <ul id="button">
+          <li class="domainsettings"><span><a href="?op=domainsettings" class="addToolTip" title="Change Settings for this domain">Change Settings for this domain</a></span></li>
+          <li class="editdomain"><span><a href="?op=editdomain" class="addToolTip" title="Activate / De-activate domain">Activate / De-activate domain</a></span></li>
+          <li class="transferdomain"><span><a href="?op=transferdomain" class="addToolTip" title="Transfer domain/hosting to another user">Transfer domain/hosting to another user</a></span></li>
+          <li class="addredirect"><span><a href="?op=addredirect" class="addToolTip" title="Redirect To Another domain/url">Redirect To Another domain/url</a></span></li>
+          <li class="deletedomain"><span><a href="?op=deletedomain" class="addToolTip" title="Delete domain/hosting">Delete domain/hosting</a></span></li>
+          <li class="changemypass"><span><a href="?op=changemypass" class="addToolTip" title="Change my password">Change my password</a></span></li>
+        </ul>
+      </div>
+    </div>
+    </td>
+  </tr>
+</table>

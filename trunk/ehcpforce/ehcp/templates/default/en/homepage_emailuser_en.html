@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>homepage</title>
+<script type="text/javascript" src="{templatedir}/js/jquery.min.js"></script>
+<script type="text/javascript" src="{templatedir}/js/animatedcollapse.js"></script>
+<script type="text/javascript">
+animatedcollapse.addDiv('emails', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.ontoggle=function($, divobj, state){ //fires each time a DIV is expanded/contracted
+}
+animatedcollapse.init()
+</script>
+</head>
+<body>
+<div class="content_block_info">
+    <div class="title_info"><img src="{templatedir}/info.png" alt="" /> Email account menu</div>
+</div>
+<table width="100%" border="0" cellspacing="20" cellpadding="0">
+  <tr>
+    <td valign="top"><div class="content_block">
+      <div class="title"> 
+      	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Email account operations</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[emails]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table> 
+      </div>
+      <div id="emails">
+        <ul id="button">
+          <li class="changemypass"><span><a href="?op=editemailuserpassword" class="addToolTip" title="Change Password">Change Password</a></span></li>
+          <li class="editemailuserself"><span><a href="?op=editemailuserautoreply" class="addToolTip" title="Change autoreply">Change Autoreply</a></span></li>
+          <li class="emailforwardingsself"><span><a href="?op=emailforwardingsself" class="addToolTip" title="List/Add email forwardings">List/Add email forwardings</a></span></li>
+        </ul>
+      </div>
+     </div>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

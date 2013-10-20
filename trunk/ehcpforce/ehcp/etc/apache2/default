@@ -1,0 +1,19 @@
+# this file used in Easy Hosting Control Panel (ehcp), www.ehcp.net
+
+<VirtualHost *>
+	
+	ServerName default
+	DocumentRoot /var/www/new
+	<Directory />
+			Options FollowSymLinks
+			AllowOverride None
+	</Directory>
+
+	AccessFileName .htaccess	
+	
+
+	ErrorLog /var/log/apache2/error.log
+	CustomLog /var/log/apache2/access.log vhost_combined
+
+</VirtualHost>
+

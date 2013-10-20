@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<link href="{templatedir}/css/style.css" type="text/css" rel="stylesheet">
+<link href="{templatedir}/css/style_icons.css" type="text/css" rel="stylesheet">
+<link href="{templatedir}/css/tooltips.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="{templatedir}/js/jquery-1.2.6.js"></script>
+<script type="text/javascript" src="{templatedir}/js/scripts.js"></script>
+
+<!--[if lte IE 7]>
+<style type="text/css">
+body {
+}
+
+#top1,#top2,#splitter {
+	margin-top: 0px;
+}
+
+#header{
+position: static;
+}
+</style>
+<![endif]-->
+</head>
+<body style="overflow: hidden;" onload="hideLoadLayer();setHeight()">
+
+<di-v id="loadingLayer" canceled >
+  <di-v id="loadingImg">
+   <im-g src="{templatedir}/images/loading-bar.gif" />
+  </di-v>
+</di-v>
+
+<div id="main" class="clearfix">
+<div id="header" class="clearfix" >
+<a href="index.php"><img id="logo" src="{templatedir}/images/ehcp_logo2.jpg" /></a>
+<div id="username">Welcome, <b>{username}</b>! <span id="topTxtLogout"><a href="?op=logout" class="addToolTip" title="Log out from ECHP">Log Out</a></span></div>
+</div>
+
+  <div id="sidebar">
+  	<div id="top1" style="width: 240px;">
+    	<div id="sidebar-inner">
+    	  	<div id="divMenuSearch">
+            <form method=post action="index.php?op=listdomains">
+		<div id="inputMenuSearch">
+                <input type=text name=aranan value='' id="search_txt">
+                <input type=submit value='' id="submitMenuSearch">
+		</div>
+		<select id="select_search" name='arananalan' >
+                    <option value='domainname' >Domain</option>
+                    <option value='panelusername' >Username</option>
+                    <option value='reseller' >Reseller</option>
+                </select>
+            </form>
+        	</div>
+        <div id="divMenuLinks">
+          <p><strong>Main Menu</strong></p>
+    	  <p><a href="index.php">Home</a> | <a href="?op=otheroperations">other operations</a></p>
+
+		  <p><a href="index.php?op=listpanelusers">All clients</a> | <a href="index.php?op=resellers">Resellers</a></p>
+		  <p>
+			<a href="index.php?op=listselectdomain">Domains</a> |
+			<a href="index.php?op=listpassivedomains">Passive domains</a></p>
+			<ul>
+			  <li><a href="index.php?op=addDomainToThisPaneluser">Add (to my FTP user)</a> |
+			    <a href="index.php?op=bulkadddomain">Bulk</a></li>
+			  <li><a href="index.php?op=adddomaineasy">Add new (quick)</a></li>
+			  <li><a href="index.php?op=adddomain">Add new (custom)</a></li>
+			  <li><a href="index.php?op=adddnsonlydomain">Add DNS only</a></li>
+          		</ul>
+            <p><a href="index.php?op=bulkaddemail">Bulk add emails</a><sup style="color: fuchsia; font-weight: bold; font-size: 9px;">*NEW</sup><br>
+            <p><a target="_blank" href="webmail">Webmail (SquirrelMail)</a><br>
+            <a target="_blank" href="webmail2">Webmail2 (Roundcube)</a><br>
+
+            <p><a target="_blank" href="/phpmyadmin">PhpMyAdmin</a><br>
+            <p><a target="_blank" href="/ehcp/chive">chive-mysqladmin</a><br>
+            
+	    <p><a target="_blank" href="net2ftp">Net2ftp</a></p>
+          </a></p>
+          <p style="padding-top: 10px;"><strong>System</strong></p>
+          <p><a href="index.php?op=serverstatus">Server status</a>
+			| <a target="_blank" href="z7/phpinfo.php">phpinfo()</a></p>
+
+			<p><a href="index.php?op=options">Options</a> |
+			<a href="index.php?op=changetemplate">Templates</a>
+			<br>
+			<a href="index.php?op=dobackup">Backup</a> |
+			<a href="index.php?op=listbackups">List</a></p>
+			<p style="padding-top: 10px;"><strong>User Information</strong></p>
+
+
+			<p><a href="index.php?op=changemypass">Change my password</a><br>
+		    <a href="?op=logout">Logout</a></p>
+          </div>
+          <div id="divCopy">
+            <p><a href='http://www.gnu.org/licenses/gpl.html' target=_blank>GPL</a>  <a href="http://www.ehcp.net/" target="_blank">EHCP</a> {ehcpversion}</p>
+            <p>Template by Razvan</p>
+          </div>
+    	</div>
+  	</div>
+  </div>
+  <div id="content">
+    	<a id="splitter"><span>&laquo;</span></a>
+    <div id="content-inner">
+      <div id="top2">
+       {selecteddomain}
+		{ickisim}
+<br><br>
+<iframe marginwidth="0" marginheight="0" scrollbars="none" src="http://www.ehcp.net/latest/?ver={ehcpversion}&adminemail={adminemail}" frameborder="0" height="120" scrolling="no" width="600"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript" >
+var imagePath = "{templatedir}/images/tooltiparrow.gif";
+</script>
+<script type="text/javascript" src="{templatedir}/js/tooltips.js"></script>
+</body>
+</html>

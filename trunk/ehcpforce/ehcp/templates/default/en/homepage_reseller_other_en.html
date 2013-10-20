@@ -1,0 +1,155 @@
+<script type="text/javascript" src="{templatedir}/js/jquery.min.js"></script>
+<script type="text/javascript" src="{templatedir}/js/animatedcollapse.js"></script>
+<script type="text/javascript">
+animatedcollapse.addDiv('domainsoperations', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('ftpusersoperations', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('otherreseller', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('ehcpstatusinfo', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('mysqloperations', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.addDiv('emailoperations', 'fade=0,speed=10,persist=0,hide=0')
+animatedcollapse.ontoggle=function($, divobj, state){ //fires each time a DIV is expanded/contracted
+}
+animatedcollapse.init()
+</script>
+<div class="content_block_info">
+  <div class="title_info"><img src="{templatedir}/info.png" alt="" /> Other operations</div>
+</div>
+<table width="100%" border="0" cellspacing="20" cellpadding="0">
+  <tr>
+    <td width="50%" valign="top"><div class="content_block">
+      <div class="title"> 
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Domains operations</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[domainsoperations]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table>
+      </div>
+      <div id="domainsoperations">
+        <ul id="button">
+          <li class="selectdomain"><span><a href="?op=selectdomain">List Domains</a></span></li>
+          <li class="adddomaineasy"><span><a href="?op=adddomaineasy">Easy add Domain</b></a></span></li>
+          <li class="adddomain"><span><a href="?op=adddomain">Normal Add</b></a></span></li>
+          <li class="listpassivedomains"><span><a href="?op=listpassivedomains">List passive domains</a></span></li>
+          <li class="customhttp"><span><a href="?op=customhttp">List / Add Custom http</a></span></li>
+          <li class="customdns"><span><a href="?op=customdns">List / Add Custom dns</a></span></li>
+          <li class="subdomains"><span><a href="?op=subdomains">List / Add SubDomains</a></span></li>
+          <li class="directories"><span><a href="?op=directories">List / Add Password Protected Directories</a></span></li>
+        </ul>
+      </div>
+    </div>
+    
+    
+    <div class="content_block">
+      <div class="title"> 
+      	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Email operations</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[emailoperations]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table> 
+      </div>
+      <div id="emailoperations">
+        <ul id="button">
+          
+          <li class="listemailusers"><span><a href="?op=listemailusers">List Email Users of a domain</a></span></li>
+          <li class="listallemailusers"><span><a href="?op=listallemailusers">List All Email Users</a></span></li>
+          <li class="addemailuser"><span><a href="?op=addemailuser">Add Email User</a></span></li>
+
+          <li class="emailforwardings"><span><a href="?op=emailforwardings">List/Add email forwardings</a></span></li>
+
+        </ul>
+      </div>
+    </div>
+    
+    <div class="content_block">
+      <div class="title"> 
+      	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">EHCP Status-info</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[ehcpstatusinfo]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table> 
+      </div>
+      <div id="ehcpstatusinfo">
+        <ul id="button">
+          <li class="doupdatediskquota"><span><a href="?op=doupdatediskquota">Update Disk Quota for domains</a></span></li>
+        </ul>
+      </div>
+    </div>
+    
+    
+    </td>
+    <td width="50%" valign="top">
+    <div class="content_block">
+      <div class="title"> 
+      	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">ftp User operations</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[ftpusersoperations]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table> 
+      </div>
+      <div id="ftpusersoperations">
+        <ul id="button">
+          <li class="listallftpusers"><span><a href="?op=listallftpusers">List All Ftp Users</a></span></li>
+          <li class="listftpusersrelatedtodomains"><span><a href="?op=listftpusersrelatedtodomains">List Ftp Users related to domains</a></span></li>
+          <li class="listftpuserswithoutdomain"><span><a href="?op=listftpuserswithoutdomain">List Ftp Users without a domain</a></span></li>
+          <li class="addftpuser"><span><a href="?op=addftpuser">Add New Ftp User</a></span></li>
+        </ul>
+      </div>
+    </div>
+    
+    
+    
+    <div class="content_block">
+      <div class="title"> 
+      	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Mysql Dabatase operations</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[mysqloperations]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table> 
+      </div>
+      <div id="mysqloperations">
+        <ul id="button">
+
+          <li class="domainop_listdb"><span><a href="?op=domainop&amp;action=listdb">List Mysql Databases</a></span></li>
+          <li class="addmysqldb"><span><a href="?op=addmysqldb">Add Mysql db&amp;User </a></span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="content_block">
+        <div class="title"> 
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="padding-right: 5px; white-space: nowrap;">Other/Reseller</td>
+            <td width="100%" background="{templatedir}/images/dBox-header-bg.gif"></td>
+            <td style="padding-left: 5px;"><a href="#" rel="toggle[otherreseller]" data-openimage="{templatedir}/images/minus.png" data-closedimage="{templatedir}/images/plus.png"><img src="{templatedir}/images/minus.png" name="collapse" border="0" id="collapse" /></a></td>
+          </tr>
+        </table>
+      </div>
+        <div id="otherreseller">
+        <ul id="button">
+          <li class="listpanelusers"><span><a href="?op=listpanelusers">List Panel Users or Clients</a></span></li>
+          <li class="addpaneluser"><span><a href="?op=addpaneluser">Add Panel User or Client</a></span></li>
+          <li class="addscript"><span><a href="?op=addscript">Easy Install Scripts</a></span></li>
+          <li class="changemypass"><span><a href="?op=changemypass">Change my password</a></span></li>
+          <li class="dosyncdns"><span><a href="?op=dosyncdns">Reload DNS zones</a></span></li>
+          <li class="dosyncdomains"><span><a href="?op=dosyncdomains">Sync domains</a></span></li>
+
+          <li class="help"><span><a href="?op=help">Help-Yardim</a></span></li>
+          <li class="todolist"><span><a href="?op=todolist">Roadmap/Todo List/Plans</a></span></li>
+          
+          <li class="aboutcontactus"><span><a href="?op=aboutcontactus">About/Contact Us</a></span></li>
+        </ul>
+        </div>
+    </div>
+    </td>
+  </tr>
+</table>
