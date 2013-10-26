@@ -96,6 +96,8 @@ function aptget($arr,$forceInteraction=False){
 		cizgi();
 		echo "Starting apt-get install for: $prog\n(cmd: $cmd)\n\n";
 		passthru($cmd,$ret);
+		echo "The return value for the command \"$cmd\" was $ret\n\n";
+		writeoutput("ehcp-apt-get-install.log",$cmd . " command returned $ret","a",false);
 		writeoutput("ehcp-apt-get-install.log",$cmd,"a",false);
 
 		if($ret==0) continue;
@@ -104,7 +106,7 @@ function aptget($arr,$forceInteraction=False){
 		# usefull if first one has failed, for reason such as a package has to be removed, if first apt-get exited for any reason, this one executes apt-get with not options, so that user can decide...
 		# if first is successfull, this actually does nothing... only prints that those packages are already installed...
 		# this way a bit slower, calls apt-get twice, but most "secure and avoids user intervention"
-		$cmd="apt-get  install $prog";
+		$cmd="apt-get install $prog";
 		echo "\nTrying second installation type for: $prog (cmd: $cmd)\n";
 		passthru($cmd);
 		writeoutput("ehcp-apt-get-install.log",$cmd,"a",false);
@@ -1320,9 +1322,8 @@ editlineinfile(array('#deb','##deb','# deb'),array('deb','deb','deb'),'/etc/apt/
 	bosluk();
 	ehcpheader();
 	bosluk();
-	echo "starting ehcp install, please read prompts/questions carefully !
-Some install/usage info and your name/email is sent to ehcp developpers for statistical purposes and for improvements
-Also note that, a reseller account of 'ehcp' is setup by default to support ehcp. you may delete it after install. (Please don't)";
+	echo "Starting EHCP Force installation.  Please read prompts and questions carefully!
+Some install/usage info and your name/email is sent to ehcp developpers for statistical purposes and for improvements.";
 	bosluk();
 	bekle();
 
@@ -1574,7 +1575,9 @@ function scandb(){
 
 function installmysql(){
 	installMySQLServ();
+	sleep(2);
 	aptget(array('mysql-client'));
+	sleep(2);
 	replacelineinfile("old_passwords","old_passwords=0","/etc/mysql/my.cnf"); # disable mysql old passwords... if enabled, vsftp auth cant work sometime.. changed 26.2.2008
 	passthru("/etc/init.d/mysql restart");
 

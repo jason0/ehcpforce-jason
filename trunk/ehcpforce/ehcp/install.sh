@@ -546,8 +546,20 @@ function updateBeforeInstall(){ # by earnolmartin@gmail.com
 	
 	if [ "$aptIsInstalled" -eq "1" ] ; then
 		echo "Updating package information and downloading package updates before installation."
+		
+		# Make sure the system will update and upgrade
+		if [ -e "/var/lib/apt/lists/lock" ]; then
+			rm "/var/lib/apt/lists/lock"
+		fi
+		
+		# Make sure the system will update and upgrade
+		if [ -e "/var/cache/apt/archives/lock" ]; then
+			rm "/var/cache/apt/archives/lock"
+		fi
+		
+		# Run update commands
 		apt-key update
-		apt-get update -y
+		apt-get update -y --allow-unauthenticated
 		apt-get upgrade -y --allow-unauthenticated
 	fi
 }
