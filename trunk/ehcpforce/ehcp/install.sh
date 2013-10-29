@@ -564,6 +564,14 @@ function updateBeforeInstall(){ # by earnolmartin@gmail.com
 	fi
 }
 
+function restartDaemons(){ # by earnolmartin@gmail.com
+	# Restart the EHCP daemon after installation is completed
+	service ehcp restart
+	
+	# Restart MySQL service after installation is completed
+	service mysql restart
+}
+
 #############################################################
 # End Functions & Start Install							 #
 #############################################################
@@ -664,8 +672,8 @@ fixBINDPerms
 changeApacheUser
 # Fix generic problems in Ubuntu
 genUbuntuFixes
-# Restart MySQL Services
-service mysql restart
+# Restart neccessary daemons
+restartDaemons
 
 # Launch firefox and the panel
 ##############################################
