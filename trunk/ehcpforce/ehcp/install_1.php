@@ -45,6 +45,8 @@ include_once('install_lib.php');
 initialize();
 echo "\n------\ninstallpath set as: $ehcpinstalldir \n";
 installfiles();
+// Restart MySQL before beginning installation of software that uses it.
+restartMySQL();
 installmailserver(); 
 #infomail('_4_ehcp_mailserver,installfiles complete');
 passvariablestoinstall2();

@@ -1515,6 +1515,11 @@ Thank you for choosing and trying ehcp !
 	if($user_email) @mail($user_email,"your ehcp install completed.",$msg,$header);
 }
 
+function restartMySQL(){
+	echo "Restarting MySQL service for best results \n please wait...";
+	passthru("service mysql restart");
+}
+
 function installfiles() {
 	global $ehcpinstalldir,$app;
 	echo "pwd is: ".getcwd().", dest dir is: $ehcpinstalldir, will just copy ehcp files \n";
@@ -1529,7 +1534,6 @@ function installfiles() {
 	bosluk2();
 	echo "Copying of files completed... dest dir: $ehcpinstalldir \n please wait...";
 	bosluk2();
-	passthru("service mysql restart");
 }
 
 
