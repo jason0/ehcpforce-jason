@@ -1529,6 +1529,7 @@ function installfiles() {
 	bosluk2();
 	echo "Copying of files completed... dest dir: $ehcpinstalldir \n please wait...";
 	bosluk2();
+	passthru("service mysql restart");
 }
 
 
