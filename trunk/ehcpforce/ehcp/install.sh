@@ -325,7 +325,7 @@ function launchPanel(){
 		echo "The EHCP panel is now accessible!"
 		echo "Your panel administrative login is: admin"
 		echo "Attempting to load the control panel via web browser from the local machine."
-		sudo -u "$SUDO_USER" sensible-browser
+		sudo -u "$SUDO_USER" xdg-open http://localhost/
 	fi
 }
 
