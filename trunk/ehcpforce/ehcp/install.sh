@@ -320,14 +320,12 @@ function checkPhp(){
 
 function launchPanel(){
 	# NEVER LAUNCH FIREFOX AS THE ROOT USER.  IT WILL MESS IT UP FOR THE NORMAL USER
-	if [ ! -z "$SUDO_USER" ]; then
+	if [ ! -z "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
 		echo 
 		echo "The EHCP panel is now accessible!"
 		echo "Your panel administrative login is: admin"
-		echo "Attempting to load the control panel via Firefox from the local machine."
-		sudo -u "$SUDO_USER" bash << FF
-		`firefox "http://localhost" &`
-FF
+		echo "Attempting to load the control panel via web browser from the local machine."
+		sudo -u "$SUDO_USER" sensible-browser
 	fi
 }
 
