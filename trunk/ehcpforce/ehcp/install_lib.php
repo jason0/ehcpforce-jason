@@ -1210,6 +1210,9 @@ function getinputs(){
 
 	$emptypass=checkmysqlpass('root','');
 
+	// Restart MySQL service in case of missing socket bug
+	restartMySQL();
+	
 	if(!$unattended){
 		if($emptypass){
 			echo "\nYour mysql root pass is identified as empty. ";
@@ -1217,8 +1220,7 @@ function getinputs(){
 		} else {
 			echo "\n\n=======> MYSQL PASSWORD SETTINGS IS VERY IMPORTANT - YOUR EHCP MAY NOT FUNCTION IF YOU MISS SOMETHING HERE.. ehcp related information will be stored in your local mysql server ==========\n\n";
 			$passtrue=false;
-			while(!$passtrue){
-				restartMySQL();
+			while(!$passtrue){				
 				$rootpass=getInput("\nEnter your current MYSQL ROOT PASSWORD:"); # mysql root otomatik verebilirsem, burayi da 1234 default yapmaliyim.
 				$passtrue=checkmysqlpass('root',$rootpass);
 				if(!$passtrue) echo "\n Your mysql root password is not correct ! \nIt is impossible and useless to continue without it. You need to learn it and retry here. Look at www.ehcp.net forums section (or here: http://www.ehcp.net/?q=node/245)\nYou may also try to run ./resetmysqlrootpass.sh program in this dir to reset pass, to use, Ctrl-C this and run ./resetmysqlrootpass.sh";
