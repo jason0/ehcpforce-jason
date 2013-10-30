@@ -563,11 +563,20 @@ function updateBeforeInstall(){ # by earnolmartin@gmail.com
 }
 
 function restartDaemons(){ # by earnolmartin@gmail.com
-	# Restart the EHCP daemon after installation is completed
-	service ehcp restart
+	# Problem with MySQL Socket
+	# http://askubuntu.com/questions/291054/cant-connect-to-local-mysql-server-through-socket-var-run-mysqld-mysqld-sock
 	
 	# Restart MySQL service after installation is completed
-	service mysql restart
+	service mysql stop
+	killall mysqld
+	killall mysql
+	if [ -e "/etc/init.d/apparmor" ]; then
+		/etc/init.d/apparmor reload
+	fi
+	service mysql start
+	
+	# Restart the EHCP daemon after installation is completed
+	service ehcp restart
 }
 
 #############################################################
