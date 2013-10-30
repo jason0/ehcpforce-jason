@@ -681,26 +681,11 @@ changeApacheUser
 # Fix generic problems in Ubuntu
 genUbuntuFixes
 # Restart neccessary daemons
-restartDaemons
-
-# Launch firefox and the panel
-##############################################
-launchPanel
-infoMail "ehcp_8_install-finished-install.sh_ver_$ehcpversion.$outside_ip"
 echo "Initializing the EHCP Daemon"
-cd /var/log
-/etc/init.d/ehcp restart
-echo "EHCP restart complete."
-sleep 5 # to let ehcp log fill a little
-
-# you may disable following lines, these are for debug/check purposes.
-ps aux > debug.txt
-echo "============================================"  >> debug.txt
-tail -100 /var/log/syslog >> debug.txt
-tail -100 /var/log/ehcp.log >> debug.txt
-cat debug.txt | sendmail -s "ehcp installation debug info" info@ehcp.net > /dev/null 2>&1
-
-
+restartDaemons
+# Send email informing admin install is complete
+infoMail "ehcp_8_install-finished-install.sh_ver_$ehcpversion.$outside_ip"
+# Inform installation is complete
 echo "Thank you for installing the FoRcE Edition (a fork) of EHCP.
 
 The following ports are used by EHCP and must be open:
@@ -712,3 +697,7 @@ http://ehcpforce.tk
 Your web hosting control panel can be accessed via http://yourip/
 
 Enjoy!"
+
+# Launch firefox and the panel
+##############################################
+launchPanel
