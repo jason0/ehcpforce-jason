@@ -254,7 +254,7 @@ class Application
 	var $output='', $requirePassword=True, $checkinstall=True,$miscconfig=null;
 	var $queries=array(), $selecteddomain='',$isreseller=false;
 	
-	var $wwwuser="www-data";  # these vars should be used are "user related" places, to unify all user settings..  #equivalent: var $wwwowner="vsftpd:www-data";
+	var $wwwuser="vsftpd";  # these vars should be used are "user related" places, to unify all user settings..  #equivalent: var $wwwowner="vsftpd:www-data";
 	var $wwwgroup="www-data";
 	var $ftpuser="vsftpd";    # equivalent: var $ftpowner="vsftpd:www-data";
 	var $ftpgroup="www-data"; # with this config, ftp user is able to see/delete files written by webserver. 
@@ -1311,7 +1311,7 @@ function checkTableExists($tb){
 
 function some_table_fixes(){
 	$qq=array(
-		"update scripts set customfileownerships='www-data:www-data#wp-content\nwww-data:www-data#wp-admin' where scriptname like '%wordpress%'"
+		"update scripts set customfileownerships='vsftpd:www-data#wp-content\nvsftpd:www-data#wp-admin' where scriptname like '%wordpress%'"
 	);
 	
 	foreach($qq as $q) $this->executeQuery($q);
@@ -2611,7 +2611,7 @@ function addcustompermission(){
 
 	if(!$fileowner){
 		$inputparams=array(
-			array('fileowner','righttext'=>'like www-data, or: www-data:www-data, cannot be root',),
+			array('fileowner','righttext'=>'like vsftpd, or: vsftpd:www-data, cannot be root',),
 			array('directory','righttext'=>'relative to domain home, such as wp-content for wordpress,or wp/wp-admin'),
 			array('domainname','hidden','default'=>$domainname),
 			array('op','hidden','default'=>__FUNCTION__)

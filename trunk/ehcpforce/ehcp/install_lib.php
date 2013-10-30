@@ -1333,7 +1333,6 @@ Some install/usage info and your name/email is sent to ehcp developpers for stat
 
 	installmysql();
 	sleep(2);
-	restartMySQL();
 	getinputs();
 
 
