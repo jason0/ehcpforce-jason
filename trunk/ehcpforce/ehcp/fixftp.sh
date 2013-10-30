@@ -409,14 +409,14 @@ function ubuntuVSFTPDFix(){ # by earnolmartin@gmail.com
 function logDirFix(){ # by earnolmartin@gmail.com
 	chmod 755 log
 	chmod 744 log/ehcp_failed_authentication.log
-	chown www-data:www-data log/ehcp_failed_authentication.log
+	chown vsftpd:www-data log/ehcp_failed_authentication.log
 }
 
 function fixEHCPPerms(){ # by earnolmartin@gmail.com
 	chmod a+rx /var/www/new/ehcp/
 	chmod -R a+r /var/www/new/ehcp/
 	find ./ -type d -exec chmod a+rx {} \;
-	chown -R www-data:www-data /var/www/new/ehcp/webmail
+	chown -R vsftpd:www-data /var/www/new/ehcp/webmail
 	chmod 755 -R /var/www/new/ehcp/webmail
 	chmod 755 /var/www/new/index.html
 }
