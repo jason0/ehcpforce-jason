@@ -569,6 +569,7 @@ function restartDaemons(){ # by earnolmartin@gmail.com
 	# Restart MySQL service after installation is completed
 	service mysql stop
 	killall mysqld
+	killall mysqld_safe
 	killall mysql
 	if [ -e "/etc/init.d/apparmor" ]; then
 		/etc/init.d/apparmor reload
