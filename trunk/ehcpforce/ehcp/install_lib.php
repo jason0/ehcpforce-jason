@@ -1595,6 +1595,8 @@ function scandb(){
 function installmysql(){
 	installMySQLServ();
 	sleep(2);
+	reloadAppArmorMySQL();
+	sleep(2);
 	aptget(array('mysql-client'));
 	sleep(2);
 	replacelineinfile("old_passwords","old_passwords=0","/etc/mysql/my.cnf"); # disable mysql old passwords... if enabled, vsftp auth cant work sometime.. changed 26.2.2008
