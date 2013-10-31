@@ -771,6 +771,16 @@ function mysqldebconf($rYear){ #by earnolmartin@gmail.com
 	return $comms;
 }
 
+function reloadAppArmorMySQL(){
+	// Function needed to fix MySQL Socket Bug in Ubuntu?
+	passthru3("service mysql stop");
+	passthru3("killall mysqld_safe");
+	passthru3("killall mysqld");
+	// Even if this fails, things should keep moving smoothly.
+	passthru3("/etc/init.d/apparmor reload");
+	passthru3("service mysql start");
+}
+
 function installMySQLServ(){#by earnolmartin@gmail.com
 	global $unattended, $distro, $version, $usePrompts;
 	
