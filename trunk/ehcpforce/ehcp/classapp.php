@@ -10078,7 +10078,7 @@ function syncSubdomains($file='',$domainname) {
 					echo "\nThis subdomain has custom webserverips,adjusting:".$dom['subdomain'].".".$dom['domainname'].":".$dom['webserverips'];
 					$dom['webserverip']=$i;   # if entered in db exclusively.  # diger ip ler ne olacak ? sanirim multiserver fonksiyonlarinda halledilecek... 
 					switch($this->miscconfig['webservertype']){
-						case 'apache2': $webserver_template_filename="$this->ehcpdir/apache_subdomain_template_ipbased";break;
+						case 'nginx': $webserver_template_filename="$this->ehcpdir/etc/nginx/apache_subdomain_template.nginx";break;
 						# other servers, if multi-ip supported, it seems no change needed for nginx
 					}
 					if(!in_array($i,$ips)) $ips[]=$i;
