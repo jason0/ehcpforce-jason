@@ -563,18 +563,19 @@ function updateBeforeInstall(){ # by earnolmartin@gmail.com
 }
 
 function restartDaemons(){ # by earnolmartin@gmail.com
-	# Problem with MySQL Socket
-	# http://askubuntu.com/questions/291054/cant-connect-to-local-mysql-server-through-socket-var-run-mysqld-mysqld-sock
 	
+	# Old code that may cause problems:
 	# Restart MySQL service after installation is completed
-	service mysql stop
-	killall mysqld
-	killall mysqld_safe
-	killall mysql
-	if [ -e "/etc/init.d/apparmor" ]; then
-		/etc/init.d/apparmor reload
-	fi
-	service mysql start
+	#service mysql stop
+	#killall mysqld
+	#killall mysqld_safe
+	#killall mysql
+	#if [ -e "/etc/init.d/apparmor" ]; then
+	#	/etc/init.d/apparmor reload
+	#fi
+	
+	# Restart MySQL Service
+	service mysql restart
 	
 	# Restart the EHCP daemon after installation is completed
 	service ehcp restart

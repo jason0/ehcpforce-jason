@@ -860,9 +860,10 @@ function installmailserver(){
 		default: echo "Unknown installmode parameter at ".__LINE__;
 	}
 	
-	
-	passthru2("killall mysqld_safe"); # because, after first install of mysql, this process somehow uses %100 of cpu, in an endless loop.. kill this and restart mysql..
-	passthru2("killall mysqld");
+	// No longer needed
+	// Below lines were causing problems on latest Ubuntu distros
+	// passthru2("killall mysqld_safe"); # because, after first install of mysql, this process somehow uses %100 of cpu, in an endless loop.. kill this and restart mysql..
+	// passthru2("killall mysqld");
 	sleep(10);
 	passthru2("/etc/init.d/mysql restart ");
 	passthru2("cp -rf /usr/share/phpmyadmin /var/www/new");
@@ -1594,8 +1595,6 @@ function scandb(){
 
 function installmysql(){
 	installMySQLServ();
-	sleep(2);
-	reloadAppArmorMySQL();
 	sleep(2);
 	aptget(array('mysql-client'));
 	sleep(2);
