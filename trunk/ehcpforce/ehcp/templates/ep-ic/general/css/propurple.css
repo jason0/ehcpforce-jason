@@ -33,7 +33,7 @@ div.items{text-align: center; padding: 6px; background-color: #eecbff; cursor: p
 div.items:hover, div.items:hover a, div.items:hover a:active, div.items:hover a:visited{background-color: #5d069e; color: white; text-decoration: underline;}
 a, a:active, a:visited{font-size: 17px; font-family: 'arial'; color: purple; text-decoration: underline;}
 a:hover{color: blue; text-decoration: none;}
-td.menu{background: #5d069e; border-top: 5px solid black; border-bottom: 5px solid black; cursor: pointer; font-family: 'arial'; font-weight: normal; font-size: 22px; color: white; width:25%; height: 60px; text-align: center; padding: 0px; vertical-align: middle; text-decoration: underline;}
+td.menu{background: #5d069e; border-top: 5px solid black; border-bottom: 5px solid black; cursor: pointer; font-family: 'arial'; font-weight: normal; font-size: 22px; color: white; width:20%; height: 60px; text-align: center; padding: 0px; vertical-align: middle; text-decoration: underline;}
 td.menu:hover{background: #800af6; color: white; cursor: pointer; text-decoration: underline; font-size: 24px;}
 tr.logo{background: url('../images/bg_purple.jpg') #5d069e repeat-x; width: 100%;}
 .center{margin-right: auto; margin-left: auto;}

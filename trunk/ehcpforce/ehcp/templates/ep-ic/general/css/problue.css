@@ -31,7 +31,7 @@ div.items{text-align: center; padding: 6px; background-color: #d1fffe; cursor: p
 div.items:hover, div.items:hover a, div.items:hover a:active, div.items:hover a:visited{background-color: #080096; color: white; text-decoration: underline;}
 a, a:active, a:visited{font-size: 17px; font-family: 'arial'; color: blue; text-decoration: underline;}
 a:hover{color: #0090ac; text-decoration: none;}
-td.menu{background: #080096; border-top: 5px solid black; border-bottom: 5px solid black; cursor: pointer; font-family: 'arial'; font-weight: normal; font-size: 22px; color: white; width:25%; height: 60px; text-align: center; padding: 0px; vertical-align: middle; text-decoration: underline;}
+td.menu{background: #080096; border-top: 5px solid black; border-bottom: 5px solid black; cursor: pointer; font-family: 'arial'; font-weight: normal; font-size: 22px; color: white; width:20%; height: 60px; text-align: center; padding: 0px; vertical-align: middle; text-decoration: underline;}
 td.menu:hover{background: #007696; color: white; cursor: pointer; text-decoration: underline; font-size: 24px;}
 tr.logo{background: url('../images/bg_blue.jpg') #080096 repeat-x; width: 100%;}
 .center{margin-right: auto; margin-left: auto;}
