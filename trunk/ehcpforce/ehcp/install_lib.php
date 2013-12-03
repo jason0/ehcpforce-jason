@@ -56,12 +56,6 @@ function checkaptget(){
 	}
 }
 
-function loadPresetValues(){
-	if(file_exists("install_silently.php")){
-		include 'install_sliently.php';
-	}
-}
-
 function hasValue($varr){
 	if(isset($varr) && !empty($varr)){
 		return true;
