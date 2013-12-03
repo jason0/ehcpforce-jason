@@ -320,7 +320,7 @@ function checkPhp(){
 
 function launchPanel(){
 	# NEVER LAUNCH FIREFOX AS THE ROOT USER.  IT WILL MESS IT UP FOR THE NORMAL USER
-	if [ -z "$unattended" ] ; then
+	if [ -z "$unattended" ] || [ "$unattended" == "" ] ; then
 		if [ ! -z "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
 			echo 
 			echo "The EHCP panel is now accessible!"
