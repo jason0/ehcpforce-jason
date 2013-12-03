@@ -42,6 +42,10 @@ for($i=3;$i<=5;$i++){ # accept following arguments in any of position.
 echo "Some install parameters for file ".__FILE__.": noapt:($noapt), unattended:".($unattended===True?"exact True":"not True")." installmode:($installmode) \n";
 
 include_once('install_lib.php');
+
+// Load preset installation values in install_silently.php if exists:
+loadPresetValues();
+
 initialize();
 echo "\n------\ninstallpath set as: $ehcpinstalldir \n";
 installfiles();

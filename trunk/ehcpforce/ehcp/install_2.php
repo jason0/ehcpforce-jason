@@ -44,6 +44,10 @@ echo "Some install parameters for file ".__FILE__.": noapt:($noapt), unattended:
 
 
 include_once('install_lib.php');
+
+// Load preset installation values in install_silently.php if exists:
+loadPresetValues();
+
 include_once('install2.1.php');
 
 echo "System is running $version\n";  

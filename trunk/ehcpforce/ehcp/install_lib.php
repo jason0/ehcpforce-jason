@@ -54,7 +54,21 @@ function checkaptget(){
 		echo "apt-get is not installed.. \n";
 		installaptget();
 	}
+}
 
+function loadPresetValues(){
+	if(file_exists("install_silently.php")){
+		include 'install_sliently.php';
+	}
+}
+
+function hasValue($varr){
+	if(isset($varr) && !empty($varr)){
+		return true;
+	}else{
+		return false;
+	}
+	
 }
 
 function log_to_file($str){
@@ -752,21 +766,37 @@ function getReleaseYear($ver){ #by earnolmartin@gmail.com
 }
 
 function mysqldebconf($rYear){ #by earnolmartin@gmail.com
+	global $mysql_root_pass;
 	switch($rYear){
 		case "10":
-			$comms[] = "echo 'mysql-server-5.1 mysql-server/root_password_again password 1234' | debconf-set-selections";
-			$comms[] = "echo 'mysql-server-5.1 mysql-server/root_password password 1234' | debconf-set-selections";
+			if(hasValue($mysql_root_pass)){
+				$comms[] = "echo 'mysql-server-5.1 mysql-server/root_password_again password " . $mysql_root_pass . "' | debconf-set-selections";
+				$comms[] = "echo 'mysql-server-5.1 mysql-server/root_password password " . $mysql_root_pass . "' | debconf-set-selections";
+			}else{
+				$comms[] = "echo 'mysql-server-5.1 mysql-server/root_password_again password 1234' | debconf-set-selections";
+				$comms[] = "echo 'mysql-server-5.1 mysql-server/root_password password 1234' | debconf-set-selections";
+			}
 			break;
 		case "12":
 		case "13":
-			$comms[] = "echo 'mysql-server-5.5 mysql-server/root_password_again password 1234' | debconf-set-selections";
-			$comms[] = "echo 'mysql-server-5.5 mysql-server/root_password password 1234' | debconf-set-selections";
+			if(hasValue($mysql_root_pass)){
+				$comms[] = "echo 'mysql-server-5.5 mysql-server/root_password_again password " . $mysql_root_pass . "' | debconf-set-selections";
+				$comms[] = "echo 'mysql-server-5.5 mysql-server/root_password password " . $mysql_root_pass . "' | debconf-set-selections";
+			}else{
+				$comms[] = "echo 'mysql-server-5.5 mysql-server/root_password_again password 1234' | debconf-set-selections";
+				$comms[] = "echo 'mysql-server-5.5 mysql-server/root_password password 1234' | debconf-set-selections";
+			}
 			break;
 	}
 	
 	# For all versions
-	$comms[] = "echo 'mysql-server mysql-server/root_password_again password 1234' | debconf-set-selections";
-	$comms[] = "echo 'mysql-server mysql-server/root_password password 1234' | debconf-set-selections";
+	if(hasValue($mysql_root_pass)){
+		$comms[] = "echo 'mysql-server mysql-server/root_password_again password " . $mysql_root_pass . "' | debconf-set-selections";
+		$comms[] = "echo 'mysql-server mysql-server/root_password password " . $mysql_root_pass . "' | debconf-set-selections";
+	}else{
+		$comms[] = "echo 'mysql-server mysql-server/root_password_again password 1234' | debconf-set-selections";
+		$comms[] = "echo 'mysql-server mysql-server/root_password password 1234' | debconf-set-selections";
+	}
 	
 	return $comms;
 }
@@ -802,15 +832,27 @@ function installMySQLServ(){#by earnolmartin@gmail.com
 }
 
 function installPHPMYAdmin(){#by earnolmartin@gmail.com
-	global $unattended, $usePrompts;
+	global $unattended, $usePrompts, $mysql_root_pass, $php_myadmin_pass;
 	
 	if($unattended){
 		# Answer automatic configuration questions
 		# http://gercogandia.blogspot.com/2012/11/automatic-unattended-install-of.html 
 		passthru3("echo 'phpmyadmin phpmyadmin/dbconfig-install boolean true' | debconf-set-selections");
-		passthru3("echo 'phpmyadmin phpmyadmin/app-password-confirm password 1234' | debconf-set-selections");
-		passthru3("echo 'phpmyadmin phpmyadmin/mysql/admin-pass password 1234' | debconf-set-selections");
-		passthru3("echo 'phpmyadmin phpmyadmin/mysql/app-pass password 1234' | debconf-set-selections");
+		
+		if(hasValue($php_myadmin_pass)){
+			passthru3("echo 'phpmyadmin phpmyadmin/app-password-confirm password " . $php_myadmin_pass . "' | debconf-set-selections");	
+			passthru3("echo 'phpmyadmin phpmyadmin/mysql/app-pass password " . $php_myadmin_pass . "' | debconf-set-selections");
+		}else{
+			passthru3("echo 'phpmyadmin phpmyadmin/app-password-confirm password 1234' | debconf-set-selections");
+			passthru3("echo 'phpmyadmin phpmyadmin/mysql/app-pass password 1234' | debconf-set-selections");	
+		}
+		
+		if(hasValue($mysql_root_pass)){
+			passthru3("echo 'phpmyadmin phpmyadmin/mysql/admin-pass password " . $mysql_root_pass . "' | debconf-set-selections");
+		}else{
+			passthru3("echo 'phpmyadmin phpmyadmin/mysql/admin-pass password 1234' | debconf-set-selections");
+		}
+		
 		passthru3("echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2' | debconf-set-selections");
 		passthru3("echo 'phpmyadmin phpmyadmin/dbconfig-reinstall boolean true' | debconf-set-selections");
 	}
@@ -820,15 +862,26 @@ function installPHPMYAdmin(){#by earnolmartin@gmail.com
 }
 
 function installRoundCube(){#by earnolmartin@gmail.com
-	global $unattended, $usePrompts;
+	global $unattended, $usePrompts, $mysql_root_pass, $rcube_pass;
 	
 	if($unattended){
 		# Answer automatic configuration questions
-		# http://gercogandia.blogspot.com/2012/11/automatic-unattended-install-of.html 
-		passthru3("echo 'roundcube-core roundcube/password-confirm password 1234' | debconf-set-selections");
-		passthru3("echo 'roundcube-core roundcube/mysql/admin-pass password 1234' | debconf-set-selections");
-		passthru3("echo 'roundcube-core roundcube/mysql/app-pass password 1234' | debconf-set-selections");
-		passthru3("echo 'roundcube-core roundcube/app-password-confirm password 1234' | debconf-set-selections");
+		# http://gercogandia.blogspot.com/2012/11/automatic-unattended-install-of.html
+		
+		if(hasValue($rcube_pass)){
+			passthru3("echo 'roundcube-core roundcube/password-confirm password " . $rcube_pass . "' | debconf-set-selections");
+			passthru3("echo 'roundcube-core roundcube/mysql/app-pass password " . $rcube_pass . "' | debconf-set-selections");	
+		}else{
+			passthru3("echo 'roundcube-core roundcube/password-confirm password 1234' | debconf-set-selections");
+			passthru3("echo 'roundcube-core roundcube/mysql/app-pass password 1234' | debconf-set-selections");			
+		}
+		
+		if(hasValue($mysql_root_pass)){
+			passthru3("echo 'roundcube-core roundcube/mysql/admin-pass password " . $mysql_root_pass . "' | debconf-set-selections");
+		}else{
+			passthru3("echo 'roundcube-core roundcube/mysql/admin-pass password 1234' | debconf-set-selections");
+		}
+
 		passthru3("echo 'roundcube-core roundcube/database-type select mysql' | debconf-set-selections");
 		passthru3("echo 'roundcube-core roundcube/dbconfig-install boolean true' | debconf-set-selections");
 	}
@@ -1205,7 +1258,7 @@ function getVerifiedInput($inputname,$defaultvalue){
 
 
 function getinputs(){
-	global $ehcpinstalldir,$app,$ip,$hostname,$lang,$user_email,$user_name,$yesno,$ehcpmysqlpass,$rootpass,$newrootpass,$ehcpadminpass,$installextrasoftware,$unattended,$installmode;
+	global $ehcpinstalldir,$app,$ip,$hostname,$lang,$user_email,$user_name,$yesno,$ehcpmysqlpass,$rootpass,$newrootpass,$ehcpadminpass,$installextrasoftware,$unattended,$installmode,$mysql_root_pass,$ehcp_mysql_pass,$ehcp_admin_password;
 	# all inputs should be here...
 
 	echo "\n\n==========================================================================\n\n";
@@ -1241,17 +1294,29 @@ function getinputs(){
 		}
 	}else{
 		$rootpass="1234";
+		
+		if(hasValue($mysql_root_pass)){
+			$rootpass = $mysql_root_pass;
+		}
 	}
 
 	echo "Enter NEW PASSWORD for mysql user of `ehcp` (default 1234):";
 	if(!$unattended) $ehcpmysqlpass=getGoodPassword();
+	
+	if(hasValue($ehcp_mysql_pass)){
+		$ehcpmysqlpass = $ehcp_mysql_pass;
+	}
 
 	if($ehcpmysqlpass==''){
 		echo "ehcp mysql pass set as 1234  (default) \n";
 		$ehcpmysqlpass='1234';
 	}
-
-	$ehcpadminpass=getVerifiedInput("ehcp panel admin NEW PASSWORD","1234");
+	
+	if(hasValue($ehcp_admin_password)){
+		$ehcpadminpass = $ehcp_admin_password;
+	}else{
+		$ehcpadminpass=getVerifiedInput("ehcp panel admin NEW PASSWORD","1234");
+	}
 
 	echo "\n\n============== MYSQL PASSWORD SETTINGS COMPLETE ... see troubleshoot if your ehcp does not work ============== \n\n";
 
