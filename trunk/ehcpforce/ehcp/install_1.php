@@ -45,7 +45,7 @@ include_once('install_lib.php');
 
 // Load preset installation values in install_silently.php if exists:
 if(file_exists("install_silently.php")){
-	include 'install_sliently.php';
+	include 'install_silently.php';
 }
 
 initialize();
