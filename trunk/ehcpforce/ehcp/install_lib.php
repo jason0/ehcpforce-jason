@@ -892,7 +892,11 @@ function installmailserver(){
 	# See here:
 	# http://www.whatastruggle.com/postfix-non-interactive-install
 	# Added by Eric Arnol-Martin <earnolmartin@gmail.com>
-	if($unattended) copyPostFixConfig();
+	if($unattended){
+		 copyPostFixConfig();
+		 passthru3("echo 'postfix postfix/main_mailer_type select Internet Site' | debconf-set-selections");
+		 passthru3("echo 'postfix postfix/mailname string $(hostname)' | debconf-set-selections");
+	}
 	
 	# Install these packages and answer configuration questions if unattended
 	# Then install the rest of the packages
