@@ -588,8 +588,14 @@ function restartDaemons(){ # by earnolmartin@gmail.com
 # Good explanation FROM MS Forums (LOL):  http://social.technet.microsoft.com/Forums/windowsserver/en-US/24ea1094-0ae4-47b5-9b74-2f77884cce15/dns-recursion?forum=winserverNIS
 function disableRecursiveBIND(){ # by earnolmartin@gmail.com
 	bindOptionsFile="/etc/bind/named.conf.options"
+	bindBckFile="/etc/bind/named.conf.options_backup"
 	if [ -e "$bindOptionsFile" ]; then
-	
+		
+		# Create a backup of the original
+		if [ ! -e "$bindBckFile" ]; then
+			cp "$bindOptionsFile" "$bindBckFile"
+		fi
+		
 		# Remove all blank lines at the end of the file:
 		# BINDNoEmptyLines=$(sed '/^ *$/d' "$bindOptionsFile")
 		# Better code here to strip out ending lines of empty text:   http://stackoverflow.com/questions/7359527/removing-trailing-starting-newlines-with-sed-awk-tr-and-friends
@@ -598,20 +604,20 @@ function disableRecursiveBIND(){ # by earnolmartin@gmail.com
 		echo "$BINDNoEmptyLines" > "$bindOptionsFile"
 	
 		# Add recursion no
-		RecursiveSettingCheck=$( cat "$bindOptionsFile" | grep -o "recursion .*" | grep -o " .*$" | grep -o "[^ ].*" )
+		RecursiveSettingCheck=$( cat "$bindOptionsFile" | grep -o "^recursion .*" | grep -o " .*$" | grep -o "[^ ].*" )
 		if [ -z "$RecursiveSettingCheck" ]; then
 			# Put it one line before close pattern
 			sed -i '$i \recursion no;' "$bindOptionsFile"
 		else
-			sed -i 's/recursion .*/recursion no;/g' "$bindOptionsFile"
+			sed -i 's/^recursion .*/recursion no;/g' "$bindOptionsFile"
 		fi
 		
 		# Add additional-from-cache no
-		RecursiveCacheCheck=$( cat "$bindOptionsFile" | grep -o "additional-from-cache .*" | grep -o " .*$" | grep -o "[^ ].*" )
+		RecursiveCacheCheck=$( cat "$bindOptionsFile" | grep -o "^additional-from-cache .*" | grep -o " .*$" | grep -o "[^ ].*" )
 		if [ -z "$RecursiveCacheCheck" ]; then
 			sed -i '$i \additional-from-cache no;' "$bindOptionsFile"
 		else
-			sed -i 's/additional-from-cache .*/additional-from-cache no;/g' "$bindOptionsFile"
+			sed -i 's/^additional-from-cache .*/additional-from-cache no;/g' "$bindOptionsFile"
 		fi
 	fi
 	service bind9 restart
