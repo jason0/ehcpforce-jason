@@ -1916,6 +1916,7 @@ function options(){
 		array('messagetonewuser','textarea','default'=>$this->miscconfig['messagetonewuser']),
 		array('disableeditapachetemplate','checkbox','lefttext'=>'Disable Custom http for non-admins','default'=>'Yes','checked'=>$this->miscconfig['disableeditapachetemplate'],'righttext'=>'This is a security measure to disable non-experienced users to break configs'),
 		array('disableeditdnstemplate','checkbox','lefttext'=>'Disable Custom dns for non-admins','default'=>'Yes','checked'=>$this->miscconfig['disableeditdnstemplate'],'righttext'=>'This is a security measure to disable non-experienced users to break configs'),
+		array('forcedeleteftpuserhomedir','checkbox','lefttext'=>'When User FTP Account is Deleted, Force the Deletion of ALL FILES and FOLDERS in FTP User\'s Home Directory (files the user has access to via FTP account)','default'=>'No','checked'=>$this->miscconfig['forcedeleteftpuserhomedir'],'righttext'=>'Will delete files that could be owned by a domain, subdomain, other user, or other FTP account :: RECOMMENDED DO NOT ENABLE'),
 		array('turnoffoverquotadomains','checkbox','lefttext'=>'Turn off over quota domains','default'=>'Yes','checked'=>$this->miscconfig['turnoffoverquotadomains']),
 		array('quotaupdateinterval','default'=>$this->miscconfig['quotaupdateinterval'],'righttext'=>'interval in hours'),
 		array('userscansignup','checkbox','default'=>'Yes','checked'=>$this->miscconfig['userscansignup'],'righttext'=>'disabled by default, can users sign up for domains/ftp? (you should approve/reject them in short time)'),
@@ -5655,7 +5656,11 @@ function deleteFtpUserDirect($ftpusername){
 	$this->output.="<br>Deleting ftp user: $ftpusername<br>";
 	$qu="delete from ".$this->conf['ftpuserstable']['tablename']." where ftpusername='$ftpusername' limit 1";
 	$success=$success && $this->executeQuery($qu,' delete ftp user from ehcp db');
-	$success=$success && $this->addDaemonOp("daemonftp","delete",$homedir,'',' ftp delete info ');
+	
+	# WHY WOULD YOU DELETE THE FILES --- THEY COULD BE OWNED BY OTHERS
+	if($this->miscconfig['forcedeleteftpuserhomedir']<>''){
+		$success=$success && $this->addDaemonOp("daemonftp","delete",$homedir,'',' ftp delete info ');
+	}
 	return $success;
 }
 
@@ -8403,7 +8408,7 @@ function userop(){
 				$success=$this->errorText('This user has an associated domain or subdomain. Please use domain/subdomain delete.');
 			} else {
 				$success=$this->deleteFtpUserDirect($ftpusername);
-				$this->ok_err_text($success,"ftp user delete successfull","error ftp user delete");
+				$this->ok_err_text($success,"ftp user delete successful","error ftp user delete");
 			}
 			$this->showSimilarFunctions('ftp');
 			return $success;
