@@ -1034,7 +1034,9 @@ function rebuild_apache2_config2(){
 	passthru("cp -rvf ./images_default_index /var/www/new/");
 
 	passthru("cp ./ehcp /etc/init.d/");
-	passthru("cp ./ehcp_daemon.py /etc/init.d/");
+	
+	// Not used
+	// passthru("cp ./ehcp_daemon.py /etc/init.d/");
 
 	passthru("chmod a+r /var/www/apache2-default/index.html");
 	passthru("chmod a+r /var/www/index.html");
