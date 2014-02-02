@@ -364,7 +364,7 @@ function get_mod_secure_rules(){
 	passthru2("mkdir /root/Downloads");
 	passthru2("cd /root/Downloads");
 	passthru2("mkdir mod_security_rules_latest");
-	passthru2('wget -O "mod_security_rules.tar.gz" "www.dinofly.com/files/linux/mod_security_base_rules.tar.gz"');
+	passthru2('wget -O "mod_security_rules.tar.gz" "http://www.dinofly.com/files/linux/mod_security_base_rules.tar.gz"');
 	passthru2('tar -zxvf "mod_security_rules.tar.gz" -C "mod_security_rules_latest"');
 	passthru2("mv mod_security_rules_latest/* /etc/apache2/mod_security_rules");
 	passthru2("chown -R root:root /etc/apache2/mod_security_rules");
