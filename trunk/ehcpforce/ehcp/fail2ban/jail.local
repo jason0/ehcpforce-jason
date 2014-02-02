@@ -145,7 +145,7 @@ enabled = true
 port    = http,https
 filter  = apache-dos
 logpath = /var/log/apache*/*error.log
-maxretry = 4
+maxretry = 5
 
 [ehcp]
 # section for Easy Hosting Control Panel, ehcp.net

@@ -262,6 +262,7 @@ function fail2ban_install(){ # thanks to  earnolmartin@gmail.com
 function fail2ban_config(){
 		global $ehcpinstalldir,$user_email;		
 		copy("$ehcpinstalldir/fail2ban/ehcp.conf","/etc/fail2ban/filter.d/ehcp.conf");
+		copy("$ehcpinstalldir/fail2ban/apache-dos.conf","/etc/fail2ban/filter.d/apache-dos.conf");
 		$f="/etc/fail2ban/jail.local";
 		if(!file_exists($f)) copy("$ehcpinstalldir/fail2ban/jail.local",$f);
 		
@@ -281,6 +282,100 @@ maxretry = 10";
 			#append_to_file($f,$ehcpF2Config);			
 		}
 		
+		if(strstr($s,"[apache-dos]")===false){ # if not already configured, 
+			$apacheDOSF2Config="
+[apache-dos]
+# Apache Anti-DDoS Security Based Log Entries from Mod Evasive Apache Module
+enabled = true
+port = http,https
+filter = apache-dos
+logpath = /var/log/apache*/*error.log
+maxretry = 5";
+			
+			file_put_contents($f,$apacheDOSF2Config,FILE_APPEND);		
+		}
+		
+		// Restart the fail2ban daemon
+		passthru3("service fail2ban restart");
+}
+
+function apache_mod_secure_install(){ # thanks to  earnolmartin@gmail.com
+	global $version, $distro;
+	// Only do this for Ubuntu versions 10 and up... not sure if this will work with normal debian
+	if(isset($version) && !empty($version) && stripos($version, '.') != FALSE && isset($distro) && $distro == "ubuntu"){
+		$releaseYear = substr($version, 0, stripos($version, '.'));
+		if($releaseYear > 10){
+			// We are not using mod_qos as it has some problems...
+			// However, if it starts working in the future, the framework to configure it is already here!
+			// echo "Starting apache2 mod_security, mod_evasive, and mod_qos install! \n";
+			echo "Starting apache2 mod_security and mod_evasive install! \n";
+			aptget(array('libapache2-mod-evasive', 'libapache-mod-security'));
+			get_mod_secure_rules();
+			// compile_mod_qos();
+			apache_mod_secure_config();
+			mod_secure_final();
+			echo "Finished apache2 mod_security and mod_evasive install \n";
+		}
+	}
+}
+
+function compile_mod_qos(){
+	echo "Getting Apache2 compile utility for modules! \n";
+	aptget(array('apache2-threaded-dev', 'gcc'));
+	$currDir = getcwd();
+	passthru2("mkdir /root/Downloads");
+	passthru2("cd /root/Downloads");
+	passthru2("mkdir mod_qos");
+	passthru2('wget -O "mod_qos-10.15.tar.gz" "http://www.dinofly.com/files/linux/mod_qos-10.15.tar.gz"');
+	passthru2('tar -zxvf "mod_qos-10.15.tar.gz" -C mod_qos');
+	passthru2("cd mod_qos");
+	passthru2("cd mod_qos-10.15");
+	passthru2("cd apache2");
+	passthru2("apxs2 -i -c mod_qos.c");
+	passthru2("cd $currDir");
+}
+
+function apache_mod_secure_config(){
+		global $ehcpinstalldir,$user_email;	
+		
+		// Mod_QOS Enable Module
+		//$f="/etc/apache2/mods-available/qos.load";
+		//if(!file_exists($f)) copy("$ehcpinstalldir/mod_secure/qos.load",$f);
+		
+		// Mod_QOS Config
+		//$f="/etc/apache2/conf.d/modqos";
+		//if(!file_exists($f)) copy("$ehcpinstalldir/mod_secure/modqos",$f);
+		
+		// Mod_Secure Config	
+		$f="/etc/apache2/conf.d/modsecure";
+		if(!file_exists($f)) copy("$ehcpinstalldir/mod_secure/modsecure",$f);
+		
+		// Mod_Evasive Config
+		$f="/etc/apache2/conf.d/modevasive";
+		if(!file_exists($f)) copy("$ehcpinstalldir/mod_secure/modevasive",$f);
+		
+		replacelineinfile("DOSEmailNotify","DOSEmailNotify $user_email",$f);
+		
+}
+
+function get_mod_secure_rules(){
+	$currDir = getcwd();
+	passthru2("mkdir /etc/apache2/mod_security_rules");
+	passthru2("mkdir /root/Downloads");
+	passthru2("cd /root/Downloads");
+	passthru2("mkdir mod_security_rules_latest");
+	passthru2('wget -O "mod_security_rules.tar.gz" "www.dinofly.com/files/linux/mod_security_base_rules.tar.gz"');
+	passthru2('tar -zxvf "mod_security_rules.tar.gz" -C "mod_security_rules_latest"');
+	passthru2("mv mod_security_rules_latest/* /etc/apache2/mod_security_rules");
+	passthru2("chown -R root:root /etc/apache2/mod_security_rules");
+	passthru2("cd $currDir");
+}
+
+function mod_secure_final(){
+	passthru2("a2enmod mod-evasive");
+	passthru2("a2enmod mod-security");
+	// passthru2("a2enmod qos");
+	passthru2("service apache2 restart");
 }
 
 function replace_in_file($find,$replace,$sourcefile,$targetfile){

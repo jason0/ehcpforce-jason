@@ -85,6 +85,11 @@ if(isset($version) && $version != "12.10"){
 }
 installapacheserver();
 
+# Secure apache by installing some basic Anti-DDoS Modules
+if(!isset($installmode) || $installmode != 'light'){
+	apache_mod_secure_install();
+}
+
 # scandb();  no more need to scan db since ver. 0.29.15
 installfinish();
 
