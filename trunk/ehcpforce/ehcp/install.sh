@@ -535,7 +535,10 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 	if [ -e "/etc/apache2/envvars" ]; then
 		sed -i "s/export APACHE_RUN_USER=.*/export APACHE_RUN_USER=vsftpd/g" "/etc/apache2/envvars"
 		if [ -e "/var/lock/apache2" ]; then
-			chown vsftpd:vsftpd "/var/lock/apache2"
+			chown vsftpd:www-data "/var/lock/apache2"
+		else
+			mkdir "/var/lock/apache2"
+			chown vsftpd:www-data "/var/lock/apache2"
 		fi
 		service apache2 restart
 	fi
