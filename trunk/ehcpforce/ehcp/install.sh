@@ -531,11 +531,11 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 	# Apache should run as the vsftpd account so that FTP connections own the file and php scripts can own the file
 	# Without this fix, files uploaded by ftp could not be changed by PHP scripts... AND
 	# Files uploaded / created by PHP scripts could not be modified (chmod) via FTP clients
-	
+	service apache2 stop
 	if [ -e "/etc/apache2/envvars" ]; then
 		sed -i "s/export APACHE_RUN_USER=.*/export APACHE_RUN_USER=vsftpd/g" "/etc/apache2/envvars"
 		if [ -e "/var/lock/apache2" ]; then
-			chown vsftpd "/var/lock/apache2"
+			chown vsftpd:vsftpd "/var/lock/apache2"
 		fi
 		service apache2 restart
 	fi

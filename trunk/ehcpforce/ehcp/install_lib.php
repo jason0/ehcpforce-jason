@@ -359,16 +359,17 @@ function apache_mod_secure_config(){
 }
 
 function get_mod_secure_rules(){
+	// Pass in , true, true as arguments so there is no escaping of commands or replacement of slash characters
 	$currDir = getcwd();
-	passthru2("mkdir /etc/apache2/mod_security_rules");
-	passthru2("mkdir /root/Downloads");
-	passthru2("cd /root/Downloads");
-	passthru2("mkdir mod_security_rules_latest");
-	passthru2('wget -O "mod_security_rules.tar.gz" "http://www.dinofly.com/files/linux/mod_security_base_rules.tar.gz"');
-	passthru2('tar -zxvf "mod_security_rules.tar.gz" -C "mod_security_rules_latest"');
-	passthru2("mv mod_security_rules_latest/* /etc/apache2/mod_security_rules");
-	passthru2("chown -R root:root /etc/apache2/mod_security_rules");
-	passthru2("cd $currDir");
+	passthru2("mkdir /etc/apache2/mod_security_rules", true, true);
+	passthru2("mkdir /root/Downloads", true, true);
+	passthru2("cd /root/Downloads", true, true);
+	passthru2("mkdir mod_security_rules_latest", true, true);
+	passthru2('wget -O "mod_security_rules.tar.gz" "http://www.dinofly.com/files/linux/mod_security_base_rules.tar.gz"', true, true);
+	passthru2('tar -zxvf "mod_security_rules.tar.gz" -C "mod_security_rules_latest"', true, true);
+	passthru2("mv mod_security_rules_latest/* /etc/apache2/mod_security_rules", true, true);
+	passthru2("chown -R root:root /etc/apache2/mod_security_rules", true, true);
+	passthru2("cd $currDir", true, true);
 }
 
 function mod_secure_final(){
