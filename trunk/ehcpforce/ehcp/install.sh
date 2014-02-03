@@ -587,40 +587,49 @@ function restartDaemons(){ # by earnolmartin@gmail.com
 # https://www.team-cymru.org/Services/Resolvers/instructions.html
 # Good explanation FROM MS Forums (LOL):  http://social.technet.microsoft.com/Forums/windowsserver/en-US/24ea1094-0ae4-47b5-9b74-2f77884cce15/dns-recursion?forum=winserverNIS
 function disableRecursiveBIND(){ # by earnolmartin@gmail.com
-	bindOptionsFile="/etc/bind/named.conf.options"
-	bindBckFile="/etc/bind/named.conf.options_backup"
-	if [ -e "$bindOptionsFile" ]; then
-		
-		# Create a backup of the original
-		if [ ! -e "$bindBckFile" ]; then
-			cp "$bindOptionsFile" "$bindBckFile"
-		fi
-		
-		# Remove all blank lines at the end of the file:
-		# BINDNoEmptyLines=$(sed '/^ *$/d' "$bindOptionsFile")
-		# Better code here to strip out ending lines of empty text:   http://stackoverflow.com/questions/7359527/removing-trailing-starting-newlines-with-sed-awk-tr-and-friends
-		# Can also do this for leading and trailing empty lines:  sed -e :a -e '/./,$!d;/^\n*$/{$d;N;};/\n$/ba' file
-		BINDNoEmptyLines=$(sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' "$bindOptionsFile")
-		echo "$BINDNoEmptyLines" > "$bindOptionsFile"
+
+	# Get Resolv.conf and do not run this code if nameserver is set to 127.0.0.1
+	RESOLVCOUNT=$(cat "/etc/resolv.conf" | grep -c "nameserver")
+	RESOLVLOCAL=$(cat "/etc/resolv.conf" | grep "nameserver 127.0.0.1")
 	
-		# Add recursion no
-		RecursiveSettingCheck=$( cat "$bindOptionsFile" | grep -o "^recursion .*" | grep -o " .*$" | grep -o "[^ ].*" )
-		if [ -z "$RecursiveSettingCheck" ]; then
-			# Put it one line before close pattern
-			sed -i '$i \recursion no;' "$bindOptionsFile"
-		else
-			sed -i 's/^recursion .*/recursion no;/g' "$bindOptionsFile"
-		fi
+	if [ "$RESOLVCOUNT" == "1" ] && [ ! -z "$RESOLVLOCAL" ]; then
+		echo -e "Skipping Bind Recursion Settings Due to 127.0.0.1 Nameserver"
+	else
+		bindOptionsFile="/etc/bind/named.conf.options"
+		bindBckFile="/etc/bind/named.conf.options_backup"
+		if [ -e "$bindOptionsFile" ]; then
+			
+			# Create a backup of the original
+			if [ ! -e "$bindBckFile" ]; then
+				cp "$bindOptionsFile" "$bindBckFile"
+			fi
+			
+			# Remove all blank lines at the end of the file:
+			# BINDNoEmptyLines=$(sed '/^ *$/d' "$bindOptionsFile")
+			# Better code here to strip out ending lines of empty text:   http://stackoverflow.com/questions/7359527/removing-trailing-starting-newlines-with-sed-awk-tr-and-friends
+			# Can also do this for leading and trailing empty lines:  sed -e :a -e '/./,$!d;/^\n*$/{$d;N;};/\n$/ba' file
+			BINDNoEmptyLines=$(sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' "$bindOptionsFile")
+			echo "$BINDNoEmptyLines" > "$bindOptionsFile"
 		
-		# Add additional-from-cache no
-		RecursiveCacheCheck=$( cat "$bindOptionsFile" | grep -o "^additional-from-cache .*" | grep -o " .*$" | grep -o "[^ ].*" )
-		if [ -z "$RecursiveCacheCheck" ]; then
-			sed -i '$i \additional-from-cache no;' "$bindOptionsFile"
-		else
-			sed -i 's/^additional-from-cache .*/additional-from-cache no;/g' "$bindOptionsFile"
+			# Add recursion no
+			RecursiveSettingCheck=$( cat "$bindOptionsFile" | grep -o "^recursion .*" | grep -o " .*$" | grep -o "[^ ].*" )
+			if [ -z "$RecursiveSettingCheck" ]; then
+				# Put it one line before close pattern
+				sed -i '$i \recursion no;' "$bindOptionsFile"
+			else
+				sed -i 's/^recursion .*/recursion no;/g' "$bindOptionsFile"
+			fi
+			
+			# Add additional-from-cache no
+			RecursiveCacheCheck=$( cat "$bindOptionsFile" | grep -o "^additional-from-cache .*" | grep -o " .*$" | grep -o "[^ ].*" )
+			if [ -z "$RecursiveCacheCheck" ]; then
+				sed -i '$i \additional-from-cache no;' "$bindOptionsFile"
+			else
+				sed -i 's/^additional-from-cache .*/additional-from-cache no;/g' "$bindOptionsFile"
+			fi
 		fi
+		service bind9 restart
 	fi
-	service bind9 restart
 }
 
 #############################################################
