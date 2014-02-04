@@ -727,12 +727,12 @@ logDirFix
 # fail2banCheck # done in install*php files.
 # Fix EHCP Permissions
 fixEHCPPerms
+# Change Apache user to vsftpd to ensure chmod works via PHP and through FTP Clients
+changeApacheUser
 # Fix extra mysql module getting loaded in the PHP config printing warning messages
 fixPHPConfig
 # Fix /etc/bind directory permissions required for slave dns
 fixBINDPerms
-# Change Apache user to vsftpd to ensure chmod works via PHP and through FTP Clients
-changeApacheUser
 # Fix generic problems in Ubuntu
 genUbuntuFixes
 # Secure BIND9 Configuration
