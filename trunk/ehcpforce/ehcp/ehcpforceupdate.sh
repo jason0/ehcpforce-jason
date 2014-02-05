@@ -28,9 +28,11 @@ function libldapFix(){ # by earnolmartin@gmail.com
 
 function fixApacheEnvVars(){
 	# Check to make sure export APACHE_LOG_DIR=/var/log/apache2$SUFFIX exists
-	APACHELOGCHECK=$(cat "/etc/apache2/envvars" | grep "APACHE_LOG_DIR=*")
-	if [ -z "$APACHELOGCHECK" ]; then
-		echo "export APACHE_LOG_DIR=/var/log/apache2\$SUFFIX" >> "/etc/apache2/envvars"
+	if [ -e "/etc/apache2/envvars" ]; then
+		APACHELOGCHECK=$(cat "/etc/apache2/envvars" | grep "APACHE_LOG_DIR=*")
+		if [ -z "$APACHELOGCHECK" ]; then
+			echo "export APACHE_LOG_DIR=/var/log/apache2\$SUFFIX" >> "/etc/apache2/envvars"
+		fi
 	fi
 }
 
