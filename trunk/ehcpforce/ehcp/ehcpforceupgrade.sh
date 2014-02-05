@@ -233,7 +233,7 @@ function apacheSecurity(){
 }
 
 function finalize(){
-	service apache2 start
+	service apache2 restart
 	service ehcp start
 	cd ~/Downloads
 	wget -N -O "syncdomains_apiscript.tar.gz" http://dinofly.com/files/linux/ehcp/syncdomains_apiscript.tar.gz
