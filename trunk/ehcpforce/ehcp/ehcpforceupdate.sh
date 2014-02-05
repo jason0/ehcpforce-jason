@@ -26,6 +26,14 @@ function libldapFix(){ # by earnolmartin@gmail.com
 	cd $origDir
 }  
 
+function fixApacheEnvVars(){
+	# Check to make sure export APACHE_LOG_DIR=/var/log/apache2$SUFFIX exists
+	APACHELOGCHECK=$(cat "/etc/apache2/envvars" | grep "APACHE_LOG_DIR=*")
+	if [ -z "$APACHELOGCHECK" ]; then
+		echo "export APACHE_LOG_DIR=/var/log/apache2\$SUFFIX" >> "/etc/apache2/envvars"
+	fi
+}
+
 function slaveDNSApparmorFix(){ # by earnolmartin@gmail.com
 	if [ -e /etc/apparmor.d/usr.sbin.named ]; then
 				echo -e "\nChanging bind apparmor rule to allow master DNS synchronization for slave setups.\n"
@@ -42,12 +50,6 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 		sed -i "s/export APACHE_RUN_USER=.*/export APACHE_RUN_USER=vsftpd/g" "/etc/apache2/envvars"
 		if [ -e "/var/lock/apache2" ]; then
 			chown vsftpd "/var/lock/apache2"
-		fi
-		
-		# Check to make sure export APACHE_LOG_DIR=/var/log/apache2$SUFFIX exists
-		APACHELOGCHECK=$(cat "/etc/apache2/envvars" | grep "APACHE_LOG_DIR=*")
-		if [ -z "$APACHELOGCHECK" ]; then
-			echo "export APACHE_LOG_DIR=/var/log/apache2\$SUFFIX" >> "/etc/apache2/envvars"
 		fi
 	fi
 }
@@ -522,7 +524,10 @@ echo -e "Stopping services\n"
 service ehcp stop
 service apache2 stop
 
-echo -e "Changing Apache user\n"
+echo -e "Checking Apache2 EnvVars for Errors\n"
+fixApacheEnvVars
+
+echo -e "Changing Apache User\n"
 # Change Apache User
 changeApacheUser
 

@@ -33,6 +33,14 @@ function slaveDNSApparmorFix(){ # by earnolmartin@gmail.com
 	fi
 }
 
+function fixApacheEnvVars(){
+	# Check to make sure export APACHE_LOG_DIR=/var/log/apache2$SUFFIX exists
+	APACHELOGCHECK=$(cat "/etc/apache2/envvars" | grep "APACHE_LOG_DIR=*")
+	if [ -z "$APACHELOGCHECK" ]; then
+		echo "export APACHE_LOG_DIR=/var/log/apache2\$SUFFIX" >> "/etc/apache2/envvars"
+	fi
+}
+
 function changeApacheUser(){ # by earnolmartin@gmail.com
 	# Apache should run as the vsftpd account so that FTP connections own the file and php scripts can own the file
 	# Without this fix, files uploaded by ftp could not be changed by PHP scripts... AND
@@ -42,12 +50,6 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 		sed -i "s/export APACHE_RUN_USER=.*/export APACHE_RUN_USER=vsftpd/g" "/etc/apache2/envvars"
 		if [ -e "/var/lock/apache2" ]; then
 			chown vsftpd "/var/lock/apache2"
-		fi
-		
-		# Check to make sure export APACHE_LOG_DIR=/var/log/apache2$SUFFIX exists
-		APACHELOGCHECK=$(cat "/etc/apache2/envvars" | grep "APACHE_LOG_DIR=*")
-		if [ -z "$APACHELOGCHECK" ]; then
-			echo "export APACHE_LOG_DIR=/var/log/apache2\$SUFFIX" >> "/etc/apache2/envvars"
 		fi
 	fi
 }
@@ -520,6 +522,9 @@ echo -e "Stopping services\n"
 # Stop services
 service ehcp stop
 service apache2 stop
+
+echo -e "Checking Apache2 EnvVars for Errors\n"
+fixApacheEnvVars
 
 echo -e "Changing Apache user\n"
 # Change Apache User
