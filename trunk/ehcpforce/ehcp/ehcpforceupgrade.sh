@@ -509,7 +509,7 @@ function rootCheck(){
 
 function updateBeforeInstall(){ # by earnolmartin@gmail.com
 	# Update packages before installing to avoid errors
-	
+	checkAptget
 	if [ "$aptIsInstalled" -eq "1" ] ; then
 		echo "Updating package information and downloading package updates before installation."
 		
@@ -527,6 +527,16 @@ function updateBeforeInstall(){ # by earnolmartin@gmail.com
 		apt-key update
 		apt-get update -y --allow-unauthenticated
 		apt-get upgrade -y --allow-unauthenticated
+	fi
+}
+
+function checkAptget(){
+	sayi=`which apt-get | wc -w`
+	if [ $sayi -eq 0 ] ; then
+		ehco "apt-get is not found."
+	else
+		aptIsInstalled=1
+		echo -e "apt-get seems to be installed on your system.\n"
 	fi
 }
 
