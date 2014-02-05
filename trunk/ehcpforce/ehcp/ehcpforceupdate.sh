@@ -251,7 +251,9 @@ function finalize(){
 	fi
 	
 	# Restart services
-	service apache2 restart
+	service apache2 stop
+	fuser -n tcp -k 80
+	service apache2 start
 	service ehcp start
 	cd ~/Downloads
 	wget -N -O "syncdomains_apiscript.tar.gz" http://dinofly.com/files/linux/ehcp/syncdomains_apiscript.tar.gz
