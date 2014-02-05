@@ -525,6 +525,7 @@ echo -e "Stopping services\n"
 # Stop services
 service ehcp stop
 service apache2 stop
+killall apache2
 
 echo -e "Checking Apache2 EnvVars for Errors\n"
 fixApacheEnvVars
