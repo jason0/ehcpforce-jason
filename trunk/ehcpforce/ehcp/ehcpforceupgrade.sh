@@ -250,14 +250,9 @@ function finalize(){
 		chown root:"$APACHLOGGROUPOWNER" -R "/var/log/apache2"
 	fi
 	
-	service apache2 stop
-	killall apache2
-	sleep 5
-	
-	service apache2 start
+	# Restart services
+	service apache2 restart
 	service ehcp start
-	
-	sleep 5
 	cd ~/Downloads
 	wget -N -O "syncdomains_apiscript.tar.gz" http://dinofly.com/files/linux/ehcp/syncdomains_apiscript.tar.gz
 	tar -zxvf "syncdomains_apiscript.tar.gz"
@@ -512,6 +507,29 @@ function rootCheck(){
 	fi
 }
 
+function updateBeforeInstall(){ # by earnolmartin@gmail.com
+	# Update packages before installing to avoid errors
+	
+	if [ "$aptIsInstalled" -eq "1" ] ; then
+		echo "Updating package information and downloading package updates before installation."
+		
+		# Make sure the system will update and upgrade
+		if [ -e "/var/lib/apt/lists/lock" ]; then
+			rm "/var/lib/apt/lists/lock"
+		fi
+		
+		# Make sure the system will update and upgrade
+		if [ -e "/var/cache/apt/archives/lock" ]; then
+			rm "/var/cache/apt/archives/lock"
+		fi
+		
+		# Run update commands
+		apt-key update
+		apt-get update -y --allow-unauthenticated
+		apt-get upgrade -y --allow-unauthenticated
+	fi
+}
+
 ###############################
 ###START OF SCRIPT MAIN CODE###
 ###############################
@@ -521,6 +539,9 @@ clear
 rootCheck
 
 echo -e "Running EHCP to EHCP Force Edition Upgrade Script\n"
+
+echo -e "Downloading and installing package updates!\n"
+updateBeforeInstall
 
 # Get distro info
 echo -e "Retrieving Distribution Information\n"
