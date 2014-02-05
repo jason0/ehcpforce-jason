@@ -140,7 +140,7 @@ function getLatestEHCPFiles(){
 	chmod 0755 -R /var/www/vhosts/
 	
 	# Move the old EHCP files into backup directory (enhance security)
-	mv "$LATESTBACKUPDIR" "$EHCPBACKUPDIR/ehcp_backup_$CurDate"
+	mv "$LATESTBACKUPDIR" "$EHCPBACKUPDIR/ehcp_force_backup_$CurDate"
 }
 
 function updateDaemon(){
@@ -483,7 +483,7 @@ function rootCheck(){
 	fi
 	
 	# Make EHCP Backup Directory
-	EHCPBACKUPDIR="/root/Backup/EHCP"
+	EHCPBACKUPDIR="/root/Backup/EHCP_FORCE"
 	if [ ! -e "$EHCPBACKUPDIR" ]; then
 		mkdir -p "$EHCPBACKUPDIR"
 	fi
