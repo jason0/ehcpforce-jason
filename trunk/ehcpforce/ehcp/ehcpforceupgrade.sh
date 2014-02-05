@@ -47,7 +47,7 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 		# Check to make sure export APACHE_LOG_DIR=/var/log/apache2$SUFFIX exists
 		APACHELOGCHECK=$(cat "/etc/apache2/envvars" | grep "APACHE_LOG_DIR=*")
 		if [ -z "$APACHELOGCHECK" ]; then
-			echo "export APACHE_LOG_DIR=/var/log/apache2$SUFFIX" >> "/etc/apache2/envvars"
+			echo "export APACHE_LOG_DIR=/var/log/apache2\$SUFFIX" >> "/etc/apache2/envvars"
 		fi
 	fi
 }
