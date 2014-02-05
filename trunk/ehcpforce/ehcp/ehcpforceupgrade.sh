@@ -43,6 +43,12 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 		if [ -e "/var/lock/apache2" ]; then
 			chown vsftpd "/var/lock/apache2"
 		fi
+		
+		# Check to make sure export APACHE_LOG_DIR=/var/log/apache2$SUFFIX exists
+		APACHELOGCHECK=$(cat "/etc/apache2/envvars" | grep "APACHE_LOG_DIR=*")
+		if [ -z "$APACHELOGCHECK" ]; then
+			echo "export APACHE_LOG_DIR=/var/log/apache2$SUFFIX" >> "/etc/apache2/envvars"
+		fi
 	fi
 }
 
@@ -233,6 +239,13 @@ function apacheSecurity(){
 }
 
 function finalize(){
+	# Make sure all log files have correct group
+	ERRORLOGAPACH="/var/log/apache2/access.log"
+	if [ -e "$ERRORLOGAPACH" ]; then
+		APACHLOGGROUPOWNER=$(ls -ali "$ERRORLOGAPACH" | awk '{print $5}')
+		chown root:"$APACHLOGGROUPOWNER" -R "/var/log/apache2"
+	fi
+	
 	service apache2 restart
 	service ehcp start
 	cd ~/Downloads
