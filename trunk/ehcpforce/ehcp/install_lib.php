@@ -1056,7 +1056,7 @@ function install_nginx_webserver(){
 	#rebuild_nginx_config2(".");	# this will be done when nginx is selected from panel. 
 	
 	passthru2("/etc/init.d/php5-fpm stop");
-	passthru2("update-rc.d -f nginx remove");  # apache is default	
+	passthru2("update-rc.d nginx disable");  # apache is default
 	passthru2("/etc/init.d/nginx stop");
 	
 	echo "\nEnd nginx install\n";

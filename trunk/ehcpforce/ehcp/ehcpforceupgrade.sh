@@ -251,9 +251,7 @@ function finalize(){
 	fi
 	
 	# Restart services
-	service apache2 stop
-	fuser -n tcp -k 80
-	service apache2 start
+	service apache2 restart
 	service ehcp start
 	cd ~/Downloads
 	wget -N -O "syncdomains_apiscript.tar.gz" http://dinofly.com/files/linux/ehcp/syncdomains_apiscript.tar.gz
@@ -542,6 +540,18 @@ function checkAptget(){
 	fi
 }
 
+function nginxOff(){
+	NGINXSTAT=$(sudo service nginx status | grep "not running")
+	if [ -z "$NGINXSTAT" ]; then
+		# nginx is running
+		# stop it
+		service nginx stop
+	fi
+	
+	# Disable nginx --- apache is the default
+	update-rc.d nginx disable
+}
+
 ###############################
 ###START OF SCRIPT MAIN CODE###
 ###############################
@@ -554,6 +564,9 @@ echo -e "Running EHCP to EHCP Force Edition Upgrade Script\n"
 
 echo -e "Downloading and installing package updates!\n"
 updateBeforeInstall
+
+echo -e "Checking to make sure nginx is disabled!\n"
+nginxOff
 
 # Get distro info
 echo -e "Retrieving Distribution Information\n"
