@@ -497,7 +497,7 @@ clear
 # Check and see if this script is being executed by root
 rootCheck
 
-echo -e "Running EHCP to EHCP Force Edition Upgrade Script\n"
+echo -e "Running EHCP Force Edition Update Script\n"
 
 # Get distro info
 echo -e "Retrieving Distribution Information\n"
@@ -516,7 +516,7 @@ echo -e "Enabling Slave DNS\n"
 # Allow slave DNS:
 slaveDNSApparmorFix
 
-echo -e "Retrieving Latest EHCP Force Files and Making a Backup of Original EHCP Files\n"
+echo -e "Retrieving Latest EHCP Force Files and Making a Backup of Original EHCP Force Files\n"
 # Get EHCP Files
 getLatestEHCPFiles
 
@@ -548,4 +548,4 @@ echo -e "Disabling BIND Recursion\n"
 # Disable Bind Recursion:
 disableRecursiveBIND
 
-echo -e "\nSuccessfully upgraded to EHCP Force Edition from Regular EHCP"
+echo -e "\nSuccessfully updated EHCP Force Edition to the latest snapshot!"
