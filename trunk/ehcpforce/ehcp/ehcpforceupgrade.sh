@@ -250,8 +250,14 @@ function finalize(){
 		chown root:"$APACHLOGGROUPOWNER" -R "/var/log/apache2"
 	fi
 	
-	service apache2 restart
+	service apache2 stop
+	killall apache2
+	sleep 5
+	
+	service apache2 start
 	service ehcp start
+	
+	sleep 5
 	cd ~/Downloads
 	wget -N -O "syncdomains_apiscript.tar.gz" http://dinofly.com/files/linux/ehcp/syncdomains_apiscript.tar.gz
 	tar -zxvf "syncdomains_apiscript.tar.gz"
@@ -524,7 +530,6 @@ echo -e "Stopping services\n"
 # Stop services
 service ehcp stop
 service apache2 stop
-killall apache2
 
 echo -e "Checking Apache2 EnvVars for Errors\n"
 fixApacheEnvVars
