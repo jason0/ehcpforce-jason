@@ -57,7 +57,7 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 	
 	# Also change nginx user
 	if [ -e "/etc/nginx/nginx.conf" ]; then
-		sed -i "s/user .*/user vsftpd;/g" "/etc/nginx/nginx.conf"
+		sed -i "s/user .*/user vsftpd www-data;/g" "/etc/nginx/nginx.conf"
 	fi
 }
 
