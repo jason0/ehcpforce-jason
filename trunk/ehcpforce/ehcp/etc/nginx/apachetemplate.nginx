@@ -16,6 +16,7 @@ server {
                         if (-f $document_root/error_page.html ) {
                                 error_page 400 401 402 403 404 405 406 407 408 409 410 411 412 413 414 415 416 417 495 496 497 500 501 502 503 504 505 506 507 /error_page.html;
                         }
+                        limit_req zone=one burst=5;
         }
 
 
@@ -26,10 +27,11 @@ server {
 		fastcgi_pass   127.0.0.1:9000;
 		fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-		fastcgi_param  PHP_ADMIN_VALUE "open_basedir={homedir}:/tmp:/usr/share/php:/usr/share/pear:/usr/share/phpmyadmin:/var/www/new/ehcp/webmail:/usr/share/roundcube
+		fastcgi_param  PHP_ADMIN_VALUE "open_basedir={homedir}:/tmp:/usr/share/php:/usr/share/pear:/var/www/new/ehcp/webmail:/usr/share/roundcube
 upload_tmp_dir={homedir}/phptmpdir
 ";
 		fastcgi_read_timeout 300;
+		limit_req zone=one burst=5;
 	}
 
 	location /phpmyadmin {
@@ -41,7 +43,9 @@ upload_tmp_dir={homedir}/phptmpdir
 		   fastcgi_pass 127.0.0.1:9000;
 		   fastcgi_index index.php;
 		   fastcgi_param SCRIPT_FILENAME $request_filename;
+		   fastcgi_param  PHP_ADMIN_VALUE "open_basedir=/usr/share/phpmyadmin:/tmp:/usr/share/php:/usr/share/pear:/usr/share/roundcube";
 		   include /etc/nginx/fastcgi_params;
+		   limit_req zone=one burst=5;
 		}
 		location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
 			   root /usr/share/;
@@ -61,7 +65,8 @@ upload_tmp_dir={homedir}/phptmpdir
 		   fastcgi_pass 127.0.0.1:9000;
 		   fastcgi_index index.php;
 		   fastcgi_param SCRIPT_FILENAME $request_filename;
-		   include /etc/nginx/fastcgi_params;			   
+		   include /etc/nginx/fastcgi_params;	
+		   limit_req zone=one burst=5;		   
 	   }
 
 	   location ~* ^/webmail/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
@@ -79,6 +84,7 @@ upload_tmp_dir={homedir}/phptmpdir
 		   fastcgi_index index.php;
 		   fastcgi_param SCRIPT_FILENAME $request_filename;
 		   include /etc/nginx/fastcgi_params;
+		   limit_req zone=one burst=5;
 	   }
 	   location ~* ^/roundcube/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
 			   root /usr/share/;

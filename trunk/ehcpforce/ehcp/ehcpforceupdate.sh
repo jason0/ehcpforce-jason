@@ -54,6 +54,20 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 			chown vsftpd "/var/lock/apache2"
 		fi
 	fi
+	
+	# Also change nginx user
+	if [ -e "/etc/nginx/nginx.conf" ]; then
+		sed -i "s/user .*/user vsftpd;/g" "/etc/nginx/nginx.conf"
+	fi
+}
+
+function nginxRateLimit(){
+	if [ -e "/etc/nginx/nginx.conf" ]; then
+		NGINXHASRATELIMIT=$(cat "/etc/nginx/nginx.conf" | grep "limit_req_zone")
+		if [ -z "$NGINXHASRATELIMIT" ]; then
+			sed -i '/http {/a limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;' "/etc/nginx/nginx.conf"
+		fi
+	fi
 }
 
 # Secures BIND and prevents UDP Recursion Attacks:
@@ -583,6 +597,10 @@ fixApacheEnvVars
 echo -e "Changing Apache User\n"
 # Change Apache User
 changeApacheUser
+
+# Add Nginx Limiting
+echo -e "Adding rate limiting for nginx\n"
+nginxRateLimit
 
 echo -e "Enabling Slave DNS\n"
 # Allow slave DNS:

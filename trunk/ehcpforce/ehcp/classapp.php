@@ -2030,14 +2030,24 @@ $gateway="206.51.230.1";
 	$this->debugecho(print_r2($this->miscconfig),3,false);
 }
 
+function disableService($service){
+	passthru2("update-rc.d -f $service remove");
+	passthru2("update-rc.d $service disable");
+}
+
+function enableService($service){
+	passthru2("update-rc.d $service defaults");
+	passthru2("update-rc.d $service enable");
+}
+
 function rebuild_webserver_configs(){
 	# this function will rebuild all webserver configs according to current choosen webserver type, ssl etc..
 	$this->requireCommandLine(__FUNCTION__,True);
 
 	# remove all webservers from auto-start
-	passthru2("update-rc.d -f nginx remove");
-	passthru2("update-rc.d -f apache2 remove");
-	passthru2("update-rc.d -f php5-fpm remove");
+	$this->disableService("nginx");
+	$this->disableService("apache2");
+	$this->disableService("php5-fpm");
 
 	if($this->miscconfig['webservertype']=='apache2') return $this->rebuild_apache2_config();
 	elseif($this->miscconfig['webservertype']=='nginx') return $this->rebuild_nginx_config();
@@ -2049,7 +2059,7 @@ function rebuild_apache2_config(){
 	$this->requireCommandLine(__FUNCTION__,True);
 	if($this->miscconfig['webservermode']=='ssl') $this->fixApacheConfigSsl();
 	else $this->fixApacheConfigNonSsl();
-	passthru2("update-rc.d apache2 defaults"); # make apache2 auto-start on reboot
+	$this->enableService("apache2"); # make apache2 auto-start on reboot
 	return True;
 }
 
@@ -2059,7 +2069,7 @@ function rebuild_nginx_config(){
 	include_once("install_lib.php");
 	if(!file_exists("/etc/init.d/php5-fpm")) {
 		$this->echoln("This server has no php5-fpm installed. install it before trying to switch to nginx. now, switching back to apache2");
-		passthru2("update-rc.d apache2 defaults"); # make apache2 auto-start on reboot
+		$this->enableService("apache2"); # make apache2 auto-start on reboot
 		$this->setConfigValue('webservertype','apache2');
 		$this->loadConfigWithDaemon();
 		return False;
@@ -2069,8 +2079,8 @@ function rebuild_nginx_config(){
 
 	$this->syncDomains();
 	$this->restart_webserver();
-	passthru2("update-rc.d nginx defaults"); # make nginx auto-start on reboot
-	passthru2("update-rc.d php5-fpm defaults"); # make nginx auto-start on reboot
+	$this->enableService("nginx"); # make nginx auto-start on reboot
+	$this->enableService("php5-fpm"); # make nginx auto-start on reboot
 	return True;
 }
 

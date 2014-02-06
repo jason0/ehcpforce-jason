@@ -17,6 +17,7 @@ server {
                         if (-f $document_root/error_page.html ) {
                                 error_page 400 401 402 403 404 405 406 407 408 409 410 411 412 413 414 415 416 417 495 496 497 500 501 502 503 504 505 506 507 /error_page.html;
                         }
+                        limit_req zone=one burst=5;
         }
 
         ## Images and static content is treated different
@@ -32,6 +33,7 @@ server {
                 fastcgi_param  SCRIPT_FILENAME  {homedir}$fastcgi_script_name;
                 fastcgi_param  PHP_ADMIN_VALUE "open_basedir={homedir}:/tmp:/usr/share/php:/usr/share/pear";
                 include fastcgi_params;
+                limit_req zone=one burst=5;
         }
 
 

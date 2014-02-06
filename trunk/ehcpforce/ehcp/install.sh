@@ -542,6 +542,20 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 		fi
 		service apache2 restart
 	fi
+	
+	# Also change nginx user
+	if [ -e "/etc/nginx/nginx.conf" ]; then
+		sed -i "s/user .*/user vsftpd;/g" "/etc/nginx/nginx.conf"
+	fi
+}
+
+function nginxRateLimit(){
+	if [ -e "/etc/nginx/nginx.conf" ]; then
+		NGINXHASRATELIMIT=$(cat "/etc/nginx/nginx.conf" | grep "limit_req_zone")
+		if [ -z "$NGINXHASRATELIMIT" ]; then
+			sed -i '/http {/a limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;' "/etc/nginx/nginx.conf"
+		fi
+	fi
 }
 
 function updateBeforeInstall(){ # by earnolmartin@gmail.com
@@ -729,6 +743,8 @@ logDirFix
 fixEHCPPerms
 # Change Apache user to vsftpd to ensure chmod works via PHP and through FTP Clients
 changeApacheUser
+# Add rate limiting option to nginx if it doesn't have it
+nginxRateLimit
 # Fix extra mysql module getting loaded in the PHP config printing warning messages
 fixPHPConfig
 # Fix /etc/bind directory permissions required for slave dns
