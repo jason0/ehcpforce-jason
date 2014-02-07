@@ -376,7 +376,7 @@ function mod_secure_final(){
 	passthru2("a2enmod mod-evasive");
 	passthru2("a2enmod mod-security");
 	// passthru2("a2enmod qos");
-	passthru2("service apache2 restart");
+	// passthru2("service apache2 restart");
 }
 
 function replace_in_file($find,$replace,$sourcefile,$targetfile){
@@ -1047,6 +1047,8 @@ function rebuild_nginx_config2($mydir){
 }
 
 function install_nginx_webserver(){
+	global $app;
+	
 	# thanks to webmaster@securitywonks.net for encourage of nginx integration
 	echo "\nStarting nginx webserver install (not default)\n";
 	#bekle();
@@ -1056,9 +1058,10 @@ function install_nginx_webserver(){
 	#rebuild_nginx_config2(".");	# this will be done when nginx is selected from panel. 
 	
 	passthru2("/etc/init.d/php5-fpm stop");
-	passthru2("update-rc.d nginx disable");  # apache is default
-	passthru2("/etc/init.d/nginx stop");
-	
+	passthru2("/etc/init.d/nginx stop"); # apache is default
+	$app->disableService("php5-fpm");
+	$app->disableService("nginx");
+		
 	echo "\nEnd nginx install\n";
 	#bekle();
 }
