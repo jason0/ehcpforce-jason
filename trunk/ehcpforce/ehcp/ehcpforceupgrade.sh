@@ -59,6 +59,12 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 	if [ -e "/etc/nginx/nginx.conf" ]; then
 		sed -i "s/user .*/user vsftpd www-data;/g" "/etc/nginx/nginx.conf"
 	fi
+	
+	# Also change php-fpm user
+	if [ -e "/etc/php5/fpm/pool.d/www.conf" ]; then
+		sed -i "s/user = .*/user = vsftpd/g" "/etc/php5/fpm/pool.d/www.conf"
+		sed -i "s/group = .*/group = www-data/g" "/etc/php5/fpm/pool.d/www.conf"
+	fi
 }
 
 function nginxRateLimit(){
@@ -159,9 +165,7 @@ function getLatestEHCPFiles(){
 	cp "$LATESTBACKUPDIR/config.php" "/var/www/new/ehcp"
 	
 	# Fix permissions
-	chown -R vsftpd:www-data /var/www/new/ehcp
-	chown vsftpd:www-data -R /var/www/vhosts/
-	chmod 0755 -R /var/www/vhosts/
+	fixEHCPPerms
 	
 	# Move the old EHCP files into backup directory (enhance security)
 	mv "$LATESTBACKUPDIR" "$EHCPBACKUPDIR/ehcp_backup_$CurDate"
@@ -564,6 +568,16 @@ function nginxOff(){
 	
 	# Disable nginx --- apache is the default
 	update-rc.d nginx disable
+}
+
+function fixEHCPPerms(){ # by earnolmartin@gmail.com
+	chown -R root:root /var/www/new/ehcp
+	chmod -R a+r /var/www/new/ehcp/
+	chown -R vsftpd:www-data /var/www/new/ehcp/webmail
+	chmod 755 -R /var/www/new/ehcp/webmail
+	chmod 755 /var/www/new/index.html
+	chown vsftpd:www-data -R /var/www/vhosts/
+	chmod 0755 -R /var/www/vhosts/
 }
 
 ###############################

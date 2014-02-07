@@ -547,6 +547,12 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 	if [ -e "/etc/nginx/nginx.conf" ]; then
 		sed -i "s/user .*/user vsftpd www-data;/g" "/etc/nginx/nginx.conf"
 	fi
+	
+	# Also change php-fpm user
+	if [ -e "/etc/php5/fpm/pool.d/www.conf" ]; then
+		sed -i "s/user = .*/user = vsftpd/g" "/etc/php5/fpm/pool.d/www.conf"
+		sed -i "s/group = .*/group = www-data/g" "/etc/php5/fpm/pool.d/www.conf"
+	fi
 }
 
 function nginxRateLimit(){
