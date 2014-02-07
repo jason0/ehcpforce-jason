@@ -71,7 +71,7 @@ function nginxRateLimit(){
 	if [ -e "/etc/nginx/nginx.conf" ]; then
 		NGINXHASRATELIMIT=$(cat "/etc/nginx/nginx.conf" | grep "limit_req_zone")
 		if [ -z "$NGINXHASRATELIMIT" ]; then
-			sed -i '/http {/a limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;' "/etc/nginx/nginx.conf"
+			sed -i '/http {/a limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s;' "/etc/nginx/nginx.conf"
 		fi
 	fi
 }
