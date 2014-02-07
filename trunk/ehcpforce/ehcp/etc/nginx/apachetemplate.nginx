@@ -27,7 +27,7 @@ server {
 		fastcgi_pass   127.0.0.1:9000;
 		fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-		fastcgi_param  PHP_ADMIN_VALUE "open_basedir={homedir}:/tmp:/usr/share/php:/usr/share/pear:/var/www/new/ehcp/webmail:/usr/share/roundcube
+		fastcgi_param  PHP_ADMIN_VALUE "open_basedir={homedir}:/tmp:/usr/share/php:/usr/share/pear
 upload_tmp_dir={homedir}/phptmpdir
 ";
 		fastcgi_read_timeout 300;
@@ -43,7 +43,7 @@ upload_tmp_dir={homedir}/phptmpdir
 		   fastcgi_pass 127.0.0.1:9000;
 		   fastcgi_index index.php;
 		   fastcgi_param SCRIPT_FILENAME $request_filename;
-		   fastcgi_param  PHP_ADMIN_VALUE "open_basedir=/usr/share/phpmyadmin:/tmp:/usr/share/php:/usr/share/pear:/usr/share/roundcube";
+		   fastcgi_param  PHP_ADMIN_VALUE "open_basedir=/usr/share/phpmyadmin:/tmp:/usr/share/php:/usr/share/pear";
 		   include /etc/nginx/fastcgi_params;
 		   limit_req zone=one burst=5;
 		}
