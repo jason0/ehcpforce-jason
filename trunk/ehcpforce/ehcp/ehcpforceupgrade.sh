@@ -221,9 +221,20 @@ function fail2ban(){
 	service fail2ban restart
 }
 
+function mysqlUseLocalHost(){
+	if [ -e "/etc/mysql/my.cnf" ]; then
+		sed -i "s/^bind-address=.*/bind-address=localhost/g" "/etc/mysql/my.cnf"
+	fi
+	
+	service mysql restart
+}
+
 function apacheSecurity(){
 	apt-get install libapache2-mod-evasive
 	apt-get install libapache-mod-security
+	
+	# Make sure the conf.d directory exists
+	addConfDFolder
 
 	# Shouldn't be running, but attempt to stop it anyways just in casee
 	service apache2 stop
@@ -239,9 +250,17 @@ function apacheSecurity(){
 	if [ -e "mod_security_rules_latest" ]; then
 		rm -R "mod_security_rules_latest"
 	fi
-	
+	   if [ "$yrelease" == "12" ] ; then
+				 if [ "$mrelease" == "04" ]; then
 	mkdir "mod_security_rules_latest"
-	wget -N -O "mod_security_rules.tar.gz" "http://www.dinofly.com/files/linux/mod_security_base_rules.tar.gz"
+	
+	# Different rules based on different versions
+	if [ "$yrelease" -gt "13" ] || [ "$yrelease" == "13" ] && [ "$mrelease" == "10" ]; then
+		wget -N -O "mod_security_rules.tar.gz" "http://www.dinofly.com/files/linux/mod_security_rules_13.10.tar.gz"
+	else
+		wget -N -O "mod_security_rules.tar.gz" "http://www.dinofly.com/files/linux/mod_security_base_rules.tar.gz"
+	fi
+	
 	tar -zxvf "mod_security_rules.tar.gz" -C "mod_security_rules_latest"
 	mv mod_security_rules_latest/* /etc/apache2/mod_security_rules
 	chown -R root:root /etc/apache2/mod_security_rules
@@ -256,9 +275,14 @@ function apacheSecurity(){
 	if [ ! -e "$MODEVASIVE" ]; then
 	   cp "/var/www/new/ehcp/mod_secure/modevasive" "$MODEVASIVE"
 	fi
-
-	a2enmod mod-evasive
-	a2enmod mod-security
+	
+	if [ "$yrelease" -gt "13" ] || [ "$yrelease" == "13" ] && [ "$mrelease" == "10" ]; then
+		a2enmod evasive
+		a2enmod security2
+	else
+		a2enmod mod-evasive
+		a2enmod mod-security
+	fi
 }
 
 function finalize(){
@@ -626,6 +650,15 @@ function CheckPreReqs(){
 	aptgetInstall php5-fpm
 }
 
+function addConfDFolder(){
+	if [ -e "/etc/apache2/apache2.conf" ]; then
+		APACHECONFCONTENTS=$(cat "/etc/apache2/apache2.conf" | grep "IncludeOptional conf.d")
+		if [ -z "$APACHECONFCONTENTS" ]; then
+			echo "IncludeOptional conf.d/*" >> "/etc/apache2/apache2.conf"
+		fi
+	fi
+}
+
 ###############################
 ###START OF SCRIPT MAIN CODE###
 ###############################
@@ -685,6 +718,10 @@ fail2ban
 echo -e "Installing Apache2 Security Modules\n"
 # Install Apache2 Security Modules
 apacheSecurity
+
+echo -e "Running MySQL Bind Address Fix\n"
+# Fix MySQL Bind Address
+mysqlUseLocalHost
 
 echo -e "Updating Base nginx Configuration Files\n"
 # Update nginx configuration files
