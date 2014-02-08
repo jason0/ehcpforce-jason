@@ -7420,6 +7420,14 @@ function getDomains($filt=''){
 	return $this->query($q);
 }
 
+function getSubDomains($filt=''){
+	$subdomtable=$this->conf['subdomainstable']['tablename'];
+	$q="select * from $subdomtable";
+	if($filt<>'')$q.=" where $filt";
+	#echo "$q\n";
+	return $this->query($q);
+}
+
 
 //=================================== below are functions for or related to daemon mode ..
 //	operation,add/delete, user/domainname, userpass etc.... 4 parameters.
@@ -7922,9 +7930,10 @@ function daemonQuotaCheck(){ #updatequota
 function tryReconnect(){
 	$this->conn->close();
 	print "trying re-connecting to mysql db..\n";
-	if($this->connectTodb2()) print "\n\nreconnect to mysql successfull.\n";
-	else {
-		echo "\n\nehcp->cannot re-connect to mysql db..exiting to let php reload...\n";
+	if($this->connectTodb2()){
+		 print "\n\nreconnect to mysql successfull.\n";
+	} else {
+		echo "\n\nehcp->cannot re-connect to mysql db...\n";
 		exit();
 	}
 }
@@ -8851,12 +8860,12 @@ function restart_webserver(){
 	echo "\n".__FUNCTION__.": Current webserver is:".$this->miscconfig['webservertype']."\n";
 
 	if($this->miscconfig['webservertype']=='apache2') {
-		passthru2("/etc/init.d/nginx stop");
-		passthru2("/etc/init.d/apache2 restart");
+		passthru2("service nginx stop");
+		passthru2("service apache2 restart");
 	} elseif($this->miscconfig['webservertype']=='nginx') {
-		passthru2("/etc/init.d/apache2 stop");
-		passthru2("/etc/init.d/nginx restart");
-		passthru2("/etc/init.d/php5-fpm restart");
+		passthru2("service apache2 stop");
+		passthru2("service php5-fpm restart");
+		passthru2("service nginx restart");	
 	}
 }
 
@@ -9994,6 +10003,19 @@ function updateHostsFile(){
 		  $count = 0;
 	  }
 	  $line.=" www.".$domain['domainname']." ".$domain['domainname']." mail.".$domain['domainname'];
+	  $count++;
+	}
+	
+	// Don't forget to add subdomains to the hosts file too!
+	$subdoms=$this->getSubDomains("");
+	foreach($subdoms as $sub) {
+	  # Limit entries per line to avoid problems due to the line being too long
+	  # 255 Character Limit Per Line
+	  if($count == 2){
+		  $line .= '\n' . $ip;
+		  $count = 0;
+	  }
+	  $line.=" www." . $sub['subdomain'] . '.' . $sub['domainname'] . " " . $sub['subdomain'] . '.' . $sub['domainname'];
 	  $count++;
 	}
 
