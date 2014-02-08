@@ -10,7 +10,7 @@ server {
         access_log /var/log/apache_common_access_log;
         
 
-        root   {homedir}/httpdocs;
+        root   {homedir};
         index  index.html index.htm index.php;
 
         location / {   
