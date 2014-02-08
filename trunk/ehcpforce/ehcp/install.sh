@@ -425,8 +425,18 @@ function genUbuntuFixes(){
 				if [ "$mrelease" == "10" ]; then
 					fixApacheDefault
 					removeNameVirtualHost
+					addConfDFolder
 				fi
 			fi
+		fi
+	fi
+}
+
+function addConfDFolder(){
+	if [ -e "/etc/apache2/apache2.conf" ]; then
+		APACHECONFCONTENTS=$(cat "/etc/apache2/apache2.conf" | grep "IncludeOptional conf.d")
+		if [ -z "$APACHECONFCONTENTS" ]; then
+			echo "IncludeOptional conf.d/*" >> "/etc/apache2/apache2.conf"
 		fi
 	fi
 }
@@ -598,21 +608,18 @@ function updateBeforeInstall(){ # by earnolmartin@gmail.com
 
 function restartDaemons(){ # by earnolmartin@gmail.com
 	
-	# Old code that may cause problems:
-	# Restart MySQL service after installation is completed
-	#service mysql stop
-	#killall mysqld
-	#killall mysqld_safe
-	#killall mysql
-	#if [ -e "/etc/init.d/apparmor" ]; then
-	#	/etc/init.d/apparmor reload
-	#fi
-	
 	# Restart MySQL Service
 	service mysql restart
 	
+	# Restart apache2 daemon
+	service apache2 restart
+	
 	# Restart the EHCP daemon after installation is completed
 	service ehcp restart
+	
+	# Restart php5-fpm daemon
+	service php5-fpm restart
+	
 }
 
 # Secures BIND and prevents UDP Recursion Attacks:

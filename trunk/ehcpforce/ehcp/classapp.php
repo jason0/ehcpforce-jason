@@ -7760,13 +7760,14 @@ function daemon(){
 	$this->requireCommandLine(__FUNCTION__); // run from commandline.
 	$this->echoln2("Running daemon now..");
 	$sleep_interval=10;
-	$mail_interval=3600*24; // send info to developer every 1 day. may be disabled by user here.like ping..
-	$mail_last_sent_time=3600*11; // send first 1 hours later.
+	
+	// $mail_interval=3600*24; // send info to developer every 1 day. may be disabled by user here.like ping..
+	// $mail_last_sent_time=3600*11; // send first 1 hours later.
 
 	set_time_limit(0); # run forever... i hope... :)
 
 	$this->output.="Daemonized..".$this->myversion."\n__________________________\n\n";
-	$i=$say=0;
+	$i=1;
 	$this->updateWebstats();
 	passthru2("chmod a+x /var/spool/postfix/var/run/saslauthd"); # for the bug/problem at http://www.ehcp.net/?q=node/149#comment-668
 	@mkdir($this->ehcpdir.'/webmail2');# make this if not present
@@ -7781,20 +7782,21 @@ function daemon(){
 		print_r($rs=$this->query("select * from operations where ((status is null)or(status<>'ok'))and(try<2)and(info<>'')"));
 
 		// read op db and execute it. donot try if failed 5 or more. sadece op olanlar. info varsa bu domain ekleme/cikarmadir. info parametredir. action da binevi parametre.
-		if($rs)
-		foreach($rs as $op){
-			# increase try count here, if runop fails somehow, such as fatal error, it will not repeat forever,
-			# in previous versions, try increase was below, in fail, sometime if fatal error occurs, it entered to infinite loop, so i moved try increase code to top of foreach loop
-			#$this->executeQuery("update operations set try=try+1 where id=".$op['id']." limit 1",' updating operations, increasing try count ');
-			$this->output='';
-			if($this->runop2(trim($op['op']),$op['action'],$op['info'],$op['info2'],$op['info3'])) {
-				echo "\ndaemon->runop2 success ** \n";
-				$this->executeQuery("update operations set try=try+1,status='ok' where id=".$op['id']." limit 1",' updating operations ');
+		if($rs){
+			foreach($rs as $op){
+				# increase try count here, if runop fails somehow, such as fatal error, it will not repeat forever,
+				# in previous versions, try increase was below, in fail, sometime if fatal error occurs, it entered to infinite loop, so i moved try increase code to top of foreach loop
+				#$this->executeQuery("update operations set try=try+1 where id=".$op['id']." limit 1",' updating operations, increasing try count ');
+				$this->output='';
+				if($this->runop2(trim($op['op']),$op['action'],$op['info'],$op['info2'],$op['info3'])) {
+					echo "\ndaemon->runop2 success ** \n";
+					$this->executeQuery("update operations set try=try+1,status='ok' where id=".$op['id']." limit 1",' updating operations ');
 
-			} else {
-				$q="update operations set try=try+1,status='failed' where id=".$op['id']." limit 1";
-				echo "\ndaemon->op2 failure **** : $q\n";
-				$this->executeQuery($q,' daemon increasing try count');
+				} else {
+					$q="update operations set try=try+1,status='failed' where id=".$op['id']." limit 1";
+					echo "\ndaemon->op2 failure **** : $q\n";
+					$this->executeQuery($q,' daemon increasing try count');
+				}
 			}
 			echo $this->output;
 		} else {
@@ -7805,47 +7807,29 @@ function daemon(){
 	// second, check operations that have only one parameter..i.e. info=''
 		print_r($rs=$this->query("select * from operations where ((status is null)or(status<>'ok'))and(try<3)and(info is null or info='')"));
 		// read op db and execute it. donot try if failed 5 or more. sadece op olanlar. info varsa bu domain ekleme/cikarmadir. info parametredir. action da binevi parametre.
-		if($rs)
-		foreach($rs as $op){
-			#$this->executeQuery("update operations set try=try+1 where id=".$op['id']." limit 1",' updating operations, increasing try count ');
-			$this->output='';
-			if($this->runOp(trim($op['op']))) {
-				echo "\ndaemon->runop success ** \n";
-				$this->executeQuery("update operations set try=try+1,status='ok' where id=".$op['id']." limit 1",'update operations set status ok.');
-			} else { // increase try count
-				$q="update operations set try=try+1,status='failed' where id=".$op['id']." limit 1";
-				echo "\ndaemon->runop failure **** : $q\n";
-				$this->executeQuery($q,' increasing try count');
+		if($rs){
+			foreach($rs as $op){
+				#$this->executeQuery("update operations set try=try+1 where id=".$op['id']." limit 1",' updating operations, increasing try count ');
+				$this->output='';
+				if($this->runOp(trim($op['op']))) {
+					echo "\ndaemon->runop success ** \n";
+					$this->executeQuery("update operations set try=try+1,status='ok' where id=".$op['id']." limit 1",'update operations set status ok.');
+				} else { // increase try count
+					$q="update operations set try=try+1,status='failed' where id=".$op['id']." limit 1";
+					echo "\ndaemon->runop failure **** : $q\n";
+					$this->executeQuery($q,' increasing try count');
+				}
+				echo $this->output;
 			}
-			echo $this->output;
 		} else {
 			//$this->error_occured("daemon main loop2");
 			if($rs===false)$this->tryReconnect();
 		}
 
-		if($mail_interval>0){
-			// send info to developer every 1 day. may be disabled by user here.like ping..
-			// this may be disabled by you, for statistical purposes..
-			$mail_last_sent_time+=$sleep_interval;
-			
-			if($mail_last_sent_time>=$mail_interval){
-				$mail_last_sent_time=0;
-				$ip=$this->getLocalIP();
-				# collect any errors from ehcp.log, for debugging of ehcp and programs
-				$ip2=$this->get_outside_ip();
-				
-				
-				$msg.=$this->executeProg3("grep -i error /var/log/ehcp.log | grep -v error_log | tail -300;ps aux");
-				$this->infoMailUsingWget($this->myversion.'-ehcp_daemon_running_at_ip:'.$ip);// in case php mail function does not work.
-				mail('debug@ehcp.net',$this->myversion."-ehcp_daemon_running_at_ip2:$ip - $ip2",$msg,"From: ".$this->emailfrom);
-			}
-		}
-
 		echo "\nehcp ".$this->myversion."- Daemon loop number:$i  Datetime:(".date_tarih().")\n-----------daemon suspended for $sleep_interval sec ---------pwd:(".getcwd().") \n";
-		$say++;
-		if($say>200) {
-			$this->updateWebstats(); # every 200x sleep interval, 200x10 sec now.
-			$say=0;
+		if($i % 200 == 0) {
+			# Every 200 Loops
+			$this->updateWebstats();
 		}
 
 		# this caused problem especially for file upload scripts,
@@ -7854,20 +7838,22 @@ function daemon(){
 		#	$this->syncDomains(); # this may slow down a bit daemon, may be disabled, only for rebuilding domains in case some log files are deleted accidentally by someone...
 		#}
 
-		if($i/5==round($i/5)) {
-			# her 5 loopda bir mysql yeniden baglan..
+		if($i % 5 == 0) {
+			# Every 5 loops
 			# if mysql goes away while daemon runs, this will refresh connection, so, operations can continue..
 			$this->check_mysql_connection();
 		}
 
-		if($i/30==round($i/50)) {
-			# her 50 loopda bir dyndns kontrol et.
+		if($i % 50 == 0) {
+			# Every 50 loops
 			$this->checkDynDns();
 			$this->daemonQuotaCheck();
 			$this->call_func_in_module('Vps_Module','vps_check_state');
 		}
 
-		sleep($sleep_interval);$i++;  // infinite loop...
+		sleep($sleep_interval);
+		$i++;
+		// infinite loop...
 	}
 }
 
