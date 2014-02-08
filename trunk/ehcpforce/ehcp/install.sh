@@ -498,9 +498,9 @@ function ubuntuVSFTPDFix(){ # by earnolmartin@gmail.com
 }
 
 function logDirFix(){ # by earnolmartin@gmail.com
-	chmod 755 log
-	chmod 744 log/ehcp_failed_authentication.log
-	chown vsftpd:www-data log/ehcp_failed_authentication.log
+	chmod 755 /var/www/new/ehcp/log
+	chmod 744 /var/www/new/ehcp/log/ehcp_failed_authentication.log
+	chown vsftpd:www-data /var/www/new/ehcp/log/ehcp_failed_authentication.log
 }
 
 function fixBINDPerms(){ # by earnolmartin@gmail.com
@@ -508,12 +508,21 @@ function fixBINDPerms(){ # by earnolmartin@gmail.com
 }
 
 function fixEHCPPerms(){ # by earnolmartin@gmail.com
-	chmod a+rx /var/www/new/ehcp/
-	chmod -R a+r /var/www/new/ehcp/
-	find ./ -type d -exec chmod a+rx {} \;
-	chown -R vsftpd:www-data /var/www/new/ehcp/webmail
-	chmod 755 -R /var/www/new/ehcp/webmail
+	# Secure ehcp files
+	chown -R root:root /var/www/new/ehcp
+	chmod -R 755 /var/www/new/ehcp/
+
+	# Make default index readable
 	chmod 755 /var/www/new/index.html
+	
+	# Set proper permissions on vhosts
+	chown vsftpd:www-data -R /var/www/vhosts/
+	chmod 0755 -R /var/www/vhosts/
+	
+	# Secure webmail
+	chown root:www-data -R /var/www/new/ehcp/webmail
+	chmod 754 -R /var/www/new/ehcp/webmail
+	chmod -R 774 /var/www/new/ehcp/webmail/data
 }
 
 function fixPHPConfig(){ # by earnolmartin@gmail.com
@@ -741,12 +750,10 @@ cd "/var/www/new/ehcp"
 ubuntuVSFTPDFix
 # Run SlaveDNS Fix So that DNS Zones can be transfered
 slaveDNSApparmorFix
-# Run log chmod fix
-logDirFix
-# Configure Fail2Ban for EHCP if Fail2Ban is present and configured
-# fail2banCheck # done in install*php files.
 # Fix EHCP Permissions
 fixEHCPPerms
+# Run log chmod fix
+logDirFix
 # Change Apache user to vsftpd to ensure chmod works via PHP and through FTP Clients
 changeApacheUser
 # Add rate limiting option to nginx if it doesn't have it

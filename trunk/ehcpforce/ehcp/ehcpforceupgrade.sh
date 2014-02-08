@@ -166,6 +166,7 @@ function getLatestEHCPFiles(){
 	
 	# Fix permissions
 	fixEHCPPerms
+	logDirFix
 	
 	# Move the old EHCP files into backup directory (enhance security)
 	mv "$LATESTBACKUPDIR" "$EHCPBACKUPDIR/ehcp_backup_$CurDate"
@@ -571,13 +572,27 @@ function nginxOff(){
 }
 
 function fixEHCPPerms(){ # by earnolmartin@gmail.com
+	# Secure ehcp files
 	chown -R root:root /var/www/new/ehcp
-	chmod -R a+r /var/www/new/ehcp/
-	chown -R vsftpd:www-data /var/www/new/ehcp/webmail
-	chmod 755 -R /var/www/new/ehcp/webmail
+	chmod -R 755 /var/www/new/ehcp/
+
+	# Make default index readable
 	chmod 755 /var/www/new/index.html
+	
+	# Set proper permissions on vhosts
 	chown vsftpd:www-data -R /var/www/vhosts/
 	chmod 0755 -R /var/www/vhosts/
+	
+	# Secure webmail
+	chown root:www-data -R /var/www/new/ehcp/webmail
+	chmod 754 -R /var/www/new/ehcp/webmail
+	chmod -R 774 /var/www/new/ehcp/webmail/data
+}
+
+function logDirFix(){ # by earnolmartin@gmail.com
+	chmod 755 /var/www/new/ehcp/log
+	chmod 744 /var/www/new/ehcp/log/ehcp_failed_authentication.log
+	chown vsftpd:www-data /var/www/new/ehcp/log/ehcp_failed_authentication.log
 }
 
 ###############################
