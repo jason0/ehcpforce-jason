@@ -617,9 +617,6 @@ function restartDaemons(){ # by earnolmartin@gmail.com
 	# Restart the EHCP daemon after installation is completed
 	service ehcp restart
 	
-	# Restart php5-fpm daemon
-	service php5-fpm restart
-	
 }
 
 # Secures BIND and prevents UDP Recursion Attacks:
