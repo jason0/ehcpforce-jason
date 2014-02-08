@@ -250,8 +250,7 @@ function apacheSecurity(){
 	if [ -e "mod_security_rules_latest" ]; then
 		rm -R "mod_security_rules_latest"
 	fi
-	   if [ "$yrelease" == "12" ] ; then
-				 if [ "$mrelease" == "04" ]; then
+
 	mkdir "mod_security_rules_latest"
 	
 	# Different rules based on different versions
