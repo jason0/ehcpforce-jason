@@ -524,6 +524,12 @@ function rootCheck(){
 	if [ ! -e "$EHCPBACKUPDIR" ]; then
 		mkdir -p "$EHCPBACKUPDIR"
 	fi
+	
+	# Make nginx Backup Directory
+	NGINXBACKUPDIR="/root/Backup/nginx"
+	if [ ! -e "$NGINXBACKUPDIR" ]; then
+		mkdir -p "$NGINXBACKUPDIR"
+	fi
 }
 
 function updateBeforeInstall(){ # by earnolmartin@gmail.com
@@ -595,6 +601,26 @@ function logDirFix(){ # by earnolmartin@gmail.com
 	chown vsftpd:www-data /var/www/new/ehcp/log/ehcp_failed_authentication.log
 }
 
+function nginxUpdateFiles(){ # by earnolmartin@gmail.com
+	if [ -e "/etc/nginx/sites-enabled/default" ]; then
+		# Make backups of originals just in case
+		CurDate=$(date +%Y_%m_%d_%s)
+		cp "/etc/nginx/sites-enabled/default" "$NGINXBACKUPDIR/default_backup_$CurDate"
+	
+		# Update configuration
+		cp "/var/www/new/ehcp/etc/nginx/default.nginx" "/etc/nginx/sites-enabled/default"
+	fi
+	
+	if [ -e "/etc/nginx/nginx.conf" ]; then
+		# Make backups of originals just in case
+		CurDate=$(date +%Y_%m_%d_%s)
+		cp "/etc/nginx/nginx.conf" "$NGINXBACKUPDIR/nginx.conf_backup_$CurDate"
+		
+		# Update configuration
+		cp "/var/www/new/ehcp/etc/nginx/nginx.conf" "/etc/nginx/nginx.conf"
+	fi
+}
+
 ###############################
 ###START OF SCRIPT MAIN CODE###
 ###############################
@@ -650,6 +676,10 @@ fail2ban
 echo -e "Installing Apache2 Security Modules\n"
 # Install Apache2 Security Modules
 apacheSecurity
+
+echo -e "Updating Base nginx Configuration Files\n"
+# Update nginx configuration files
+nginxUpdateFiles
 
 echo -e "Checking for VSFTPD Updates\n"
 # Check for VSFTPD Updates
