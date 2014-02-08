@@ -650,6 +650,12 @@ function CheckPreReqs(){
 }
 
 function addConfDFolder(){
+	
+	# If the conf.d folder doesn't exist, we must create it!
+	if [ -e "/etc/apache2/conf.d" ]; then
+		mkdir -p "/etc/apache2/conf.d"
+	fi
+	
 	if [ -e "/etc/apache2/apache2.conf" ]; then
 		APACHECONFCONTENTS=$(cat "/etc/apache2/apache2.conf" | grep "IncludeOptional conf.d")
 		if [ -z "$APACHECONFCONTENTS" ]; then
