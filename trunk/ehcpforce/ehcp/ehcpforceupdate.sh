@@ -621,6 +621,11 @@ function nginxUpdateFiles(){ # by earnolmartin@gmail.com
 	fi
 }
 
+function CheckPreReqs(){
+	aptgetInstall nginx
+	aptgetInstall php5-fpm
+}
+
 ###############################
 ###START OF SCRIPT MAIN CODE###
 ###############################
@@ -633,6 +638,10 @@ echo -e "Running EHCP Force Edition Update Script\n"
 
 echo -e "Downloading and installing package updates!\n"
 updateBeforeInstall
+
+echo -e "Making Sure nginx and php5-fpm Are Installed\n"
+# Checking PreReqs
+CheckPreReqs
 
 echo -e "Checking to make sure nginx is disabled!\n"
 nginxOff
