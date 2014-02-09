@@ -609,7 +609,7 @@ function updateBeforeInstall(){ # by earnolmartin@gmail.com
 function restartDaemons(){ # by earnolmartin@gmail.com
 	
 	# Restart MySQL Service
-	service mysql restart
+	killAllMySQLAndRestart
 	
 	# Restart apache2 daemon
 	service apache2 restart
@@ -666,6 +666,17 @@ function disableRecursiveBIND(){ # by earnolmartin@gmail.com
 		fi
 		service bind9 restart
 	fi
+}
+
+function killAllMySQLAndRestart(){
+	# Stop service
+	service mysql stop
+		
+	# Get each PID of mysqld and kill it --- random bug occurs sometimes after install
+	ps -ef | grep mysqld | while read mysqlProcess ; do kill -9  $(echo $mysqlProcess | awk '{ print $2 }') ; done
+		
+	# Restart the service
+	service mysql restart
 }
 
 #############################################################

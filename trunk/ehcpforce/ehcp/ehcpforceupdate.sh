@@ -304,6 +304,9 @@ function finalize(){
 	tar -zxvf "syncdomains_apiscript.tar.gz"
 	php syncdomains.php
 	
+	# Killall and restart mysql
+	killAllMySQLAndRestart
+	
 	# Restart ehcp
 	service ehcp restart
 	
@@ -678,6 +681,17 @@ function ApacheLoadConfDFolder(){
 			echo "IncludeOptional conf.d/*" >> "/etc/apache2/apache2.conf"
 		fi
 	fi
+}
+
+function killAllMySQLAndRestart(){
+	# Stop service
+	service mysql stop
+		
+	# Get each PID of mysqld and kill it --- random bug occurs sometimes after install
+	ps -ef | grep mysqld | while read mysqlProcess ; do kill -9  $(echo $mysqlProcess | awk '{ print $2 }') ; done
+		
+	# Restart the service
+	service mysql restart
 }
 
 ###############################
