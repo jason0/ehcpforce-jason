@@ -706,8 +706,8 @@ add_if_not_exists2("submission inet n       -       -       -       -       smtp
 # end autoreply configuration
 copyPostFixConfig();
 
-
-addifnotexists("bind-address=localhost","/etc/mysql/my.cnf");
+// Not needed
+// addifnotexists("bind-address=localhost","/etc/mysql/my.cnf");
 addifnotexists("skip-innodb","/etc/mysql/my.cnf"); # disable innodb by default, because it consumes a lot of memory
 
 passthru3("chmod o= /etc/postfix/mysql-virtual_*.cf");

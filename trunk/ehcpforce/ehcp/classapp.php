@@ -7765,6 +7765,7 @@ function daemondomain($action,$info,$info2='',$info3=''){// domain operations in
 
 
 function daemon(){
+	set_time_limit(0); # run forever... i hope... :)
 	$this->requireCommandLine(__FUNCTION__); // run from commandline.
 	$this->echoln2("Running daemon now..");
 	$sleep_interval=10;
@@ -7772,7 +7773,7 @@ function daemon(){
 	// $mail_interval=3600*24; // send info to developer every 1 day. may be disabled by user here.like ping..
 	// $mail_last_sent_time=3600*11; // send first 1 hours later.
 
-	set_time_limit(0); # run forever... i hope... :)
+	
 
 	$this->output.="Daemonized..".$this->myversion."\n__________________________\n\n";
 	$i=1;
