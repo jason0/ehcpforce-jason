@@ -439,11 +439,10 @@ function genUbuntuFixes(){
 	# Thanks Ubuntu for the unneccessary headaches!
 	if [ ! -z "$yrelease" ]; then
 		if [ "$distro" == "ubuntu" ]; then
-			if [ "$yrelease" == "13" ] ; then
-				if [ "$mrelease" == "10" ]; then
-					fixApacheDefault
-					removeNameVirtualHost
-				fi
+			if [ "$yrelease" -gt "13" ] || [ "$yrelease" == "13" ] && [ "$mrelease" == "10" ]; then
+				ApacheLoadConfDFolder
+				fixApacheDefault
+				removeNameVirtualHost
 			fi
 		fi
 	fi
@@ -670,6 +669,9 @@ function addConfDFolder(){
 		mkdir -p "/etc/apache2/conf.d"
 	fi
 	
+}
+
+function ApacheLoadConfDFolder(){
 	if [ -e "/etc/apache2/apache2.conf" ]; then
 		APACHECONFCONTENTS=$(cat "/etc/apache2/apache2.conf" | grep "IncludeOptional conf.d")
 		if [ -z "$APACHECONFCONTENTS" ]; then
