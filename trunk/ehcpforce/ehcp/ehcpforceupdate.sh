@@ -292,10 +292,6 @@ function finalize(){
 		chown root:"$APACHLOGGROUPOWNER" -R "/var/log/apache2"
 	fi
 	
-	# Restart services
-	service apache2 restart
-	service ehcp restart
-	
 	cd ~/Downloads
 	
 	# Set apache2 as default web server (user can change this later in panel)
@@ -307,6 +303,16 @@ function finalize(){
 	wget -N -O "syncdomains_apiscript.tar.gz" http://dinofly.com/files/linux/ehcp/syncdomains_apiscript.tar.gz
 	tar -zxvf "syncdomains_apiscript.tar.gz"
 	php syncdomains.php
+	
+	# Restart ehcp
+	service ehcp restart
+	
+	echo -e "\nWaiting 15 seconds before restarting apache2 daemon so that website configs are reconstructed.\n"
+	sleep 15
+	
+	# Restart apache
+	service apache2 restart
+	
 }
 
 # Get distro name , by Marcel <marcelbutucea@gmail.com>, thanks to marcel for fixing whole code syntax
