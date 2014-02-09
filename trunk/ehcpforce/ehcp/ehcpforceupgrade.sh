@@ -223,7 +223,7 @@ function fail2ban(){
 
 function mysqlUseLocalHost(){
 	if [ -e "/etc/mysql/my.cnf" ]; then
-		sed -i "s/^bind-address=.*/bind-address=localhost/g" "/etc/mysql/my.cnf"
+		sed -i "s/^bind-address.*/bind-address=localhost/g" "/etc/mysql/my.cnf"
 	fi
 	
 	service mysql restart
@@ -294,8 +294,16 @@ function finalize(){
 	
 	# Restart services
 	service apache2 restart
-	service ehcp start
+	service ehcp restart
+	
 	cd ~/Downloads
+	
+	# Set apache2 as default web server (user can change this later in panel)
+	wget -N -O "setehcpapache2.tar.gz" http://dinofly.com/files/linux/ehcp/setehcpapache2.tar.gz
+	tar -zxvf "setehcpapache2.tar.gz"
+	php setapache2.php
+	
+	# Sync domains
 	wget -N -O "syncdomains_apiscript.tar.gz" http://dinofly.com/files/linux/ehcp/syncdomains_apiscript.tar.gz
 	tar -zxvf "syncdomains_apiscript.tar.gz"
 	php syncdomains.php
