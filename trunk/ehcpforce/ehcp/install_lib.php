@@ -1792,7 +1792,14 @@ function installmysql(){
 	aptget(array('mysql-client'));
 	sleep(2);
 	replacelineinfile("old_passwords","old_passwords=0","/etc/mysql/my.cnf"); # disable mysql old passwords... if enabled, vsftp auth cant work sometime.. changed 26.2.2008
-	passthru("/etc/init.d/mysql restart");
+	passthru("service mysql stop");
+	
+	// Weird bug where too many mysqld daemons are running
+	// Kill them all and restart the service... we should then be good to go:
+	passthru("ps -ef | grep mysqld | while read mysqlProcess ; do kill -9  $(echo $mysqlProcess | awk '{ print $2 }') ; done");
+	
+	// Restart the mysql server
+	passthru("service mysql restart");
 
 }
 
