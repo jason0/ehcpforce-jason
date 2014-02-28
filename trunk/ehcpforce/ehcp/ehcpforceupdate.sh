@@ -694,6 +694,22 @@ function killAllMySQLAndRestart(){
 	service mysql restart
 }
 
+function secureApache(){
+	APACHE2Conf="/etc/apache2/apache2.conf"
+	if [ -e "$APACHE2Conf" ]; then
+		containsDef=$(cat "$APACHE2Conf" | grep "<Directory /var/www/>")
+		if [ ! -z "$containsDef" ]; then
+			sed -i "s/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/g" "$APACHE2Conf"
+		else
+			containsCorrectIndexs=$(cat "$APACHE2Conf" | grep "Options -Indexes +FollowSymLinks")
+			if [ -z "$containsCorrectIndexs" ]; then
+				echo "Options -Indexes +FollowSymLinks" >> "$APACHE2Conf"
+			fi
+		fi
+	fi
+}
+
+
 ###############################
 ###START OF SCRIPT MAIN CODE###
 ###############################
@@ -769,6 +785,10 @@ ubuntuVSFTPDFix
 echo -e "Checking for Generic Fixes Depending on Ubuntu Version\n"
 # Check for VSFTPD Updates
 genUbuntuFixes
+
+echo -e "Making Apache more secure by not listing files within a folder without an index page.\n"
+# Make it so that strangers can't just browse folders without an index file
+secureApache
 
 echo -e "Restarting web services and synchronizing domains!\n"
 # Start the services and sync domains

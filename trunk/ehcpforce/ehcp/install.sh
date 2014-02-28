@@ -606,6 +606,21 @@ function updateBeforeInstall(){ # by earnolmartin@gmail.com
 	fi
 }
 
+function secureApache(){
+	APACHE2Conf="/etc/apache2/apache2.conf"
+	if [ -e "$APACHE2Conf" ]; then
+		containsDef=$(cat "$APACHE2Conf" | grep "<Directory /var/www/>")
+		if [ ! -z "$containsDef" ]; then
+			sed -i "s/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/g" "$APACHE2Conf"
+		else
+			containsCorrectIndexs=$(cat "$APACHE2Conf" | grep "Options -Indexes +FollowSymLinks")
+			if [ -z "$containsCorrectIndexs" ]; then
+				echo "Options -Indexes +FollowSymLinks" >> "$APACHE2Conf"
+			fi
+		fi
+	fi
+}
+
 function restartDaemons(){ # by earnolmartin@gmail.com
 	
 	# Restart MySQL Service
@@ -781,6 +796,8 @@ fixBINDPerms
 genUbuntuFixes
 # Secure BIND9 Configuration
 disableRecursiveBIND
+# Make it so that strangers can't just browse folders without an index file
+secureApache
 # Restart neccessary daemons
 echo "Initializing the EHCP Daemon"
 restartDaemons
