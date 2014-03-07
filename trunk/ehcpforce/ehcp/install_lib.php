@@ -319,6 +319,79 @@ function apache_mod_secure_install(){ # thanks to  earnolmartin@gmail.com
 	}
 }
 
+function restartService($service){
+	passthru3("service $service restart");
+}
+
+function installantispam(){ # thanks to  earnolmartin@gmail.com
+	global $version, $distro;
+	// Only do this for Ubuntu versions 10 and up... not sure if this will work with normal debian
+	if(isset($version) && !empty($version) && stripos($version, '.') != FALSE && isset($distro) && $distro == "ubuntu"){
+		$releaseYear = substr($version, 0, stripos($version, '.'));
+		if($releaseYear > 10){
+			// Install Clam Antivirus: open-source antivirus engine.
+			// Install SpamAssassin: e-mail spam filtering engine.
+			// Install MailScanner: uses antivirus and anti-spam engines to scan inbound and outbound emails. 
+			echo "Installing email anti-spam software! \n";
+			aptget(array('clamav', 'clamav-daemon', 'spamassassin'));
+
+			// Enable spam assassin
+			passthru3('sed -i "s#ENABLED=.*#ENABLED=1#g" /etc/default/spamassassin');
+			restartService("spamassassin");
+			
+			// Update clamav
+			passthru3('freshclam ; sa-update');
+			
+			// Configure mail scanner spam assassin directories
+			passthru3('mkdir /var/spool/MailScanner/spamassassin');
+			passthru3('chown postfix /var/spool/MailScanner/spamassassin');
+			
+			// Install mail scanner
+			$currDir=getcwd();
+			passthru3('mkdir -p ~/Downloads/mailscanner');
+			passthru3('cd ~/Downloads/mailscanner && wget -N "http://debian.intergenia.de/debian/pool/main/m/mailscanner/mailscanner_4.79.11-2.2_all.deb"');
+			passthru3('dpkg -i mailscanner_4.79.11-2.2_all.deb');
+			
+			// Make backup of mail scanner configuration
+			passthru3('cp /etc/MailScanner/MailScanner.conf /etc/MailScanner/MailScanner_backup.conf');
+			
+			$mailConfig = "%org-name% = EHCP Force
+%org-long-name% = EHCP Force Email Scanner
+%web-site% = www.ehcpforce.tk
+ 
+Run As User = postfix
+Run As Group = postfix
+ 
+Incoming Queue Dir = /var/spool/postfix/hold
+Outgoing Queue Dir = /var/spool/postfix/incoming
+ 
+MTA = postfix
+ 
+Virus Scanners = clamav
+ 
+Spam List = SBL+XBL
+## please check /etc/MailScanner/spam.lists.conf for more details ##
+ 
+SpamAssassin User State Dir = /var/spool/MailScanner/spamassassin";
+
+			passthru3('echo "' . $mailConfig . '" > /etc/MailScanner/MailScanner.conf');
+			
+			// Configure postfix to use mailscanner / spamassassin
+			passthru3('echo "/^Received:/ HOLD" > /etc/postfix/header_checks');
+			passthru3('sed -i "s#header_checks.*#header_checks = regexp:/etc/postfix/header_checks#g" "/etc/postfix/main.cf"');
+			
+			// Enable mail scanner
+			passthru3('sed -i "s#run_mailscanner=.*#run_mailscanner=1#g" /etc/default/mailscanner');
+			 
+			// Restart the services
+			restartService("postfix");
+			restartService("mailscanner");
+			
+			echo "Finished installing email anti-spam software!  \n";
+		}
+	}
+}
+
 function compile_mod_qos(){
 	echo "Getting Apache2 compile utility for modules! \n";
 	aptget(array('apache2-threaded-dev', 'gcc'));
