@@ -33,6 +33,9 @@ for($i=3;$i<=5;$i++){ # accept following arguments in any of position.
 			case 'light': # the light install, non-cruical parts are omitted. good for a quick testing. (tr: hizlica test etmek icin guzel..)
 				$installmode='light';
 				break;
+			case 'extra': # the extra install, means more components
+				$installmode='extra';
+				break;
 			default:
 				echo __FILE__." dosyasinda bilinmeyen arguman degeri:".$argv[$i];
 				break;
