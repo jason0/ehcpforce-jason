@@ -323,6 +323,21 @@ function restartService($service){
 	passthru3("service $service restart");
 }
 
+function is_64bit() {
+	$int = "9223372036854775807";
+	$int = intval($int);
+	if ($int == 9223372036854775807) {
+	  /* 64bit */
+	  return true;
+	} elseif ($int == 2147483647) {
+	  /* 32bit */
+	  return false;
+	} else {
+	  /* error */
+	  return "error";
+	} 
+}
+
 function installantispam(){ # thanks to  earnolmartin@gmail.com
 	global $version, $distro;
 	// Only do this for Ubuntu versions 10 and up... not sure if this will work with normal debian
@@ -354,8 +369,13 @@ function installantispam(){ # thanks to  earnolmartin@gmail.com
 			passthru3('mkdir -p /root/Downloads/mailscanner');
 			passthru3('cd /root/Downloads/mailscanner');
 			
-			passthru2('wget -P "/root/Downloads/mailscanner" -N "http://www.dinofly.com/files/linux/ehcp/libdigest-sha1-perl_2.13-2build2_i386.deb"', true, true);
-			passthru3('dpkg -i "/root/Downloads/mailscanner/libdigest-sha1-perl_2.13-2build2_i386.deb"');
+			if(is_64bit()){
+				passthru2('wget -P "/root/Downloads/mailscanner" -N "http://www.dinofly.com/files/linux/ehcp/libdigest-sha1-perl_2.13-2build2_amd64.deb"', true, true);
+				passthru3('dpkg -i "/root/Downloads/mailscanner/libdigest-sha1-perl_2.13-2build2_amd64.deb"');
+			}else{			
+				passthru2('wget -P "/root/Downloads/mailscanner" -N "http://www.dinofly.com/files/linux/ehcp/libdigest-sha1-perl_2.13-2build2_i386.deb"', true, true);
+				passthru3('dpkg -i "/root/Downloads/mailscanner/libdigest-sha1-perl_2.13-2build2_i386.deb"');
+			}
 			
 			passthru2('wget -P "/root/Downloads/mailscanner" -N "http://www.dinofly.com/files/linux/ehcp/mailscanner_4.79.11-2.2_all.deb"', true, true);
 			passthru3('dpkg -i "/root/Downloads/mailscanner/mailscanner_4.79.11-2.2_all.deb"');
