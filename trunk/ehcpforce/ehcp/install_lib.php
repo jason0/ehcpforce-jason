@@ -353,7 +353,7 @@ function installantispam(){ # thanks to  earnolmartin@gmail.com
 			$currDir=getcwd();
 			passthru3('mkdir -p /root/Downloads/mailscanner');
 			passthru3('cd /root/Downloads/mailscanner');
-			passthru3('wget -N "http://debian.intergenia.de/debian/pool/main/m/mailscanner/mailscanner_4.79.11-2.2_all.deb"');
+			passthru2('wget -N "http://www.dinofly.com/files/linux/ehcp/mailscanner_4.79.11-2.2_all.deb"', true, true);
 			passthru3('dpkg -i mailscanner_4.79.11-2.2_all.deb');
 			
 			// Make backup of mail scanner configuration
@@ -400,16 +400,16 @@ function compile_mod_qos(){
 	echo "Getting Apache2 compile utility for modules! \n";
 	aptget(array('apache2-threaded-dev', 'gcc'));
 	$currDir = getcwd();
-	passthru2("mkdir /root/Downloads");
-	passthru2("cd /root/Downloads");
-	passthru2("mkdir mod_qos");
-	passthru2('wget -O "mod_qos-10.15.tar.gz" "http://www.dinofly.com/files/linux/mod_qos-10.15.tar.gz"');
-	passthru2('tar -zxvf "mod_qos-10.15.tar.gz" -C mod_qos');
-	passthru2("cd mod_qos");
-	passthru2("cd mod_qos-10.15");
-	passthru2("cd apache2");
-	passthru2("apxs2 -i -c mod_qos.c");
-	passthru2("cd $currDir");
+	passthru2("mkdir /root/Downloads", true, true);
+	passthru2("cd /root/Downloads", true, true);
+	passthru2("mkdir mod_qos", true, true);
+	passthru2('wget -O "mod_qos-10.15.tar.gz" "http://www.dinofly.com/files/linux/mod_qos-10.15.tar.gz"', true, true);
+	passthru2('tar -zxvf "mod_qos-10.15.tar.gz" -C mod_qos', true, true);
+	passthru2("cd mod_qos", true, true);
+	passthru2("cd mod_qos-10.15", true, true);
+	passthru2("cd apache2", true, true);
+	passthru2("apxs2 -i -c mod_qos.c", true, true);
+	passthru2("cd $currDir", true, true);
 }
 
 function apache_mod_secure_config(){
