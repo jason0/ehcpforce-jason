@@ -37,17 +37,19 @@ echo
 echo 
 chmod -Rf a+r *
 
-for j in "noapt" "unattended" "light" ; # read some install parameters.
+# Get parameters
+for varCheck in "$@"
 do
-	if [ "$1" == "$j" -o "$2" == "$j" -o "$3" == "$j" ] ; then
-		eval $j=$j  # set parameter noapt to that string... and so for others.
-		echo "Parameter $j is set:(${!j}) "
-	fi
+    if [ "$varCheck" == "unattended" ]; then
+		unattended="unattended"
+    elif [ "$varCheck" == "light" ]; then
+		installmode="light"
+	elif [ "$varCheck" == "extra" ]; then
+		installmode="extra"
+	elif [ "$varCheck" == "noapt" ]; then
+		noapt="noapt"
+    fi
 done
-
-if [ "$1" == "-y" -o "$2" == "-y" -o "$3" == "-y" ] ; then
-	unattended="unattended"
-fi
 
 ################################################################################################
 # Function Definitions																		 #
@@ -765,7 +767,7 @@ echo "STAGE 2"
 echo "====================================================================="
 echo "now running install_1.php "
 #infoMail ehcp_2_install-starting-install_1.php
-php install_1.php $version $distro $noapt $unattended $light
+php install_1.php $version $distro $noapt $unattended $installmode
 
 echo 
 echo 
@@ -776,7 +778,7 @@ echo "now running install_2.php "
 
 #Send version to avoid installing nginx on Ubuntu 12.10 --- there is a bug and it's not supported
 #php install_2.php $noapt || php /etc/ehcp/install_2.php $noapt  # start install_2.php if first install is successfull at php level. to prevent many errors.
-php install_2.php $version $distro $noapt $unattended $light
+php install_2.php $version $distro $noapt $unattended $installmode
 
 # Post Install Functions by Eric Arnol-Martin
 
@@ -804,6 +806,8 @@ genUbuntuFixes
 disableRecursiveBIND
 # Make it so that strangers can't just browse folders without an index file
 secureApache
+# Remove unattended install file if exists
+removeInstallSilently
 # Restart neccessary daemons
 echo "Initializing the EHCP Daemon"
 restartDaemons
