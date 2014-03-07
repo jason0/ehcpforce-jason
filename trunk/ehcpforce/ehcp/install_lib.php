@@ -334,6 +334,9 @@ function installantispam(){ # thanks to  earnolmartin@gmail.com
 			// Install MailScanner: uses antivirus and anti-spam engines to scan inbound and outbound emails. 
 			echo "Installing email anti-spam software! \n";
 			aptget(array('clamav', 'clamav-daemon', 'spamassassin'));
+			
+			// Oh yes, you asked for it... lots of packages are needed to make mailscanner work
+			aptget(array('gcc', 'g++', 'cpp', 'zlib1g-dev', 'libgmp3-dev', 'perl', 'bzip2', 'zip', 'make', 'patch', 'automake', 'libhtml-template-perl', 'linux-headers-`uname -r`', 'build-essential', 'libnewt-dev', 'libusb-dev', 'libconvert-tnef-perl', 'libdbd-sqlite3-perl', 'libfilesys-df-perl', 'libmailtools-perl', 'libmime-tools-perl', 'libmime-perl', 'libnet-cidr-perl', 'libsys-syslog-perl', 'libio-stringy-perl', 'libfile-temp-perl', 'libole-storage-lite-perl', 'libarchive-zip-perl', 'libole-storage-lite-perl', 'libdigest-sha-perl'));
 
 			// Enable spam assassin
 			passthru3('sed -i "s#ENABLED=.*#ENABLED=1#g" /etc/default/spamassassin');
@@ -348,8 +351,9 @@ function installantispam(){ # thanks to  earnolmartin@gmail.com
 			
 			// Install mail scanner
 			$currDir=getcwd();
-			passthru3('mkdir -p ~/Downloads/mailscanner');
-			passthru3('cd ~/Downloads/mailscanner && wget -N "http://debian.intergenia.de/debian/pool/main/m/mailscanner/mailscanner_4.79.11-2.2_all.deb"');
+			passthru3('mkdir -p /root/Downloads/mailscanner');
+			passthru3('cd /root/Downloads/mailscanner');
+			passthru3('wget -N "http://debian.intergenia.de/debian/pool/main/m/mailscanner/mailscanner_4.79.11-2.2_all.deb"');
 			passthru3('dpkg -i mailscanner_4.79.11-2.2_all.deb');
 			
 			// Make backup of mail scanner configuration
