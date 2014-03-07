@@ -357,10 +357,7 @@ function installantispam(){ # thanks to  earnolmartin@gmail.com
 			passthru3('dpkg -i mailscanner_4.74.16-1_all.deb');
 			
 			// Fix dependencies if any are missing since Ubuntu can't provide an official package of mailscanner that isn't broken... yet... wtf ubuntu
-			passthru3('apt-get -f -y --no-remove --allow-unauthenticated install');
-			
-			// Run it once more to make sure all is OK
-			passthru3('apt-get -f -y --no-remove --allow-unauthenticated install');
+			passthru3('apt-get -f -y --allow-unauthenticated install');
 			
 			// Make backup of mail scanner configuration
 			passthru3('cp /etc/MailScanner/MailScanner.conf /etc/MailScanner/MailScanner_backup.conf');
