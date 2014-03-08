@@ -1655,7 +1655,7 @@ function installfinish() {
 	global $ehcpinstalldir,$ehcpmysqlpass,$app,$user_email,$user_name,$header,$installextrasoftware,$lightinstall,$installmode;
 	
 	switch($installmode) {
-		case 'extra': aptget(array('postgrey','ffmpeg','php5-ffmpeg','mplayer','mencoder','nmap','listadmin','spamassassin','aptitude','gpac','clamav','clamav-freshclam','libavcodec-unstripped'));
+		case 'extra': aptget(array('postgrey','ffmpeg','php5-ffmpeg','mplayer','mencoder','nmap','listadmin','aptitude','gpac','libavcodec-unstripped'));
 		case 'normal': aptget(array('webalizer','php-pear','phpsysinfo','mailutils','byobu'));
 		case 'light': aptget(array('bind9-host','php5-curl','php5-xmlrpc','php5-imap')); 
 			break;
