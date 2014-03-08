@@ -728,86 +728,86 @@ function installAntiSpam(){
 	POSTFIXInstalled=$(which "postfix")
 	postFixUserExists=$(grep postfix /etc/passwd)
 	if [ ! -z "$POSTFIXInstalled" ] && [ ! -z "$postFixUserExists" ]; then
-		if [ -z "$ANTISPAMINSTALLED" ]; then
-			# SpamAssassin is not installed / configured
-			# Lets roll
-			# Set variables
-			SPConfig="/etc/default/spamassassin"
-			PHeadChecks="/etc/postfix/header_checks"
-			PostFixConf="/etc/postfix/main.cf"
-			PostFixMaster="/etc/postfix/master.cf"
-			CONTENTFILTER="/etc/amavis/conf.d/15-content_filter_mode"
-			SPAMASSASSCONF="/etc/spamassassin/local.cf"
-			AMAVISHOST="/etc/amavis/conf.d/05-node_id"
-			
-			# Install Anti-Spam Software
-			aptgetInstall "amavisd-new spamassassin clamav-daemon"
-			
-			# Install individually incase some packages are not found
-			aptgetInstall libnet-dns-perl
-			aptgetInstall pyzor
-			aptgetInstall razor
-			aptgetInstall arj
-			aptgetInstall bzip2
-			aptgetInstall cabextract
-			aptgetInstall cpio
-			aptgetInstall file
-			aptgetInstall gzip
-			aptgetInstall lha
-			aptgetInstall nomarch
-			aptgetInstall pax
-			aptgetInstall rar
-			aptgetInstall unrar
-			aptgetInstall unzip
-			aptgetInstall zip
-			aptgetInstall zoo
-			aptgetInstall unzoo
-			# Only keep going if we have the basic packages installed
-			AMAVISINS=$(which amavisd-new)
-			SPAMASSASSINS=$(which spamassassin)
+		# SpamAssassin is not installed / configured
+		# Lets roll
+		# Set variables
+		SPConfig="/etc/default/spamassassin"
+		PHeadChecks="/etc/postfix/header_checks"
+		PostFixConf="/etc/postfix/main.cf"
+		PostFixMaster="/etc/postfix/master.cf"
+		CONTENTFILTER="/etc/amavis/conf.d/15-content_filter_mode"
+		SPAMASSASSCONF="/etc/spamassassin/local.cf"
+		AMAVISHOST="/etc/amavis/conf.d/05-node_id"
+		
+		# Install Anti-Spam Software
+		aptgetInstall "amavisd-new spamassassin clamav-daemon"
+		
+		# Install individually incase some packages are not found
+		aptgetInstall libnet-dns-perl
+		aptgetInstall pyzor
+		aptgetInstall razor
+		aptgetInstall arj
+		aptgetInstall bzip2
+		aptgetInstall cabextract
+		aptgetInstall cpio
+		aptgetInstall file
+		aptgetInstall gzip
+		aptgetInstall lha
+		aptgetInstall nomarch
+		aptgetInstall pax
+		aptgetInstall rar
+		aptgetInstall unrar
+		aptgetInstall unzip
+		aptgetInstall zip
+		aptgetInstall zoo
+		aptgetInstall unzoo
+		
+		# Only keep going if we have the basic packages installed
+		AMAVISINS=$(which amavisd-new)
+		SPAMASSASSINS=$(which spamassassin)
 				
-			if [ ! -z "$AMAVISINS" ] && [ ! -z "$SPAMASSASSINS" ]; then
+		if [ ! -z "$AMAVISINS" ] && [ ! -z "$SPAMASSASSINS" ]; then
+		
+			# Add Users
+			adduser clamav amavis
+			adduser amavis clamav
 			
-				# Add Users
-				adduser clamav amavis
-				adduser amavis clamav
+			# Enable SpamAssassin
+			if [ -e "$SPConfig" ]; then
+				sed -i "s#ENABLED=.*#ENABLED=1#g" "$SPConfig"
+				sed -i "s#CRON=.*#CRON=1#g" "$SPConfig"
 				
-				# Enable SpamAssassin
-				if [ -e "$SPConfig" ]; then
-					sed -i "s#ENABLED=.*#ENABLED=1#g" "$SPConfig"
-					sed -i "s#CRON=.*#CRON=1#g" "$SPConfig"
+				# More settings
+				if [ -e "$SPAMASSASSCONF" ]; then
+					# Rewrite the header
+					sed -i "s/#rewrite_header.*/rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*/g" "$SPAMASSASSCONF"
+					sed -i "s/# rewrite_header.*/rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*/g" "$SPAMASSASSCONF"
+					sed -i "s#rewrite_header.*#rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*#g" "$SPAMASSASSCONF"
 					
-					# More settings
-					if [ -e "$SPAMASSASSCONF" ]; then
-						# Rewrite the header
-						sed -i "s/#rewrite_header.*/rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*/g" "$SPAMASSASSCONF"
-						sed -i "s/# rewrite_header.*/rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*/g" "$SPAMASSASSCONF"
-						sed -i "s#rewrite_header.*#rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*#g" "$SPAMASSASSCONF"
+					# Set the spam score
+					sed -i "s/#required_score.*/required_score 12.0/g" "$SPAMASSASSCONF"
+					sed -i "s/# required_score.*/required_score 12.0/g" "$SPAMASSASSCONF"
+					sed -i "s#required_score.*#required_score 12.0#g" "$SPAMASSASSCONF"
 						
-						# Set the spam score
-						sed -i "s/#required_score.*/required_score 12.0/g" "$SPAMASSASSCONF"
-						sed -i "s/# required_score.*/required_score 12.0/g" "$SPAMASSASSCONF"
-						sed -i "s#required_score.*#required_score 12.0#g" "$SPAMASSASSCONF"
+					# use bayes 1
+					sed -i "s/#use_bayes.*/use_bayes 1/g" "$SPAMASSASSCONF"
+					sed -i "s/# use_bayes.*/use_bayes 1/g" "$SPAMASSASSCONF"
+					sed -i "s#use_bayes.*#use_bayes 1#g" "$SPAMASSASSCONF"
 						
-						# use bayes 1
-						sed -i "s/#use_bayes.*/use_bayes 1/g" "$SPAMASSASSCONF"
-						sed -i "s/# use_bayes.*/use_bayes 1/g" "$SPAMASSASSCONF"
-						sed -i "s#use_bayes.*#use_bayes 1#g" "$SPAMASSASSCONF"
+					# use bayes auto learn
+					sed -i "s/#bayes_auto_learn.*/bayes_auto_learn 1/g" "$SPAMASSASSCONF"
+					sed -i "s/# bayes_auto_learn.*/bayes_auto_learn 1/g" "$SPAMASSASSCONF"
+					sed -i "s#bayes_auto_learn.*#bayes_auto_learn 1#g" "$SPAMASSASSCONF"
 						
-						# use bayes auto learn
-						sed -i "s/#bayes_auto_learn.*/bayes_auto_learn 1/g" "$SPAMASSASSCONF"
-						sed -i "s/# bayes_auto_learn.*/bayes_auto_learn 1/g" "$SPAMASSASSCONF"
-						sed -i "s#bayes_auto_learn.*#bayes_auto_learn 1#g" "$SPAMASSASSCONF"
-						
-					fi
-					
-					service spamassassin restart
 				fi
+					
+				service spamassassin restart
+			fi
 				
-				# Integrate into postfix
-				postconf -e "content_filter = smtp-amavis:[127.0.0.1]:10024"
+			# Integrate into postfix
+			postconf -e "content_filter = smtp-amavis:[127.0.0.1]:10024"
 				
-				echo "use strict;
+			echo "use strict;
 
 # You can modify this file to re-enable SPAM checking through spamassassin
 # and to re-enable antivirus checking.
@@ -830,19 +830,19 @@ function installAntiSpam(){
 	\%bypass_spam_checks, \@bypass_spam_checks_acl, \$bypass_spam_checks_re);
 
 1;  # insure a defined return" > "$CONTENTFILTER"
-				if [ -e "$PostFixMaster" ]; then
-					POSTFIXMASCHECK1=$(cat "$PostFixMaster" | grep "smtp-amavis")
-					if [ -z "$POSTFIXMASCHECK1" ]; then
+			if [ -e "$PostFixMaster" ]; then
+				POSTFIXMASCHECK1=$(cat "$PostFixMaster" | grep "smtp-amavis")
+				if [ -z "$POSTFIXMASCHECK1" ]; then
 						echo "smtp-amavis     unix    -       -       -       -       2       smtp
 		-o smtp_data_done_timeout=1200
 		-o smtp_send_xforward_command=yes
 		-o disable_dns_lookups=yes
 		-o max_use=20" >> "$PostFixMaster"
-					fi
+				fi
 					
-					POSTFIXMASCHECK2=$(cat "$PostFixMaster" | grep "127.0.0.1:10025")
-					if [ -z "$POSTFIXMASCHECK2" ]; then
-						echo "
+				POSTFIXMASCHECK2=$(cat "$PostFixMaster" | grep "127.0.0.1:10025")
+				if [ -z "$POSTFIXMASCHECK2" ]; then
+					echo "
 127.0.0.1:10025 inet    n       -       -       -       -       smtpd
 		-o content_filter=
 		-o local_recipient_maps=
@@ -862,45 +862,43 @@ function installAntiSpam(){
 		-o smtpd_client_connection_count_limit=0
 		-o smtpd_client_connection_rate_limit=0
 		-o receive_override_options=no_header_body_checks,no_unknown_recipient_checks" >> "$PostFixMaster"
-					fi
-			
 				fi
-				
-				#http://stackoverflow.com/questions/11694980/using-sed-insert-a-line-below-or-above-the-pattern
-				POSTFIXMASCHECK3=$(cat "$PostFixMaster" | grep -A2 "pickup" | grep -v "pickup" | grep -o "\-o receive_override_options=no_header_body_checks$")
-				if [ -z "$POSTFIXMASCHECK3" ]; then
-					sed -i "/pickup.*/a\\\t-o receive_override_options=no_header_body_checks" "$PostFixMaster"
-				fi
-				
-				POSTFIXMASCHECK4=$(cat "$PostFixMaster" | grep -A2 'pickup' | grep -v "pickup" | grep -o "\-o content_filter=$")
-				if [ -z "$POSTFIXMASCHECK4" ]; then
-					sed -i "/pickup.*/a\\\t-o content_filter=" "$PostFixMaster"
-				fi
-				
-				# Prompt for FQDN
-				echo ""
-				echo -n "Please enter your Fully Qualified Domain Name (FQDN) for this mail server: "
-				read FQDNName
-				FQDNName=$(echo "$FQDNName" | awk '{print tolower($0)}')
 		
-				if [ -z "$FQDNName" ]; then
-					# Just replace it with ehcpforce.tk
-					sed -i "s/^#\$myhostname.*/\$myhostname = \"ehcpforce.tk\";/g" "$AMAVISHOST"
-					sed -i "s#^\$myhostname.*#\$myhostname = \"ehcpforce.tk\";#g" "$AMAVISHOST"
-				else
-					sed -i "s/^#\$myhostname.*/\$myhostname = \"$FQDNName\";/g" "$AMAVISHOST"
-					sed -i "s#^\$myhostname.*#\$myhostname = \"$FQDNName\";#g" "$AMAVISHOST"
-				fi
-				
-				# Should be good to go?
-				
-				# Restart Amavis
-				service amavis restart
-				
-				# Restart services
-				service postfix restart
-			
 			fi
+		
+			#http://stackoverflow.com/questions/11694980/using-sed-insert-a-line-below-or-above-the-pattern
+			POSTFIXMASCHECK3=$(cat "$PostFixMaster" | grep -A2 "pickup" | grep -v "pickup" | grep -o "\-o receive_override_options=no_header_body_checks$")
+			if [ -z "$POSTFIXMASCHECK3" ]; then
+				sed -i "/pickup.*/a\\\t-o receive_override_options=no_header_body_checks" "$PostFixMaster"
+			fi
+				
+			POSTFIXMASCHECK4=$(cat "$PostFixMaster" | grep -A2 'pickup' | grep -v "pickup" | grep -o "\-o content_filter=$")
+			if [ -z "$POSTFIXMASCHECK4" ]; then
+				sed -i "/pickup.*/a\\\t-o content_filter=" "$PostFixMaster"
+			fi
+				
+			# Prompt for FQDN
+			echo ""
+			echo -n "Please enter your Fully Qualified Domain Name (FQDN) for this mail server: "
+			read FQDNName
+			FQDNName=$(echo "$FQDNName" | awk '{print tolower($0)}')
+			if [ -z "$FQDNName" ]; then
+				# Just replace it with ehcpforce.tk
+				sed -i "s/^#\$myhostname.*/\$myhostname = \"ehcpforce.tk\";/g" "$AMAVISHOST"
+				sed -i "s#^\$myhostname.*#\$myhostname = \"ehcpforce.tk\";#g" "$AMAVISHOST"
+			else
+				sed -i "s/^#\$myhostname.*/\$myhostname = \"$FQDNName\";/g" "$AMAVISHOST"
+				sed -i "s#^\$myhostname.*#\$myhostname = \"$FQDNName\";#g" "$AMAVISHOST"
+			fi
+				
+			# Should be good to go?
+				
+			# Restart Amavis
+			service amavis restart
+				
+			# Restart services
+			service postfix restart
+			
 		fi
 	fi
 }
