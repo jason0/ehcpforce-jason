@@ -153,11 +153,11 @@ function getLatestEHCPFiles(){
 	
 	# Copy files over
 	LATESTBACKUPDIR="/var/www/new/ehcp_nonforce"
+	CurDate=$(date +%Y_%m_%d_%s)
 	cd ..
 	if [ ! -e "/var/www/new/ehcp_nonforce" ]; then
 		cp -R "/var/www/new/ehcp" "/var/www/new/ehcp_nonforce"
 	else
-		CurDate=$(date +%Y_%m_%d_%s)
 		cp -R "/var/www/new/ehcp" "/var/www/new/ehcp_nonforce_$CurDate"
 		LATESTBACKUPDIR="/var/www/new/ehcp_nonforce_$CurDate"
 	fi
