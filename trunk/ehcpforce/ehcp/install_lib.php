@@ -352,7 +352,10 @@ function installantispam(){ # thanks to  earnolmartin@gmail.com
 			
 			// Oh yes, you asked for it... lots of packages are needed to make mailscanner work
 			aptget(array('gcc', 'g++', 'cpp', 'zlib1g-dev', 'libgmp3-dev', 'perl', 'bzip2', 'zip', 'make', 'patch', 'automake', 'libhtml-template-perl', 'linux-headers-`uname -r`', 'build-essential', 'libnewt-dev', 'libusb-dev', 'libconvert-tnef-perl', 'libdbd-sqlite3-perl', 'libfilesys-df-perl', 'libmailtools-perl', 'libmime-tools-perl', 'libmime-perl', 'libnet-cidr-perl', 'libsys-syslog-perl', 'libio-stringy-perl', 'libfile-temp-perl', 'libole-storage-lite-perl', 'libarchive-zip-perl', 'libole-storage-lite-perl', 'libdigest-sha-perl', 'libcompress-zlib-perl'));
-
+			
+			$softToInstall = 'libconvert-tnef-perl libdbd-sqlite3-perl libfilesys-df-perl libmailtools-perl libmime-tools-perl libmime-perl libnet-cidr-perl libsys-syslog-perl libio-stringy-perl libfile-temp-perl exim4 exim4-base exim4-config exim4-daemon-light heirloom-mailx libarchive-zip-perl libdigest-hmac-perl libencode-locale-perl liberror-perl libfile-listing-perl libfont-afm-perl libhtml-form-perl libhtml-format-perl libhtml-parser-perl libhtml-tagset-perl libhtml-tree-perl libhttp-cookies-perl libhttp-daemon-perl libhttp-date-perl libhttp-message-perl libhttp-negotiate-perl libio-socket-inet6-perl libio-socket-ssl-perl liblwp-mediatypes-perl liblwp-protocol-https-perl libmail-spf-perl libnet-dns-perl libnet-http-perl libnet-ip-perl libnet-ssleay-perl libnetaddr-ip-perl libole-storage-lite-perl libsocket6-perl libsys-hostname-long-perl liburi-perl libwww-perl libwww-robotrules-perl re2c spamassassin spamc';
+			aptget(explode(" ", $softToInstall));
+	
 			// Enable spam assassin
 			passthru3('sed -i "s#ENABLED=.*#ENABLED=1#g" /etc/default/spamassassin');
 			restartService("spamassassin");
@@ -379,9 +382,6 @@ function installantispam(){ # thanks to  earnolmartin@gmail.com
 			
 			passthru2('wget -P "/root/Downloads/mailscanner" -N "http://www.dinofly.com/files/linux/ehcp/mailscanner_4.79.11-2.2_all.deb"', true, true);
 			passthru3('dpkg -i "/root/Downloads/mailscanner/mailscanner_4.79.11-2.2_all.deb"');
-			
-			// Fix dependencies if any are missing since Ubuntu can't provide an official package of mailscanner that isn't broken... yet... wtf ubuntu
-			passthru3('apt-get -f -y --no-remove --allow-unauthenticated install');
 			
 			// Make backup of mail scanner configuration
 			passthru3('cp /etc/MailScanner/MailScanner.conf /etc/MailScanner/MailScanner_backup.conf');
