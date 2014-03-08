@@ -709,7 +709,7 @@ function removeInstallSilently(){
 function installAntiSpam(){
 	
 	# Only install this if extra mode has been chosen and Ubuntu version is greater than 10
-	if [ "$installmode" == "extra" ] && [ "$yrelease" >= "10" ]; then
+	if [ "$installmode" == "extra" ] && [ "$yrelease" -ge "10" ]; then
 		# Postfix must be installed
 		CURDIR=$(pwd)	
 		ANTISPAMINSTALLED=$(which "spamassassin")
