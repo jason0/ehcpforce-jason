@@ -353,7 +353,7 @@ function installantispam(){ # thanks to  earnolmartin@gmail.com
 			// Oh yes, you asked for it... lots of packages are needed to make mailscanner work
 			aptget(array('gcc', 'g++', 'cpp', 'zlib1g-dev', 'libgmp3-dev', 'perl', 'bzip2', 'zip', 'make', 'patch', 'automake', 'libhtml-template-perl', 'linux-headers-`uname -r`', 'build-essential', 'libnewt-dev', 'libusb-dev', 'libconvert-tnef-perl', 'libdbd-sqlite3-perl', 'libfilesys-df-perl', 'libmailtools-perl', 'libmime-tools-perl', 'libmime-perl', 'libnet-cidr-perl', 'libsys-syslog-perl', 'libio-stringy-perl', 'libfile-temp-perl', 'libole-storage-lite-perl', 'libarchive-zip-perl', 'libole-storage-lite-perl', 'libdigest-sha-perl', 'libcompress-zlib-perl'));
 			
-			$softToInstall = 'libconvert-tnef-perl libdbd-sqlite3-perl libfilesys-df-perl libmailtools-perl libmime-tools-perl libmime-perl libnet-cidr-perl libsys-syslog-perl libio-stringy-perl libfile-temp-perl exim4 exim4-base exim4-config exim4-daemon-light heirloom-mailx libarchive-zip-perl libdigest-hmac-perl libencode-locale-perl liberror-perl libfile-listing-perl libfont-afm-perl libhtml-form-perl libhtml-format-perl libhtml-parser-perl libhtml-tagset-perl libhtml-tree-perl libhttp-cookies-perl libhttp-daemon-perl libhttp-date-perl libhttp-message-perl libhttp-negotiate-perl libio-socket-inet6-perl libio-socket-ssl-perl liblwp-mediatypes-perl liblwp-protocol-https-perl libmail-spf-perl libnet-dns-perl libnet-http-perl libnet-ip-perl libnet-ssleay-perl libnetaddr-ip-perl libole-storage-lite-perl libsocket6-perl libsys-hostname-long-perl liburi-perl libwww-perl libwww-robotrules-perl re2c spamassassin spamc';
+			$softToInstall = 'libconvert-tnef-perl libdbd-sqlite3-perl libfilesys-df-perl libmailtools-perl libmime-tools-perl libmime-perl libnet-cidr-perl libsys-syslog-perl libio-stringy-perl libfile-temp-perl heirloom-mailx libarchive-zip-perl libdigest-hmac-perl libencode-locale-perl liberror-perl libfile-listing-perl libfont-afm-perl libhtml-form-perl libhtml-format-perl libhtml-parser-perl libhtml-tagset-perl libhtml-tree-perl libhttp-cookies-perl libhttp-daemon-perl libhttp-date-perl libhttp-message-perl libhttp-negotiate-perl libio-socket-inet6-perl libio-socket-ssl-perl liblwp-mediatypes-perl liblwp-protocol-https-perl libmail-spf-perl libnet-dns-perl libnet-http-perl libnet-ip-perl libnet-ssleay-perl libnetaddr-ip-perl libole-storage-lite-perl libsocket6-perl libsys-hostname-long-perl liburi-perl libwww-perl libwww-robotrules-perl re2c spamassassin spamc';
 			aptget(explode(" ", $softToInstall));
 	
 			// Enable spam assassin
@@ -364,7 +364,7 @@ function installantispam(){ # thanks to  earnolmartin@gmail.com
 			passthru3('freshclam ; sa-update');
 			
 			// Configure mail scanner spam assassin directories
-			passthru3('mkdir /var/spool/MailScanner/spamassassin');
+			passthru3('mkdir -p /var/spool/MailScanner/spamassassin');
 			passthru3('chown postfix /var/spool/MailScanner/spamassassin');
 			
 			// Install mail scanner

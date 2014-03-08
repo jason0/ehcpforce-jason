@@ -709,6 +709,107 @@ function secureApache(){
 	fi
 }
 
+function installExtras(){
+	echo -n "Install extra software if it is not already installed (such as Mailscanner, SpamAssassin, ClamAV)? [y/n]: "
+	read insMode
+	
+	insMode=$(echo "$insMode" | awk '{print tolower($0)}')
+	
+	if [ "$insMode" != "n" ]; then
+		installAntiSpam
+	fi
+}
+
+function installAntiSpam(){
+	
+	# Postfix must be installed
+	ANTISPAMINSTALLED=$(which "spamassassin")
+	POSTFIXInstalled=$(which "postfix")
+	postFixUserExists=$(grep postfix /etc/passwd)
+	if [ ! -z "$POSTFIXInstalled" ] && [ ! -z "$postFixUserExists" ]; then
+		if [ -z "$ANTISPAMINSTALLED" ]; then
+			# SpamAssassin is not installed / configured
+			# Lets roll
+			# Set variables
+			SPConfig="/etc/default/spamassassin"
+			MConfig="/etc/MailScanner/MailScanner.conf"
+			PHeadChecks="/etc/postfix/header_checks"
+			PostFixConf="/etc/postfix/main.cf"
+			dMailScan="/etc/default/mailscanner"
+			
+			# Install all packages and dependencies
+			aptgetInstall postfix clamav clamav-daemon spamassassin
+			aptgetInstall gcc g++ cpp zlib1g-dev libgmp3-dev perl bzip2 zip make patch automake libhtml-template-perl linux-headers-`uname -r` build-essential libnewt-dev libusb-dev libconvert-tnef-perl libdbd-sqlite3-perl libfilesys-df-perl libmailtools-perl libmime-tools-perl libmime-perl libnet-cidr-perl libsys-syslog-perl libio-stringy-perl libfile-temp-perl libole-storage-lite-perl libarchive-zip-perl libole-storage-lite-perl libdigest-sha-perl libcompress-zlib-perl
+			aptgetInstall libconvert-tnef-perl libdbd-sqlite3-perl libfilesys-df-perl libmailtools-perl libmime-tools-perl libmime-perl libnet-cidr-perl libsys-syslog-perl libio-stringy-perl libfile-temp-perl heirloom-mailx libarchive-zip-perl libdigest-hmac-perl libencode-locale-perl liberror-perl libfile-listing-perl libfont-afm-perl libhtml-form-perl libhtml-format-perl libhtml-parser-perl libhtml-tagset-perl libhtml-tree-perl libhttp-cookies-perl libhttp-daemon-perl libhttp-date-perl libhttp-message-perl libhttp-negotiate-perl libio-socket-inet6-perl libio-socket-ssl-perl liblwp-mediatypes-perl liblwp-protocol-https-perl libmail-spf-perl libnet-dns-perl libnet-http-perl libnet-ip-perl libnet-ssleay-perl libnetaddr-ip-perl libole-storage-lite-perl libsocket6-perl libsys-hostname-long-perl liburi-perl libwww-perl libwww-robotrules-perl re2c spamassassin spamc
+			
+			# Enable SpamAssassin
+			if [ -e "$SPConfig" ]; then
+				sed -i "s#ENABLED=.*#ENABLED=1#g" "$SPConfig"
+				service spamassassin restart
+			fi
+			
+			# Update clamAV
+			freshclam ; sa-update
+			
+			# Make MailScanner Directories and Set Permissions
+			mkdir -p /var/spool/MailScanner/spamassassin
+			chown postfix /var/spool/MailScanner/spamassassin
+			
+			# Download deb packages we need
+			mkdir -p /root/Downloads/mailscanner
+			
+			# MailScanner Dependencies
+			if [ $OSBits -eq "32" ]; then
+				wget -P "/root/Downloads/mailscanner" -N "http://www.dinofly.com/files/linux/ehcp/libdigest-sha1-perl_2.13-2build2_i386.deb"
+				dpkg -i "/root/Downloads/mailscanner/libdigest-sha1-perl_2.13-2build2_i386.deb"
+			else
+				wget -P "/root/Downloads/mailscanner" -N "http://www.dinofly.com/files/linux/ehcp/libdigest-sha1-perl_2.13-2build2_amd64.deb"
+				dpkg -i "/root/Downloads/mailscanner/libdigest-sha1-perl_2.13-2build2_amd64.deb"
+			fi
+			
+			# Get MailScanner
+			wget -P "/root/Downloads/mailscanner" -N "http://www.dinofly.com/files/linux/ehcp/mailscanner_4.79.11-2.2_all.deb"
+			dpkg -i "/root/Downloads/mailscanner/mailscanner_4.79.11-2.2_all.deb"
+			
+			if [ -e "$MConfig" ]; then
+				cp "/etc/MailScanner/MailScanner.conf" "/etc/MailScanner/MailScanner_backup.conf"
+			fi
+			
+			# Set config for mailscanner
+			echo "%org-name% = EHCP Force
+			%org-long-name% = EHCP Force Email Scanner
+			%web-site% = www.ehcpforce.tk
+			 
+			Run As User = postfix
+			Run As Group = postfix
+			 
+			Incoming Queue Dir = /var/spool/postfix/hold
+			Outgoing Queue Dir = /var/spool/postfix/incoming
+			 
+			MTA = postfix
+			 
+			Virus Scanners = clamav
+			 
+			Spam List = SBL+XBL
+			## please check /etc/MailScanner/spam.lists.conf for more details ##
+			 
+			SpamAssassin User State Dir = /var/spool/MailScanner/spamassassin" > "$MConfig"	
+			
+			echo "/^Received:/ HOLD" > "$PHeadChecks"
+			sed -i "s#header_checks.*#header_checks = regexp:$PHeadChecks#g" "$PostFixConf"
+			
+			# Enable mail scanner
+			if [ -e "$dMailScan" ]; then
+				sed -i "s#run_mailscanner=.*#run_mailscanner=1#g" "$dMailScan"
+			fi
+				
+			# Restart services
+			service postfix restart
+			service mailscanner
+		fi
+	fi
+}
+
 
 ###############################
 ###START OF SCRIPT MAIN CODE###
@@ -797,5 +898,9 @@ finalize
 echo -e "Disabling BIND Recursion\n"
 # Disable Bind Recursion:
 disableRecursiveBIND
+
+echo -e "Presenting Additional User Options\n"
+# Install extra software if users want it:
+installExtras
 
 echo -e "\nSuccessfully updated EHCP Force Edition to the latest snapshot!"

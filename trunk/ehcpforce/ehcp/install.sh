@@ -114,7 +114,11 @@ else
 	
 	if [ "$insMode" != "n" ]; then
 		extra="extra"
+	else
+		extra="normal"
 	fi
+	
+	# Run the main installer
 	echo "bash install_main.sh $unattendedMode $extra"
 	bash install_main.sh $unattendedMode $extra
 	
