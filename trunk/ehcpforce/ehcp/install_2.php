@@ -93,10 +93,6 @@ if(!isset($installmode) || $installmode != 'light'){
 	apache_mod_secure_install();
 }
 
-if(isset($installmode) && $installmode == 'extra'){
-	installantispam();
-}
-
 # scandb();  no more need to scan db since ver. 0.29.15
 installfinish();
 

@@ -710,7 +710,8 @@ function secureApache(){
 }
 
 function installExtras(){
-	echo -n "Install extra software if it is not already installed (such as Mailscanner, SpamAssassin, ClamAV)? [y/n]: "
+	echo ""
+	echo -n "Install extra software if it is not already installed (such as Amavis, SpamAssassin, ClamAV)? [y/n]: "
 	read insMode
 	
 	insMode=$(echo "$insMode" | awk '{print tolower($0)}')
@@ -723,6 +724,7 @@ function installExtras(){
 function installAntiSpam(){
 	
 	# Postfix must be installed
+	CURDIR=$(pwd)	
 	ANTISPAMINSTALLED=$(which "spamassassin")
 	POSTFIXInstalled=$(which "postfix")
 	postFixUserExists=$(grep postfix /etc/passwd)
@@ -732,80 +734,175 @@ function installAntiSpam(){
 			# Lets roll
 			# Set variables
 			SPConfig="/etc/default/spamassassin"
-			MConfig="/etc/MailScanner/MailScanner.conf"
 			PHeadChecks="/etc/postfix/header_checks"
 			PostFixConf="/etc/postfix/main.cf"
-			dMailScan="/etc/default/mailscanner"
+			PostFixMaster="/etc/postfix/master.cf"
+			CONTENTFILTER="/etc/amavis/conf.d/15-content_filter_mode"
+			SPAMASSASSCONF="/etc/spamassassin/local.cf"
+			AMAVISHOST="/etc/amavis/conf.d/05-node_id"
 			
-			# Install all packages and dependencies
-			aptgetInstall postfix clamav clamav-daemon spamassassin
-			aptgetInstall gcc g++ cpp zlib1g-dev libgmp3-dev perl bzip2 zip make patch automake libhtml-template-perl linux-headers-`uname -r` build-essential libnewt-dev libusb-dev libconvert-tnef-perl libdbd-sqlite3-perl libfilesys-df-perl libmailtools-perl libmime-tools-perl libmime-perl libnet-cidr-perl libsys-syslog-perl libio-stringy-perl libfile-temp-perl libole-storage-lite-perl libarchive-zip-perl libole-storage-lite-perl libdigest-sha-perl libcompress-zlib-perl
-			aptgetInstall libconvert-tnef-perl libdbd-sqlite3-perl libfilesys-df-perl libmailtools-perl libmime-tools-perl libmime-perl libnet-cidr-perl libsys-syslog-perl libio-stringy-perl libfile-temp-perl heirloom-mailx libarchive-zip-perl libdigest-hmac-perl libencode-locale-perl liberror-perl libfile-listing-perl libfont-afm-perl libhtml-form-perl libhtml-format-perl libhtml-parser-perl libhtml-tagset-perl libhtml-tree-perl libhttp-cookies-perl libhttp-daemon-perl libhttp-date-perl libhttp-message-perl libhttp-negotiate-perl libio-socket-inet6-perl libio-socket-ssl-perl liblwp-mediatypes-perl liblwp-protocol-https-perl libmail-spf-perl libnet-dns-perl libnet-http-perl libnet-ip-perl libnet-ssleay-perl libnetaddr-ip-perl libole-storage-lite-perl libsocket6-perl libsys-hostname-long-perl liburi-perl libwww-perl libwww-robotrules-perl re2c spamassassin spamc
+			# Install Anti-Spam Software
+			aptgetInstall "amavisd-new spamassassin clamav-daemon"
 			
-			# Enable SpamAssassin
-			if [ -e "$SPConfig" ]; then
-				sed -i "s#ENABLED=.*#ENABLED=1#g" "$SPConfig"
-				service spamassassin restart
-			fi
+			# Install individually incase some packages are not found
+			aptgetInstall libnet-dns-perl
+			aptgetInstall pyzor
+			aptgetInstall razor
+			aptgetInstall arj
+			aptgetInstall bzip2
+			aptgetInstall cabextract
+			aptgetInstall cpio
+			aptgetInstall file
+			aptgetInstall gzip
+			aptgetInstall lha
+			aptgetInstall nomarch
+			aptgetInstall pax
+			aptgetInstall rar
+			aptgetInstall unrar
+			aptgetInstall unzip
+			aptgetInstall zip
+			aptgetInstall zoo
+			aptgetInstall unzoo
 			
-			# Update clamAV
-			freshclam ; sa-update
-			
-			# Make MailScanner Directories and Set Permissions
-			mkdir -p /var/spool/MailScanner/spamassassin
-			chown postfix /var/spool/MailScanner/spamassassin
-			
-			# Download deb packages we need
-			mkdir -p /root/Downloads/mailscanner
-			
-			# MailScanner Dependencies
-			if [ $OSBits -eq "32" ]; then
-				wget -P "/root/Downloads/mailscanner" -N "http://www.dinofly.com/files/linux/ehcp/libdigest-sha1-perl_2.13-2build2_i386.deb"
-				dpkg -i "/root/Downloads/mailscanner/libdigest-sha1-perl_2.13-2build2_i386.deb"
-			else
-				wget -P "/root/Downloads/mailscanner" -N "http://www.dinofly.com/files/linux/ehcp/libdigest-sha1-perl_2.13-2build2_amd64.deb"
-				dpkg -i "/root/Downloads/mailscanner/libdigest-sha1-perl_2.13-2build2_amd64.deb"
-			fi
-			
-			# Get MailScanner
-			wget -P "/root/Downloads/mailscanner" -N "http://www.dinofly.com/files/linux/ehcp/mailscanner_4.79.11-2.2_all.deb"
-			dpkg -i "/root/Downloads/mailscanner/mailscanner_4.79.11-2.2_all.deb"
-			
-			if [ -e "$MConfig" ]; then
-				cp "/etc/MailScanner/MailScanner.conf" "/etc/MailScanner/MailScanner_backup.conf"
-			fi
-			
-			# Set config for mailscanner
-			echo "%org-name% = EHCP Force
-			%org-long-name% = EHCP Force Email Scanner
-			%web-site% = www.ehcpforce.tk
-			 
-			Run As User = postfix
-			Run As Group = postfix
-			 
-			Incoming Queue Dir = /var/spool/postfix/hold
-			Outgoing Queue Dir = /var/spool/postfix/incoming
-			 
-			MTA = postfix
-			 
-			Virus Scanners = clamav
-			 
-			Spam List = SBL+XBL
-			## please check /etc/MailScanner/spam.lists.conf for more details ##
-			 
-			SpamAssassin User State Dir = /var/spool/MailScanner/spamassassin" > "$MConfig"	
-			
-			echo "/^Received:/ HOLD" > "$PHeadChecks"
-			sed -i "s#header_checks.*#header_checks = regexp:$PHeadChecks#g" "$PostFixConf"
-			
-			# Enable mail scanner
-			if [ -e "$dMailScan" ]; then
-				sed -i "s#run_mailscanner=.*#run_mailscanner=1#g" "$dMailScan"
-			fi
+			# Only keep going if we have the basic packages installed
+			AMAVISINS=$(which amavisd-new)
+			SPAMASSASSINS=$(which spamassassin)
 				
-			# Restart services
-			service postfix restart
-			service mailscanner
+			if [ ! -z "$AMAVISINS" ] && [ ! -z "$SPAMASSASSINS" ]; then
+			
+				# Add Users
+				adduser clamav amavis
+				adduser amavis clamav
+				
+				# Enable SpamAssassin
+				if [ -e "$SPConfig" ]; then
+					sed -i "s#ENABLED=.*#ENABLED=1#g" "$SPConfig"
+					sed -i "s#CRON=.*#CRON=1#g" "$SPConfig"
+					
+					# More settings
+					if [ -e "$SPAMASSASSCONF" ]; then
+						# Rewrite the header
+						sed -i "s/#rewrite_header.*/rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*/g" "$SPAMASSASSCONF"
+						sed -i "s/# rewrite_header.*/rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*/g" "$SPAMASSASSCONF"
+						sed -i "s#rewrite_header.*#rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*#g" "$SPAMASSASSCONF"
+						
+						# Set the spam score
+						sed -i "s/#required_score.*/required_score 12.0/g" "$SPAMASSASSCONF"
+						sed -i "s/# required_score.*/required_score 12.0/g" "$SPAMASSASSCONF"
+						sed -i "s#required_score.*#required_score 12.0#g" "$SPAMASSASSCONF"
+						
+						# use bayes 1
+						sed -i "s/#use_bayes.*/use_bayes 1/g" "$SPAMASSASSCONF"
+						sed -i "s/# use_bayes.*/use_bayes 1/g" "$SPAMASSASSCONF"
+						sed -i "s#use_bayes.*#use_bayes 1#g" "$SPAMASSASSCONF"
+						
+						# use bayes auto learn
+						sed -i "s/#bayes_auto_learn.*/bayes_auto_learn 1/g" "$SPAMASSASSCONF"
+						sed -i "s/# bayes_auto_learn.*/bayes_auto_learn 1/g" "$SPAMASSASSCONF"
+						sed -i "s#bayes_auto_learn.*#bayes_auto_learn 1#g" "$SPAMASSASSCONF"
+						
+					fi
+					
+					service spamassassin restart
+				fi
+				
+				# Integrate into postfix
+				postconf -e "content_filter = smtp-amavis:[127.0.0.1]:10024"
+				
+				echo "use strict;
+
+# You can modify this file to re-enable SPAM checking through spamassassin
+# and to re-enable antivirus checking.
+
+#
+# Default antivirus checking mode
+# Uncomment the two lines below to enable it
+#
+
+@bypass_virus_checks_maps = (
+	\%bypass_virus_checks, \@bypass_virus_checks_acl, \$bypass_virus_checks_re);
+
+
+#
+# Default SPAM checking mode
+# Uncomment the two lines below to enable it
+#
+
+@bypass_spam_checks_maps = (
+	\%bypass_spam_checks, \@bypass_spam_checks_acl, \$bypass_spam_checks_re);
+
+1;  # insure a defined return" > "$CONTENTFILTER"
+				if [ -e "$PostFixMaster" ]; then
+					POSTFIXMASCHECK1=$(cat "$PostFixMaster" | grep "smtp-amavis")
+					if [ -z "$POSTFIXMASCHECK1" ]; then
+						echo "smtp-amavis     unix    -       -       -       -       2       smtp
+		-o smtp_data_done_timeout=1200
+		-o smtp_send_xforward_command=yes
+		-o disable_dns_lookups=yes
+		-o max_use=20" >> "$PostFixMaster"
+					fi
+					
+					POSTFIXMASCHECK2=$(cat "$PostFixMaster" | grep "127.0.0.1:10025")
+					if [ -z "$POSTFIXMASCHECK2" ]; then
+						echo "
+127.0.0.1:10025 inet    n       -       -       -       -       smtpd
+		-o content_filter=
+		-o local_recipient_maps=
+		-o relay_recipient_maps=
+		-o smtpd_restriction_classes=
+		-o smtpd_delay_reject=no
+		-o smtpd_client_restrictions=permit_mynetworks,reject
+		-o smtpd_helo_restrictions=
+		-o smtpd_sender_restrictions=
+		-o smtpd_recipient_restrictions=permit_mynetworks,reject
+		-o smtpd_data_restrictions=reject_unauth_pipelining
+		-o smtpd_end_of_data_restrictions=
+		-o mynetworks=127.0.0.0/8
+		-o smtpd_error_sleep_time=0
+		-o smtpd_soft_error_limit=1001
+		-o smtpd_hard_error_limit=1000
+		-o smtpd_client_connection_count_limit=0
+		-o smtpd_client_connection_rate_limit=0
+		-o receive_override_options=no_header_body_checks,no_unknown_recipient_checks" >> "$PostFixMaster"
+					fi
+			
+				fi
+				
+				#http://stackoverflow.com/questions/11694980/using-sed-insert-a-line-below-or-above-the-pattern
+				POSTFIXMASCHECK3=$(cat "$PostFixMaster" | grep -A2 "pickup" | grep -v "pickup" | grep -o "\-o receive_override_options=no_header_body_checks$")
+				if [ -z "$POSTFIXMASCHECK3" ]; then
+					sed -i "/pickup.*/a\\\t-o receive_override_options=no_header_body_checks" "$PostFixMaster"
+				fi
+				
+				POSTFIXMASCHECK4=$(cat "$PostFixMaster" | grep -A2 'pickup' | grep -v "pickup" | grep -o "\-o content_filter=$")
+				if [ -z "$POSTFIXMASCHECK4" ]; then
+					sed -i "/pickup.*/a\\\t-o content_filter=" "$PostFixMaster"
+				fi
+				
+				# Prompt for FQDN
+				echo ""
+				echo -n "Please enter your Fully Qualified Domain Name (FQDN) for this mail server: "
+				read FQDNName
+				FQDNName=$(echo "$FQDNName" | awk '{print tolower($0)}')
+		
+				if [ -z "$FQDNName" ]; then
+					# Just replace it with ehcpforce.tk
+					sed -i "s/^#\$myhostname.*/\$myhostname = \"ehcpforce.tk\";/g" "$AMAVISHOST"
+					sed -i "s#^\$myhostname.*#\$myhostname = \"ehcpforce.tk\";#g" "$AMAVISHOST"
+				else
+					sed -i "s/^#\$myhostname.*/\$myhostname = \"$FQDNName\";/g" "$AMAVISHOST"
+					sed -i "s#^\$myhostname.*#\$myhostname = \"$FQDNName\";#g" "$AMAVISHOST"
+				fi
+				
+				# Should be good to go?
+				
+				# Restart Amavis
+				service amavis restart
+				
+				# Restart services
+				service postfix restart
+			
+			fi
 		fi
 	fi
 }

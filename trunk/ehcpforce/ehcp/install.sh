@@ -108,7 +108,7 @@ else
 		unattendedMode="unattended"
 	fi
 	echo ""
-	echo -n "Install extra software in addition to EHCP Force Edition (such as Mailscanner, SpamAssassin, ClamAV)? [y/n]: "
+	echo -n "Install extra software in addition to EHCP Force Edition (such as Amavis, SpamAssassin, ClamAV)? [y/n]: "
 	read insMode
 	insMode=$(echo "$insMode" | awk '{print tolower($0)}')
 	
