@@ -904,6 +904,22 @@ function installAntiSpam(){
 	fi
 }
 
+function fixSASLAUTH(){
+	# Fix SASLAUTH CACHE and limit to 2 threads to prevent memory leaks
+	if [ -e "/etc/default/saslauthd" ]; then
+		echo "NAME=\"saslauthd\"
+START=yes
+MECHANISMS=\"pam\"
+PARAMS=\"-s 5120 -m /var/spool/postfix/var/run/saslauthd -r\"
+OPTIONS=\"-s 5120 -m /var/spool/postfix/var/run/saslauthd -r\"
+THREADS=2
+" > "/etc/default/saslauthd"
+		
+		# restart the service
+		service saslauthd restart
+	fi
+}
+
 
 ###############################
 ###START OF SCRIPT MAIN CODE###
@@ -992,6 +1008,10 @@ finalize
 echo -e "Disabling BIND Recursion\n"
 # Disable Bind Recursion:
 disableRecursiveBIND
+
+echo -e "Fixing SASLAuth caching and setting maximum number of threads to 2.\n"
+# Prevent SASLAuth memory leaks:
+fixSASLAUTH
 
 echo -e "Presenting Additional User Options\n"
 # Install extra software if users want it:
