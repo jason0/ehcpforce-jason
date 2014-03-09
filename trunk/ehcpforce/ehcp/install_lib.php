@@ -816,8 +816,9 @@ $filecontent="
 NAME=\"saslauthd\"
 START=yes
 MECHANISMS=\"pam\"
-PARAMS=\"-m /var/spool/postfix/var/run/saslauthd -r\"
-OPTIONS=\"-m /var/spool/postfix/var/run/saslauthd -r\"
+PARAMS=\"-s 5120 -m /var/spool/postfix/var/run/saslauthd -r\"
+OPTIONS=\"-s 5120 -m /var/spool/postfix/var/run/saslauthd -r\"
+THREADS=2
 ";
 
 writeoutput("/etc/default/saslauthd",$filecontent,"w");
