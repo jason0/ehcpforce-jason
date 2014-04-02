@@ -1,0 +1,86 @@
+runop2 for ops that require >= 1 arguement
+runop for ops that require 0 args
+
+running daemon operations:
+    while true; do
+	select * from operations ... into $rs
+	if $rs
+	    foreach rs as op
+		runop2 ( op...) && update operations status ok
+
+	select * from operations ... into $rs	
+
+	    foreach rs as op
+		runop (op...) && ...
+
+	#each 200 loops, update webstats
+	#each 5 loops, check mysql connection
+	#each 50 loops
+	    $this->checkDynDns
+	    $this->daemonQuotaCheck
+	    $this->call_func_in_module(Vps_Module, vps_check_state_
+
+	sleep ($interval)
+    done
+
+
+op=adddomain
+    operation = syncdns
+       runop ... $this->syncDns()
+	    $this->getDomains
+	    calculateAliasedDomains
+		    
+	    put custom dns info into zone files	
+		read from database
+		write to zone files
+		bump bind9
+    
+
+    operation = daemonftp
+	runop2 $this->daemonftp
+	    case add:	mkdir -p <homedir?>
+			chown -Rf perms <homedir>
+	    case delete:
+	    case multiserver_add:
+	    case $this->status_passive:
+	    case $this->status_active:
+
+    operation = daemondomain  (I think this is where the apache config is built for each domain...)
+	runop2	$this->daemondomain()
+	    case multiserver_add_domain
+	    case add
+		$this->syncDomains '',$domainname
+		    getdomains
+		    getwebserver
+		    get webserver template filename
+		    foreach domain
+			initializeDomainFiles
+			    mkdir ...httpdocs dir
+			    setup default indexes, etc
+				templates: defaultindexfordomains
+				build index.php, chown it too.
+			    $this->intializeLogs
+			    $this->intializePhpTmpDir
+			    get customsettings table entry
+			    set custom file settings
+			    copy ehcp boilerplate html files into place
+			    
+			...
+			...
+		    done
+		    $this->build_logrotate_conf
+		    build template for this domain...
+		    sleep a while
+		    $this->syncApacheAuth
+		    $this->syncSubdomains
+		    $this->configtest_reload_webserver
+		    $this->updateHostsFile
+
+
+
+	    case delete
+	    case addsubdomain
+	    case delsubdomain
+
+
+

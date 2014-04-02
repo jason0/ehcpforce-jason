@@ -1,0 +1,88 @@
+Main page (after login!) (no op defined)
+    $app = new Application 
+    $app->run()
+	$this->initialize
+	    
+	$this->runOp($this->op)
+	    case: '' $this->displayHome()
+		homepages to be chosen 
+		    <blank>
+		    homepage_remote_hosting_dnsonly
+		    homepage_emailuser
+		    homepage_domainadmin
+		    homepage_domainadmin_forreseller <- default with selected domain *verified*
+		    homepage_reseller
+		    homepage_serveradmin  <- default no selected domain for login "admin" *verified*
+		
+		    boilerplate
+		    $output starts with $this->loadTemplate "$homepage"	
+			    templateengine=file
+			    load and return
+		
+
+	$this->show();
+	    $this->dynamicInfo()
+		
+	    $this->dynamicInfo2()
+
+
+
+
+
+
+
+
+add domain icon:    op=adddomain	$this->addDomain() 
+    after input screen 
+	$this->addDomainDirect(...)
+	    $this->adjustDomainname (strip off www)
+	    $this->afterInputControls
+		beforeInputControls
+		existscontrol
+	    
+	    build "homedir" from $conf['vhosts']/$ftpusername/$domainname
+	    insert into [domains table] the relevent data
+	    $this->addDaemonOp syncdns  (insert into operations...)
+	    $this->addFtpUserDirect()	
+		insert into ftpaccounts ...
+		$this->addDaemonOp "daemonftp"
+	    $this->addPanelUserDirect
+		...
+		insert into panelusers ...
+
+	    $this->addDaemonOp daemondomain
+	    ...
+	    $this->infotoadminemail domain setup message...
+
+
+	$this->setselectdomain($domainname)
+list domains icon:  op=selectdomain
+
+de-select domain link: http://jasonubuntu2/ehcp/?op=deselectdomain
+Other operations link: http://jasonubuntu2/ehcp/index.php?op=otheroperations calls $this->otheroperations
+    sets homepage template to either homepage_reseller_other or homepage_serveradmin_other
+
+
+
+list subdomains icon: op=subdomains
+add subdomain icon: op=addsubdomain  
+edit domain aliases: http://jasonubuntu2/ehcp/?op=editdomainaliases
+list custom http: http://jasonubuntu2/ehcp/?op=customhttp
+add custom http: http://jasonubuntu2/ehcp/?op=addcustomhttp
+edit apache template: http://jasonubuntu2/ehcp/?op=editapachetemplate
+edit dns template: http://jasonubuntu2/ehcp/?op=editdnstemplate
+list password protected directories: http://jasonubuntu2/ehcp/?op=directories
+add password protected directories: http://jasonubuntu2/ehcp/?op=adddirectory
+
+
+
+list databases: http://jasonubuntu2/ehcp/?op=domainop&action=listdb
+add mysql database and user: http://jasonubuntu2/ehcp/?op=addmysqldb
+
+add mysql database to existing user: http://jasonubuntu2/ehcp/?op=addmysqldbtouser
+add mysql user to existing database: http://jasonubuntu2/ehcp/?op=dbadduser
+
+
+delete account: http://jasonubuntu2/ehcp/?op=deletedomain
+activate/deactivate domain: http://jasonubuntu2/ehcp/?op=editdomain
+change settings: http://jasonubuntu2/ehcp/?op=domainsettings
