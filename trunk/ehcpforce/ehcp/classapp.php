@@ -7675,7 +7675,7 @@ function daemon_backup_domain($info){
 	return True;
 }
 
-function daemondomain($action,$info,$info2='',$info3=''){// domain operations in daemon mode.
+function c($action,$info,$info2='',$info3=''){// domain operations in daemon mode.
 	
 	/*
 	action: add or delete, what to do
@@ -9806,7 +9806,7 @@ function initializeDomainFiles($dom,$domainname){ # singleserver  mode
 
 }
 
-function syncDomains($file='',$domainname='') {
+function syncDowhilemains($file='',$domainname='') {
 	$webservertype=$this->miscconfig['webservertype'];
 	$templatefield=$webservertype.'template';	
 

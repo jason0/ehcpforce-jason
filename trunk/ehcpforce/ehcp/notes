@@ -1,0 +1,168 @@
+unattended can be "unattended"
+
+installmode=extra
+or
+#installmode=normal  implied as the norm...
+installmode=light
+
+noapt can be noapt  (don't actually do apt-based commands if defined!)
+
+
+=== program operation
+
+checkUser
+ehcpheader (stage 1)
+apparmor stop
+apparmor teardown
+checkDistro
+killallEhcp
+
+checkaptget
+updatebeforeinstall
+mkdir /etc/ehcp
+
+apt-get_update
+apt-getinstall
+	php5,php=mysql,php-cli
+	sudo,wget,aptitude
+		can install debconf-utils
+
+checkphp
+
+run install_1.php
+	include install_lib.php
+	initialize()
+		set infomailusingwget
+		apparmor stop
+		mkdir -p /etc/ehcp
+		cp /etc/apt/sources.list /etc/apt/sources.list.bck.ehcp
+		editinlinefile... /etc/apt/sources.list
+		getlocalip2
+		hostname
+		passthrough hostname myserver
+		bosluk (echo \n\n\n)
+		ehcpheader*()
+		bosluk
+		bekle (press enter to continue)
+		$app=new Aplication...
+		$app->commandline=true;
+		installmysql
+		sleep
+		getinputs (name, email, etc)
+		infomailusingwget...
+		mkdir -p $app->conf['namedbase']
+		checkaptget
+		extra|normal
+			install unrar,rar,unzip,zipo,mc,lynx,nmap
+		light
+			install openssh-server,python-mysqldb,pythoncherrypy3,apache2,bind9,php5-gd,libapahe-mod-ssl
+		
+		addifnotexists	
+		if not present in files, add:
+				extension=mysql.so to /etc/php5/apache2/php.ini
+				extension=mysql.so to /etc/php5/cli/php.ini
+				include "$app->confbase/named_ehcp.conf" to /etc/bind/named.conf
+		replacelineinfile
+			"listen-on {", "listen-on { any;};" /etc/bin/dnamed.conf.options
+		mkdir -p $ehcpinstalldir
+		mkdir -p $ehcpinstalldir/../../named/
+		
+		
+		
+	installfiles 
+		rm -Rf $ehcpinstalldir
+		mkdir $ehcpinstalldir
+		cp -Rf * $ehcpinstalldir
+		chmod a+r -R $ehcpinstalldir
+		mkdir -p /var/www/new/vhosts/ehcp
+		cp $ehcpinstalldir/misc/redirect_index.html -p /var/www/new/vhosts/ehcp/index.html
+		
+	installmailserver
+		(postfix and related...)
+		if unattended... echo postrix postfix/main_mailer_type select Internet Site |debconf-set-selections
+		echo postfix postfix/mailname string $(hostname) |debconf-set-selections
+		
+		if installmode extra/normal
+			install roundcube, installphpmyadmin
+		if light 
+			install postfix, postfix-mysql, mysql-client, courier-authdaemon, courirer-authmysql, courier-authlib-mysql, courier-imap{ssl_ libsasl ..		
+		restart mysql
+		cp -rf /usr/share/phpmyadmin /var/www/new
+		mailconfiguration ehcppass=...
+		mailnamefix
+		
+	passvariablestoinstall2
+		write vars to install2.1.php
+
+run install2.php
+	include install_lib.php, install2.1.php
+	
+	installsql
+		check if old ehcp db... backup if present
+		replacelineinfile dbrootpass,...config.php
+			dbpass
+			defaultlanguage
+		
+		filecontent = sql statement starting with "drop databawe if exists ehcp..."
+		write filecontent to file ehcp1.sql
+		mysql -u root -p < ehcp1.sql
+		mysql -D ehcp -uroot -p <ehcp.sql
+		cp config.php ...
+		rm ehcp1.sql
+		
+		$app=new Application()
+		app->connecttodb all below: $app...
+				set_ehcp_dir
+				setconfigvalue ehcpdir ehcpeinstalldir
+					dnsip ip
+					adminname username
+						adminemail useemail
+					disableditapachetemplate yset
+					disableditdnstameplate yes
+				updatepanelusers set password = md5(..._ email=useremail where panelusername=admin
+				commandline=true				
+	fail2ban install
+	install vsftpd server
+		install nginx webserer...only if > ubuntu 12.10
+	
+	if insatllmode > light, 
+		install_mod_secure_install
+			apt-get install libapache2-mod-evasive, libapache-mod-security
+			get_mod_secure_rules
+			apache-mod_secure_config
+			mod_secure_final
+				a2enmod...
+	installfinish
+		if installmode extra
+			install postgrey, ffmpeg,php5...
+			normal:	webalizer,php-pear,phpsysinfo,mailtuils,byobu
+			light: bind9-host,php5-curl,php5-xmlrpc,php5-imap
+			
+	chdir /var/www/new
+		ln -s /usr/sharepphpsysinfo phpsysinfo
+		chdir ehcpinstalldir
+	app->loadconfig			
+	app->adjust_wemail_dirs
+	writeoutput $app->namedbase/named_ehcp.conf
+	sendmailstop
+	configure phpmyadmin in apache
+	net2ftp_configuration
+	apache restart
+	bind9 restart
+	postfix restart
+	cp /etc/apt/sources.list.bck.ehcp /etc/apt/sources.list
+	replacelineinfile exit-0 /etc/init.d/ehcp restart /etc/rc.local
+		
+									
+		
+		
+		
+		
+		
+	
+		
+
+
+
+
+
