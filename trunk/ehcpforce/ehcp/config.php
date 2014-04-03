@@ -7,12 +7,12 @@ $skipupdatediskquota=true;
 $dbusername='ehcp';
 
 // user password
-$dbpass='test';
+$dbpass='505-couch!';
 
 // ehcp database name
 $dbname='ehcp';
 
-$dbrootpass='test';
+$dbrootpass='505-couch!';
 // mysql root password, used for db creation/deletion
 
 

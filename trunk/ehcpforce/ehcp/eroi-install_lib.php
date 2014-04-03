@@ -591,13 +591,13 @@ function mailNameFix(){
 
 function mailconfiguration($params) {
 	global $app,$ehcpinstalldir,$ip,$hostname,$user_email,$user_name,$ehcpmysqlpass,$rootpass,$newrootpass,$ehcpadminpass;
-echo "configuring mail ... ".__FUNCTION__."\n";
-
+echo "not configuring mail ... ".__FUNCTION__."\n";
+/*
+ * stub code now
 # very similar to: https://help.ubuntu.com/community/PostfixCompleteVirtualMailSystemHowto
 #print_r($params);
 # echo 'var_dump($ehcpmysqlpass,$rootpass,$newrootpass,$ehcpadminpass);\n';
 # var_dump($ehcpmysqlpass,$rootpass,$newrootpass,$ehcpadminpass);
-/*
 
  courier'e alternatif: dovecot:
  *
@@ -618,7 +618,7 @@ files to edit:
 maybe we can switch to dovecot, if  i can, a good start: http://workaround.org/ispmail/etch
 
 */
-
+/*
 
 
 
@@ -683,7 +683,7 @@ writeoutput("/etc/postfix/mysql-virtual_mailbox_limit_maps.cf",$filecontent,"w")
 
 
 # autoreply configuration: coded like: http://www.progression-asia.com/node/87
-
+*/
 /*
 I used ehcp's own php application, autoreply.php, instead of yaa.pl, since yaa.pl failed somehow, I wrote autoreply simply..
 
@@ -696,7 +696,7 @@ UNIQUE KEY domainname (domainname)
 ) TYPE=MyISAM;
 
 */
-
+/*
 $filecontent="
 user = ehcp
 password = ".$params['ehcppass']."
@@ -839,7 +839,7 @@ echo "Configuring Courier\n";
 echo "Now configuring to tell Courier that it should authenticate against our MySQL database.";
 addifnotexists("authmodulelist=\"authmysql\"","/etc/courier/authdaemonrc");
 
-//** tablo ismi degisirse, asagidaki emailusers da degismeli
+# tablo ismi degisirse, asagidaki emailusers da degismeli
 
 configureauthmysql(array('ehcppass'=>$ehcpmysqlpass));
 passthru("chown -Rvf postfix /var/lib/postfix/");
@@ -859,7 +859,7 @@ foreach(array('pop-before-smtp','postfix','saslauthd','courier-authdaemon','cour
 	passthru("/etc/init.d/$service restart");
 
 passthru("postfix check");
-
+*/
 
 }# end mailconfiguration
 
@@ -1028,39 +1028,46 @@ function installRoundCube(){#by earnolmartin@gmail.com
 }
 
 function installmailserver(){
+	/*
+	 * this is now a stub
+	 * I might consider installing DKIM stuff instead...
+	 * In which case, postfix will need to be configured to handle outgoing email only.
+	 */
 	global $app,$ehcpinstalldir,$ip,$hostname,$user_email,$user_name,$ehcpmysqlpass,$rootpass,$newrootpass,$ehcpadminpass,$installmode,$unattended;
-	echo "starting mail server installation (postfix and related programs)\n\n";
+	return true;
 
-	# If /etc/postfix/main.cf does not exist, it must exist before unattended install will work properly with PostFix
-	# See here:
-	# http://www.whatastruggle.com/postfix-non-interactive-install
-	# Added by Eric Arnol-Martin <earnolmartin@gmail.com>
+echo "starting mail server installation (postfix and related programs)\n\n";
+
+# If /etc/postfix/main.cf does not exist, it must exist before unattended install will work properly with PostFix
+# See here:
+# http://www.whatastruggle.com/postfix-non-interactive-install
+# Added by Eric Arnol-Martin <earnolmartin@gmail.com>
 	if($unattended){
-		 copyPostFixConfig();
-		 passthru3("echo 'postfix postfix/main_mailer_type select Internet Site' | debconf-set-selections");
-		 passthru3("echo 'postfix postfix/mailname string $(hostname)' | debconf-set-selections");
-	}
+	 copyPostFixConfig();
+	 passthru3("echo 'postfix postfix/main_mailer_type select Internet Site' | debconf-set-selections");
+	 passthru3("echo 'postfix postfix/mailname string $(hostname)' | debconf-set-selections");
+}
 
-	# Install these packages and answer configuration questions if unattended
-	# Then install the rest of the packages
-	# Added by Eric Arnol-Martin <earnolmartin@gmail.com>
-	# Place these functions wherever you want in your switch statement... they are currently here for testing
+# Install these packages and answer configuration questions if unattended
+# Then install the rest of the packages
+# Added by Eric Arnol-Martin <earnolmartin@gmail.com>
+# Place these functions wherever you want in your switch statement... they are currently here for testing
 
 	switch($installmode) {
-		case 'extra':
-		case 'normal': installRoundCube();installPHPMYAdmin();
-		case 'light': aptget(array('postfix','postfix-mysql','mysql-client','courier-authdaemon','courier-authmysql','courier-authlib-mysql','courier-pop','courier-pop-ssl','courier-imap','courier-imap-ssl','libsasl2-2','libsasl2','libsasl2-modules','libsasl2-modules-sql','sasl2-bin','libpam-mysql','openssl','pop-before-smtp')); # changed libsasl2-2 to libsasl2 **
-			break;
-		default: echo "Unknown installmode parameter at ".__LINE__;
+	case 'extra':
+	case 'normal': installRoundCube();installPHPMYAdmin();
+	case 'light': aptget(array('postfix','postfix-mysql','mysql-client','courier-authdaemon','courier-authmysql','courier-authlib-mysql','courier-pop','courier-pop-ssl','courier-imap','courier-imap-ssl','libsasl2-2','libsasl2','libsasl2-modules','libsasl2-modules-sql','sasl2-bin','libpam-mysql','openssl','pop-before-smtp')); # changed libsasl2-2 to libsasl2 **
+		break;
+	default: echo "Unknown installmode parameter at ".__LINE__;
 	}
 
 	// No longer needed
 	// Below lines were causing problems on latest Ubuntu distros
 	// passthru2("killall mysqld_safe"); # because, after first install of mysql, this process somehow uses %100 of cpu, in an endless loop.. kill this and restart mysql..
 	// passthru2("killall mysqld");
-	sleep(10);
-	passthru2("/etc/init.d/mysql restart ");
-	passthru2("cp -rf /usr/share/phpmyadmin /var/www/new");
+	#sleep(10);
+	#passthru2("/etc/init.d/mysql restart ");
+	#passthru2("cp -rf /usr/share/phpmyadmin /var/www/new");
 
 	# aptitude install postfix postfix-mysql postfix-doc mysql-client courier-authdaemon courier-authmysql courier-authlib-mysql courier-pop courier-pop-ssl courier-imap courier-imap-ssl libsasl2-2 libsasl2 libsasl2-modules libsasl2-modules-sql sasl2-bin libpam-mysql openssl phpmyadmin pop-before-smtp
 
@@ -1068,7 +1075,7 @@ function installmailserver(){
 	#remove:  apt-get remove postfix postfix-mysql postfix-doc mysql-client mysql-server courier-authdaemon courier-authmysql courier-pop courier-pop-ssl courier-imap courier-imap-ssl libsasl2 libsasl2-modules libsasl2-modules-sql sasl2-bin libpam-mysql openssl phpmyadmin
 	bosluk2();
 	# all mail configuration should be moved into this function: bvidinli, to be able to re-configure mail later
-	mailconfiguration(array('ehcppass'=>$ehcpmysqlpass));
+	#mailconfiguration(array('ehcppass'=>$ehcpmysqlpass));
 	mailNameFix();
 
 	echo "\n\nfinished mail server,pop3,imap installation \n";
@@ -1226,10 +1233,14 @@ function vsftpd_configuration($params){
 	# burda sorun su: mysql password( fonksiyonu, mysqlde internal kullaniliyormus, bu yuzden normal programlarda kullanilmamaliymis..
 	# denedim, iki farklki mysqlde farkli sonuc uretebiliyor. bu nedenle, gercekten kullanilmamali..
 
+	# jason modifys this so we can ALSO use ftp system accounts!
 	$filecontent="
-	auth required pam_mysql.so user=ehcp passwd=".$params['ehcppass']." host=localhost db=ehcp table=ftpaccounts usercolumn=ftpusername passwdcolumn=password crypt=2
-	account required pam_mysql.so user=ehcp passwd=".$params['ehcppass']." host=localhost db=ehcp table=ftpaccounts usercolumn=ftpusername passwdcolumn=password crypt=2
-	";
+	auth sufficient pam_mysql.so user=ehcp passwd=".$params['ehcppass']." host=localhost db=ehcp table=ftpaccounts usercolumn=ftpusername passwdcolumn=password crypt=2
+	account sufficient pam_mysql.so user=ehcp passwd=".$params['ehcppass']." host=localhost db=ehcp table=ftpaccounts usercolumn=ftpusername passwdcolumn=password crypt=2
+	@include  common-account
+    @include common-session
+    @include common-auth
+";
 
 	writeoutput("/etc/pam.d/vsftpd",$filecontent,"w");
 
@@ -1266,6 +1277,7 @@ ftpd_banner=Welcome to vsFTPd Server, managed by EHCP (Easy Hosting Control Pane
 	passthru2("usermod -g $app->ftpgroup $app->ftpuser");
 	passthru("/etc/init.d/vsftpd restart");
 
+	# should I also add vsftp_user_conf entries for each user?
 
 }
 
@@ -1591,12 +1603,15 @@ Some install/usage info and your name/email is sent to ehcp developpers for stat
 
 	addifnotexists("extension=mysql.so","/etc/php5/apache2/php.ini");
 	addifnotexists("extension=mysql.so","/etc/php5/cli/php.ini");
-	addifnotexists("include \"".$app->conf['namedbase']."/named_ehcp.conf\";","/etc/bind/named.conf");
-	replacelineinfile("listen-on {", "listen-on { any; };", "/etc/bind/named.conf.options"); # if listen-on { 127.0.0.1; }; then, dns cannot be seen from outside..
-
+/* removed by jason cuz we ain't doing named
+ *	addifnotexists("include \"".$app->conf['namedbase']."/named_ehcp.conf\";","/etc/bind/named.conf");
+ *	replacelineinfile("listen-on {", "listen-on { any; };", "/etc/bind/named.conf.options"); # if listen-on { 127.0.0.1; }; then, dns cannot be seen from outside..
+ *
+ */
         echo "* installpath set as: $ehcpinstalldir \n";
 	executeprog2("mkdir -p $ehcpinstalldir");
-	executeprog2("mkdir -p $ehcpinstalldir/../../named/");
+# 	removed by jason
+#	executeprog2("mkdir -p $ehcpinstalldir/../../named/");
 
 }
 
@@ -1619,7 +1634,7 @@ function passvariablestoinstall2(){
 
 
 	?>";
-	writeoutput('install2.1.php',$file,"w");// dynamically setup install2.1.php, to pass some variables to install2.php
+	writeoutput('eroi-install2.1.php',$file,"w");// dynamically setup install2.1.php, to pass some variables to install2.php
 
 }
 
@@ -1659,9 +1674,11 @@ function installfinish() {
 	global $ehcpinstalldir,$ehcpmysqlpass,$app,$user_email,$user_name,$header,$installextrasoftware,$lightinstall,$installmode;
 
 	switch($installmode) {
-		case 'extra': aptget(array('postgrey','ffmpeg','php5-ffmpeg','mplayer','mencoder','nmap','listadmin','aptitude','gpac','libavcodec-unstripped'));
+		case 'extra':
+			# aptget(array('postgrey','ffmpeg','php5-ffmpeg','mplayer','mencoder','nmap','listadmin','aptitude','gpac','libavcodec-unstripped'));
 		case 'normal': aptget(array('webalizer','php-pear','phpsysinfo','mailutils','byobu'));
-		case 'light': aptget(array('bind9-host','php5-curl','php5-xmlrpc','php5-imap'));
+		#case 'light': aptget(array('bind9-host','php5-curl','php5-xmlrpc','php5-imap'));
+		case 'light': aptget(array('bind9-host','php5-curl','php5-xmlrpc'));
 			break;
 		default: echo "Unknown installmode parameter at ".__LINE__;
 	}
@@ -1681,7 +1698,7 @@ function installfinish() {
 
 	$app->loadConfig();// loads dns ip and other thing
 	$app->adjust_webmail_dirs();
-	writeoutput($app->conf['namedbase']."/named_ehcp.conf","","w");
+#	writeoutput($app->conf['namedbase']."/named_ehcp.conf","","w");
 
 	# $app->addDaemonOp("syncdns",'','','','sync dns'); # no need to sync, since ehvp ver  0.29.15, because before it, 0 # of domains caused ehcp to crash., now not.
 	# echo "syncdns finished\n";
@@ -1704,8 +1721,8 @@ function installfinish() {
 
 	echo "\nPlease wait while services restarting...\n\n";
 	passthru("/etc/init.d/apache2 restart");
-	passthru("/etc/init.d/bind9 restart");
-	passthru("/etc/init.d/postfix restart");
+#	passthru("/etc/init.d/bind9 restart");
+#	passthru("/etc/init.d/postfix restart");
 	passthru("cp /etc/apt/sources.list.bck.ehcp /etc/apt/sources.list");
 	replacelineinfile("exit 0", "/etc/init.d/ehcp restart", "/etc/rc.local");
 	$add="/var/log/ehcp.log /var/log/apache_common_access_log {

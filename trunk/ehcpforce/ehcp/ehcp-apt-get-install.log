@@ -1,0 +1,83 @@
+apt-get -y --no-remove --allow-unauthenticated install python-software-properties
+apt-get -y --no-remove --allow-unauthenticated install php5
+apt-get -y --no-remove --allow-unauthenticated install php5-mysql
+apt-get -y --no-remove --allow-unauthenticated install php5-cli
+apt-get -y --no-remove --allow-unauthenticated install sudo
+apt-get -y --no-remove --allow-unauthenticated install wget
+apt-get -y --no-remove --allow-unauthenticated install aptitude
+apt-get -y --no-remove --allow-unauthenticated install mysql-server command returned 0
+apt-get -y --no-remove --allow-unauthenticated install mysql-server
+apt-get -y --no-remove --allow-unauthenticated install mysql-client command returned 0
+apt-get -y --no-remove --allow-unauthenticated install mysql-client
+apt-get -y --no-remove --allow-unauthenticated install python-software-properties
+apt-get -y --no-remove --allow-unauthenticated install php5
+apt-get -y --no-remove --allow-unauthenticated install php5-mysql
+apt-get -y --no-remove --allow-unauthenticated install php5-cli
+apt-get -y --no-remove --allow-unauthenticated install sudo
+apt-get -y --no-remove --allow-unauthenticated install wget
+apt-get -y --no-remove --allow-unauthenticated install aptitude
+apt-get -y --no-remove --allow-unauthenticated install mysql-server command returned 0
+apt-get -y --no-remove --allow-unauthenticated install mysql-server
+apt-get -y --no-remove --allow-unauthenticated install mysql-client command returned 0
+apt-get -y --no-remove --allow-unauthenticated install mysql-client
+apt-get -y --no-remove --allow-unauthenticated install unrar command returned 0
+apt-get -y --no-remove --allow-unauthenticated install unrar
+apt-get -y --no-remove --allow-unauthenticated install rar command returned 0
+apt-get -y --no-remove --allow-unauthenticated install rar
+apt-get -y --no-remove --allow-unauthenticated install unzip command returned 0
+apt-get -y --no-remove --allow-unauthenticated install unzip
+apt-get -y --no-remove --allow-unauthenticated install zip command returned 0
+apt-get -y --no-remove --allow-unauthenticated install zip
+apt-get -y --no-remove --allow-unauthenticated install mc command returned 0
+apt-get -y --no-remove --allow-unauthenticated install mc
+apt-get -y --no-remove --allow-unauthenticated install lynx command returned 0
+apt-get -y --no-remove --allow-unauthenticated install lynx
+apt-get -y --no-remove --allow-unauthenticated install nmap command returned 0
+apt-get -y --no-remove --allow-unauthenticated install nmap
+apt-get -y --no-remove --allow-unauthenticated install openssh-server command returned 0
+apt-get -y --no-remove --allow-unauthenticated install openssh-server
+apt-get -y --no-remove --allow-unauthenticated install python-mysqldb command returned 0
+apt-get -y --no-remove --allow-unauthenticated install python-mysqldb
+apt-get -y --no-remove --allow-unauthenticated install python-cherrypy3 command returned 0
+apt-get -y --no-remove --allow-unauthenticated install python-cherrypy3
+apt-get -y --no-remove --allow-unauthenticated install apache2 command returned 0
+apt-get -y --no-remove --allow-unauthenticated install apache2
+apt-get -y --no-remove --allow-unauthenticated install php5-gd command returned 0
+apt-get -y --no-remove --allow-unauthenticated install php5-gd
+apt-get -y --no-remove --allow-unauthenticated install libapache-mod-ssl command returned 100
+apt-get -y --no-remove --allow-unauthenticated install libapache-mod-ssl
+apt-get install libapache-mod-ssl
+apt-get -y --no-remove --allow-unauthenticated install fail2ban command returned 0
+apt-get -y --no-remove --allow-unauthenticated install fail2ban
+apt-get -y --no-remove --allow-unauthenticated install vsftpd command returned 0
+apt-get -y --no-remove --allow-unauthenticated install vsftpd
+apt-get -y --no-remove --allow-unauthenticated install nginx command returned 0
+apt-get -y --no-remove --allow-unauthenticated install nginx
+apt-get -y --no-remove --allow-unauthenticated install php5-fpm command returned 0
+apt-get -y --no-remove --allow-unauthenticated install php5-fpm
+apt-get -y --no-remove --allow-unauthenticated install php5-cgi command returned 0
+apt-get -y --no-remove --allow-unauthenticated install php5-cgi
+apt-get -y --no-remove --allow-unauthenticated install libapache2-mod-php5 command returned 0
+apt-get -y --no-remove --allow-unauthenticated install libapache2-mod-php5
+apt-get -y --no-remove --allow-unauthenticated install php5 command returned 0
+apt-get -y --no-remove --allow-unauthenticated install php5
+apt-get -y --no-remove --allow-unauthenticated install libapache2-mod-evasive command returned 0
+apt-get -y --no-remove --allow-unauthenticated install libapache2-mod-evasive
+apt-get -y --no-remove --allow-unauthenticated install libapache-mod-security command returned 0
+apt-get -y --no-remove --allow-unauthenticated install libapache-mod-security
+apt-get -y --no-remove --allow-unauthenticated install webalizer command returned 0
+apt-get -y --no-remove --allow-unauthenticated install webalizer
+apt-get -y --no-remove --allow-unauthenticated install php-pear command returned 0
+apt-get -y --no-remove --allow-unauthenticated install php-pear
+apt-get -y --no-remove --allow-unauthenticated install phpsysinfo command returned 0
+apt-get -y --no-remove --allow-unauthenticated install phpsysinfo
+apt-get -y --no-remove --allow-unauthenticated install mailutils command returned 0
+apt-get -y --no-remove --allow-unauthenticated install mailutils
+apt-get -y --no-remove --allow-unauthenticated install byobu command returned 0
+apt-get -y --no-remove --allow-unauthenticated install byobu
+apt-get -y --no-remove --allow-unauthenticated install bind9-host command returned 0
+apt-get -y --no-remove --allow-unauthenticated install bind9-host
+apt-get -y --no-remove --allow-unauthenticated install php5-curl command returned 0
+apt-get -y --no-remove --allow-unauthenticated install php5-curl
+apt-get -y --no-remove --allow-unauthenticated install php5-xmlrpc command returned 0
+apt-get -y --no-remove --allow-unauthenticated install php5-xmlrpc

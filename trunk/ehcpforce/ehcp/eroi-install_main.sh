@@ -973,14 +973,14 @@ php eroi-install_2.php $version $distro $noapt $unattended $installmode
 
 # Post Install Functions by Eric Arnol-Martin
 
-mv /var/www/new/ehcp/install_?.php /etc/ehcp/   # move it, to prevent later unauthorized access of installer from web
-mv /var/www/new/ehcp/eroi-install_?.php /etc/ehcp/   # move it, to prevent later unauthorized access of installer from web
+# mv /var/www/new/ehcp/install_?.php /etc/ehcp/   # move it, to prevent later unauthorized access of installer from web
+# mv /var/www/new/ehcp/eroi-install_?.php /etc/ehcp/   # move it, to prevent later unauthorized access of installer from web
 
 cd "/var/www/new/ehcp"
 # Run VSFTPD Fix depending on version
 ubuntuVSFTPDFix
 # Run SlaveDNS Fix So that DNS Zones can be transfered
-slaveDNSApparmorFix
+# jason slaveDNSApparmorFix
 # Fix EHCP Permissions
 fixEHCPPerms
 # Run log chmod fix
@@ -996,7 +996,7 @@ fixPHPConfig
 # Fix generic problems in Ubuntu
 genUbuntuFixes
 # Secure BIND9 Configuration
-disableRecursiveBIND
+# jason disableRecursiveBIND
 # Make it so that strangers can't just browse folders without an index file
 secureApache
 # Remove unattended install file if exists
@@ -1005,7 +1005,7 @@ removeInstallSilently
 echo "Initializing the EHCP Daemon"
 restartDaemons
 # Install SpamAssassin and Others Depending on Install Mode
-installAntiSpam
+# jason installAntiSpam
 # Send email informing admin install is complete
 infoMail "ehcp_8_install-finished-install.sh_ver_$ehcpversion.$outside_ip"
 # Inform installation is complete

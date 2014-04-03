@@ -36,7 +36,7 @@ run install_1.php
 		apparmor stop
 		mkdir -p /etc/ehcp
 		cp /etc/apt/sources.list /etc/apt/sources.list.bck.ehcp
-		editinlinefile... /etc/apt/sources.list
+		editinlinefile... /etc/apt/sources.list replace #deb lines with deb (allow universal, etc packages)
 		getlocalip2
 		hostname
 		passthrough hostname myserver
@@ -46,26 +46,34 @@ run install_1.php
 		bekle (press enter to continue)
 		$app=new Aplication...
 		$app->commandline=true;
-		installmysql
+		installmysql 
+			----> apt-get install mysql-server, mysql-client, 
+			fix /etc/mysql/my.cnf 
+			stopmysql
+			kill -9 all mysql daemons
+			restart mysql
 		sleep
 		getinputs (name, email, etc)
+			in here is set ehcpinstalldir == /var/www/new/ehcp
 		infomailusingwget...
-		mkdir -p $app->conf['namedbase']
+		mkdir -p $app->conf['namedbase'] --> for doing named/bind9
 		checkaptget
 		extra|normal
 			install unrar,rar,unzip,zipo,mc,lynx,nmap
 		light
-			install openssh-server,python-mysqldb,pythoncherrypy3,apache2,bind9,php5-gd,libapahe-mod-ssl
+			install openssh-server,python-mysqldb,pythoncherrypy3,apache2,bind9,php5-gd,libapahe-mod-ssl 
+				removed bind9
 		
 		addifnotexists	
-		if not present in files, add:
-				extension=mysql.so to /etc/php5/apache2/php.ini
-				extension=mysql.so to /etc/php5/cli/php.ini
-				include "$app->confbase/named_ehcp.conf" to /etc/bind/named.conf
+		fix php ini files for apache and cli to include mysql.so
+		include "$app->confbase/named_ehcp.conf" to /etc/bind/named.conf
+			removed 
 		replacelineinfile
 			"listen-on {", "listen-on { any;};" /etc/bin/dnamed.conf.options
+			removed
 		mkdir -p $ehcpinstalldir
 		mkdir -p $ehcpinstalldir/../../named/
+			removed
 		
 		
 		
@@ -78,6 +86,8 @@ run install_1.php
 		cp $ehcpinstalldir/misc/redirect_index.html -p /var/www/new/vhosts/ehcp/index.html
 		
 	installmailserver
+		removed (made into a stub) but would be a great place to configure dkim...
+		
 		(postfix and related...)
 		if unattended... echo postrix postfix/main_mailer_type select Internet Site |debconf-set-selections
 		echo postfix postfix/mailname string $(hostname) |debconf-set-selections
@@ -122,36 +132,142 @@ run install2.php
 				updatepanelusers set password = md5(..._ email=useremail where panelusername=admin
 				commandline=true				
 	fail2ban install
+		apt-get install fail2ban
+		fail2ban_config
+			cp ehcpinstalldir/fail2ban/ehcp.conf to /etc/fail2ban/filter.d/ehcp.conf
+			cp ehcpinstalldir/fail2ban/apache-dos.conf /etc/failtoban/filter.d/apache-dos.conf
+			if exists /etc/fail2ban/jail.local, cp ehcpinstalldir/fail2ban/jail.local /etc/fail2ban
+				update jail.local with correct user_email
+				update jail.local with [ehcp] and [apache-dos] sections
+			restart fail2ban	
+			
+				
 	install vsftpd server
-		install nginx webserer...only if > ubuntu 12.10
-	
+		nuke proftpd
+		apt-get install vsftpd
+			useradd --home $vhostsdir --gid $app->ftpgroup -m --shell /bin/false $app->ftpuser
+			cp /etc/vsftpd.conf /etc/vsftpd.conf_orig
+			vsftpd_configuration
+				modify /etc/pam.d/vsftpd
+					modified to be sufficient and also allow system ftp usage
+				write vsftpd.configuration file
+					probably a good place to insert specific vsftpd_user_conf entries...
+				
+	install nginx webserer...only if > ubuntu 12.10
+		how does this serve ehcp?  I assume it does instead of apache...
+		
+	installappacheserver
+		apt-get install libapache2-mod-php5, php5
+		rebuild_apache2_config2()
+			copy entire /etc/apache2 directory to /etc/apache2/backupbyehcp.date
+			add if not exists to /etc/apache2/apache2.conf:
+				Include apachehcp_subdomains.conf
+				Include apachehcp_auth.conf
+				Include apachehcp_passivedomains.conf
+				Include apachehcp.conf
+				ServerName myserver
+			alter /etc/apache2/envvars
+				alter apache_run_user to $app->wwwuser
+				alter apache_run_group to $app->wwwgroup	
+			add if not exists to envvars 
+				umask 111
+			copy /etc/apache2/sites-available/default -> sites-available/default.original.date
+			copy ehcpinstalldir/etc/apache2/default /etc/apache2/siteavailable/default
+			copy this new default file to default.ehcpbackup.date and to 000-default (?)
+			cp ehcp...apachetemplate* ehcpinstalldir
+			cp ehcp...*template ehcpinstalldir
+			cp ehcp...ports.conf /etc/apache2
+			rm /etc/apache2/sites-enabled/*
+			cp /etc/apache2/sites-available/default /etc/apache2/sites-enabled (why not symlink?)
+			a2enmod rewrite, php5,expires,headers
+			...
+			...	
+			
+			
 	if insatllmode > light, 
 		install_mod_secure_install
 			apt-get install libapache2-mod-evasive, libapache-mod-security
 			get_mod_secure_rules
-			apache-mod_secure_config
+				wget mod_security_rules.tar.gz from www.dinofly.com...
+				copy rules into place
+			apache_mod_secure_config
+				copy ehcp-supplied modsecure and modevasive apache config files in place
+				modify modevasive config file
+					set DOSEmailNotify to $user_email
 			mod_secure_final
-				a2enmod...
+				a2enmod mod-evasive mod-security
 	installfinish
+		mailutils, bind stuff, webalizer, etc
 		if installmode extra
 			install postgrey, ffmpeg,php5...
 			normal:	webalizer,php-pear,phpsysinfo,mailtuils,byobu
 			light: bind9-host,php5-curl,php5-xmlrpc,php5-imap
 			
-	chdir /var/www/new
-		ln -s /usr/sharepphpsysinfo phpsysinfo
-		chdir ehcpinstalldir
-	app->loadconfig			
-	app->adjust_wemail_dirs
-	writeoutput $app->namedbase/named_ehcp.conf
-	sendmailstop
-	configure phpmyadmin in apache
-	net2ftp_configuration
-	apache restart
-	bind9 restart
-	postfix restart
-	cp /etc/apt/sources.list.bck.ehcp /etc/apt/sources.list
-	replacelineinfile exit-0 /etc/init.d/ehcp restart /etc/rc.local
+		$app->loadConfig
+		$app->adjust_webmail_dirs
+			can be nuked...
+		modify named.conf
+			nuked
+		stop sendmail/postfix
+		configure phpmyadmin
+		configure net2ftp
+		restart apache, bind9, postfix
+		reset apt/sources.list to original
+		add ehcp to /etc/rc.local
+		modifyehcp to logrotate.d
+		restart mysql
+		update -rc.d -f nginx remove
+		update-rc.d apache2 defaults
+		apparmor stop
+		
+
+mv ehcp/*install.?php /etc/ehcp
+					
+ubuntuVSFTPDFix
+	12.04 replace vsftpd with ppa:thefrontiergroup/vsftpd
+		...must be a bug...
+		fixVSFTPConfig
+			alter chroot_local_user-no to yes
+			alter allow_writeable_chrrot-no to yes
+			libldapfix
+			aptget install libgcc1
+			alter seccomp_sandbox=yes to no
+			restart vsftpd
+			
+	
+slaveDNSApparmorFix
+	change an apparmor rule in /etc/apparmor.d/usr.sbin/named to make the bind dir read-write.
+fixEHCPPerms
+	set dir permissions and ownerships for var/www...
+logDirFix
+	set permissios to make log files writabel by ehcp probably.
+changeApacheUser		
+	change apache user to vsftpd ?
+	change nginx user and php-fpm user too.	
+nginxRateLimit
+	
+fixPHPConfig
+	alter cli ini: ensure extension of mysql.o is there.  restart apache
+	
+genUbuntuFixes
+	ubuntu changes things in 13+
+disableRecursiveBIND
+	block attacks and secures bind
+secureApache
+	remove Indexes from /var/www and set +FollowSymlinks
+removeInstallSilently
+restartDaemons
+	killall and restart mysql
+	restart apache2 and ehcp
+installAntiSpaminfoMail
+	only if extra installatinos....
+		install spamassasin
+
+...
+launchPanel
+
+	
+
 		
 									
 		

@@ -10,18 +10,18 @@
 #	   - added initial support for yum (RedHat/CentOS)
 #	   - some code ordering, documentation and cleanup
 #
-# by earnolmartin@gmail.com : many fixes, 
+# by earnolmartin@gmail.com : many fixes,
 
 ########################
 # FORK INFORMATION     #
 ########################
 # Fork created by earnolmartin@gmail.com
 # http://ehcpforce.tk
-# This forked version of EHCP offers new functionality and features (custom FTP accounts, proper web user permissions so that PHP scripts work as intended, and more) 
+# This forked version of EHCP offers new functionality and features (custom FTP accounts, proper web user permissions so that PHP scripts work as intended, and more)
 # that were not previously available in the main EHCP release.
 # Also, this forked version is updated on a regular basis when a new version of Ubuntu comes out.
 # You should run this fork on Ubuntu.  It will work perfectly on all supported Ubuntu versions (The ones Ubuntu officially supports such as the LTS release and latested versions).
-# Debian should work as well, but if it doesn't, please let me know. 
+# Debian should work as well, but if it doesn't, please let me know.
 # Based on Yeni EHCP Release
 # Source code available via SVN so that multiple people can develop and track changes!
 # Does not add a EHCP reseller account by default without your knowledge ensuring security
@@ -31,10 +31,10 @@
 ehcpversion="0.35.2"
 
 echo
-echo 
+echo
 #echo "Beginning EHCP FoRcE Version Installation"
 echo
-echo 
+echo
 chmod -Rf a+r *
 
 # Get parameters
@@ -77,7 +77,7 @@ function installyum () {
 # Initial Welcome Screen
 
 function ehcpHeader() {
-	echo 
+	echo
 	echo
 	echo "STAGE 1"
 	echo "====================================================================="
@@ -89,10 +89,10 @@ function ehcpHeader() {
 	echo "-------------------------Non-Fork Version:  www.ehcp.net-------------"
 	echo "---------------------------------------------------------------------"
 	echo
-	echo 
+	echo
 	echo "Now, ehcp pre-installer begins, a series of operations will be performed and main installer will be invoked. "
 	echo "if any problem occurs, refer to www.ehcp.net forum section, or contact me, mail/msn: info@ehcp.net"
-	
+
 	echo "Please be patient, press enter to continue"
 	if [ "$unattended" == "" ] ; then
 		read
@@ -165,12 +165,12 @@ function infoMail(){
 # Function to be called when installing packages, by Marcel <marcelbutucea@gmail.com>
 
 function installPack(){
-	
+
 	if [ -n "$noapt" ] ; then  # skip install
 		echo "skipping apt-get install for:$1"
 		return
 	fi
-	
+
 	if [ $distro == "ubuntu" ] || [ $distro == "debian" ];then
 		# first, try to install without any prompt, then if anything goes wrong, normal install..
 		apt-get -y --no-remove --allow-unauthenticated install $1
@@ -208,11 +208,11 @@ function aptgetInstall(){
 	cmd="apt-get -y --no-remove --allow-unauthenticated install $1"
 	logToFile "$cmd"
 	$cmd
-	
+
 	if [ $? -ne 0 ]; then
 		cmd="apt-get --allow-unauthenticated install $1"
 		logToFile "$cmd"
-		$cmd	
+		$cmd
 	fi
 
 }
@@ -221,18 +221,18 @@ function aptgetRemove(){
 	if [ -n "$noapt" ] ; then  # skip uninstall
 		echo "skipping apt-get remove for:$1"
 		return
-	fi 
-	
+	fi
+
 	# first, try to uninstall without any prompt, then if anything goes wrong, normal uninstall..
 	cmd="apt-get -y remove $1"
 	logToFile "$cmd"
 	$cmd
-	
+
 	if [ $? -ne 0 ]; then
 		cmd="apt-get remove $1"
 		logToFile "$cmd"
-		$cmd	
-	fi 
+		$cmd
+	fi
 }
 
 # Get distro name , by Marcel <marcelbutucea@gmail.com>, thanks to marcel for fixing whole code syntax
@@ -241,23 +241,23 @@ function aptgetRemove(){
 function checkDistro() {
 
 		# Below code doesn't work
-		
+
 		#cat /etc/*release | grep -i ubuntu &> /dev/null && distro="ubuntu"
 		#cat /etc/*release | grep -i red  &> /dev/null && distro="redhat" # not yet supported
 		#cat /etc/*release | grep -i centos && distro="centos"
 		#cat /etc/*release | grep -i debian &> /dev/null && distro="debian"
-		
+
 		# Get distro properly
 		if [ -e /etc/issue ]; then
 			distro=$( cat /etc/issue | awk '{ print $1 }' )
 		fi
-		
+
 		if [ -z "$distro" ]; then
 			if [ -e /etc/os-release ]; then
 				distro=$( cat os-release | grep -o "^NAME=.*" | grep -o "[^NAME=\"].*[^\"]" )
 			fi
 		fi
-		
+
 		# Assume Ubuntu
 		if [ -z "$distro" ]; then
 			distro="ubuntu"
@@ -265,30 +265,30 @@ function checkDistro() {
 			# Convert it to lowercase
 			distro=$( echo $distro | awk '{print tolower($0)}' )
 		fi
-		 
-		
+
+
 		# Get actual release version information
 		version=$( cat /etc/issue | awk '{ print $2 }' )
 		if [ -z "$version" ]; then
 			version=$( lsb_release -r | awk '{ print $2 }' )
 		fi
-		
+
 		# Separate year and version
 		if [[ "$version" == *.* ]]; then
 			yrelease=$( echo "$version" | cut -d. -f1 )
 			mrelease=$( echo "$version" | cut -d. -f2 )
 		fi
-		
+
 		# Get 64-bit OS or 32-bit OS [used in vsftpd fix]
 		if [ $( uname -m ) == 'x86_64' ]; then
 			OSBits=64
 		else
 			OSBits=32
-		fi 
-		
+		fi
+
 		# Another way to get the version number
 		# version=$(lsb_release -r | awk '{ print $2 }')
-		
+
 		echo "Your distro is $distro runnning version $version"
 
 }
@@ -297,7 +297,7 @@ function checkDistro() {
 function checkUser() {
 		if [ `whoami` != "root" ];then
 				echo "you are $who, you have to be root to use ehcp installation program.  switching to root mode, please enter password  or re-run install.sh as root"
-				sudo $0 # restart this with superuser-root privileges				
+				sudo $0 # restart this with superuser-root privileges
 				exit
 		fi
 }
@@ -328,7 +328,7 @@ function launchPanel(){
 	# NEVER LAUNCH FIREFOX AS THE ROOT USER.  IT WILL MESS IT UP FOR THE NORMAL USER
 	if [ -z "$unattended" ] || [ "$unattended" == "" ] ; then
 		if [ ! -z "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
-			echo 
+			echo
 			echo "The EHCP panel is now accessible!"
 			echo "Your panel administrative login is: admin"
 			echo "Attempting to load the control panel via web browser from the local machine."
@@ -349,7 +349,7 @@ function slaveDNSApparmorFix(){ # by earnolmartin@gmail.com
 function libldapFix(){ # by earnolmartin@gmail.com
 	# install libldap, for vsftpd fix, without prompts
 	#Remove originally installed libpam-ldap if it exists
-	origDir=$(pwd)	
+	origDir=$(pwd)
 	aptgetRemove libpam-ldap
 	DEBIAN_FRONTEND=noninteractive apt-get -y install libpam-ldap
 	cd $patchDir
@@ -359,7 +359,7 @@ function libldapFix(){ # by earnolmartin@gmail.com
 	tar -zxvf ldap_conf.tar.gz
 	cp ldap.conf /etc/
 	cd $origDir
-}  
+}
 
 function fixVSFTPConfig(){ # by earnolmartin@gmail.com
 	sed -i 's/chroot_local_user=NO/chroot_local_user=YES/g' /etc/vsftpd.conf
@@ -370,9 +370,9 @@ function fixVSFTPConfig(){ # by earnolmartin@gmail.com
 		sed -i 's/allow_writeable_chroot=NO/allow_writeable_chroot=YES/g' /etc/vsftpd.conf
 	fi
 
-	
-	if [ $OSBits -eq "64" ]; then 
-		#aptgetInstall libpam-ldap # this is required in buggy vsftpd installs.. ubuntu 12.04,12.10, 13.04, now... 
+
+	if [ $OSBits -eq "64" ]; then
+		#aptgetInstall libpam-ldap # this is required in buggy vsftpd installs.. ubuntu 12.04,12.10, 13.04, now...
 		libldapFix
 		aptgetInstall libgcc1
 		# 64-bit 500 OOPS: priv_sock_get_cmd Fix
@@ -384,7 +384,7 @@ function fixVSFTPConfig(){ # by earnolmartin@gmail.com
 			fi
 		else
 			sed -i 's/seccomp_sandbox=YES/seccomp_sandbox=NO/g' /etc/vsftpd.conf
-		fi		
+		fi
 	fi
 	service vsftpd restart
 }
@@ -402,7 +402,7 @@ function fixApacheDefault(){
 	correctConfStr="IncludeOptional sites-enabled/\*"
 	if [ -e "$ApacheFile" ]; then
 		ConfCheck=$( cat "$ApacheFile" | grep -o "$confStr" )
-		if [ ! -z "$ConfCheck" ]; then 
+		if [ ! -z "$ConfCheck" ]; then
 			sed -i "s#$confStr#$correctConfStr#g" "$ApacheFile"
 			service apache2 restart
 		fi
@@ -412,10 +412,10 @@ function fixApacheDefault(){
 function removeNameVirtualHost(){
 	ApacheFile="/etc/apache2/ports.conf"
 	confStr="NameVirtualHost \*"
-	
+
 	if [ -e "$ApacheFile" ]; then
 		ConfCheck=$( cat "$ApacheFile" | grep -o "$confStr" )
-		if [ ! -z "$ConfCheck" ]; then 
+		if [ ! -z "$ConfCheck" ]; then
 			sed -i "s#$confStr##g" "$ApacheFile"
 			service apache2 restart
 		fi
@@ -474,7 +474,7 @@ function ubuntuVSFTPDFix(){ # by earnolmartin@gmail.com
 					#get the code
 					cd $patchDir
 					if [ ! -e vsftpd_2.3.5-3ubuntu1.deb ]; then
-						if [ $OSBits -eq "32" ]; then 
+						if [ $OSBits -eq "32" ]; then
 							wget -O "vsftpd_2.3.5-3ubuntu1.deb" http://dinofly.com/files/linux/vsftpd_2.3.5-3ubuntu1_i386.deb
 						else
 							wget -O "vsftpd_2.3.5-3ubuntu1.deb" http://dinofly.com/files/linux/vsftpd_2.3.5-3.jme_amd64.deb
@@ -492,7 +492,7 @@ function ubuntuVSFTPDFix(){ # by earnolmartin@gmail.com
 					echo -e "\nRunning VSFTPD fix for Ubuntu 13.04\n"
 					cd $patchDir
 					if [ ! -e vsftpd_3.0.2-patched_ubuntu.deb ]; then
-						if [ $OSBits -eq "32" ]; then 
+						if [ $OSBits -eq "32" ]; then
 							wget -O "vsftpd_3.0.2-patched_ubuntu.deb" http://dinofly.com/files/linux/vsftpd_3.0.2-patched_ubuntu_13.04_x86.deb
 						else
 							wget -O "vsftpd_3.0.2-patched_ubuntu.deb" http://dinofly.com/files/linux/vsftpd_3.0.2-1ubuntu1_amd64_patched.deb
@@ -502,14 +502,14 @@ function ubuntuVSFTPDFix(){ # by earnolmartin@gmail.com
 					cd $origDir
 					fixVSFTPConfig
 				fi
-				
+
 				# Ubuntu 13.10
 				if [ "$mrelease" == "10" ]; then
 					echo -e "\nRunning VSFTPD fix for Ubuntu 13.10\n"
 					fixVSFTPConfig
 				fi
 			fi
-		fi  
+		fi
 	fi
 }
 
@@ -530,11 +530,11 @@ function fixEHCPPerms(){ # by earnolmartin@gmail.com
 
 	# Make default index readable
 	chmod 755 /var/www/new/index.html
-	
+
 	# Set proper permissions on vhosts
 	chown vsftpd:www-data -R /var/www/vhosts/
 	chmod 0755 -R /var/www/vhosts/
-	
+
 	# Secure webmail
 	chown root:www-data -R /var/www/new/ehcp/webmail
 	chmod 754 -R /var/www/new/ehcp/webmail
@@ -545,7 +545,7 @@ function fixPHPConfig(){ # by earnolmartin@gmail.com
 	PHPConfFile="/etc/php5/cli/php.ini"
 	if [ -e $PHPConfFile ]; then
 		PHPConfCheck=$( cat $PHPConfFile | grep -o ";extension=mysql.so" )
-		if [ -z "$PHPConfCheck" ]; then 
+		if [ -z "$PHPConfCheck" ]; then
 			sed -i "s/extension=mysql.so/;extension=mysql.so/g" $PHPConfFile
 			service apache2 restart
 		fi
@@ -567,12 +567,12 @@ function changeApacheUser(){ # by earnolmartin@gmail.com
 		fi
 		service apache2 restart
 	fi
-	
+
 	# Also change nginx user
 	if [ -e "/etc/nginx/nginx.conf" ]; then
 		sed -i "s/user .*/user vsftpd www-data;/g" "/etc/nginx/nginx.conf"
 	fi
-	
+
 	# Also change php-fpm user
 	if [ -e "/etc/php5/fpm/pool.d/www.conf" ]; then
 		sed -i "s/user = .*/user = vsftpd/g" "/etc/php5/fpm/pool.d/www.conf"
@@ -591,20 +591,20 @@ function nginxRateLimit(){
 
 function updateBeforeInstall(){ # by earnolmartin@gmail.com
 	# Update packages before installing to avoid errors
-	
+
 	if [ "$aptIsInstalled" -eq "1" ] ; then
 		echo "Updating package information and downloading package updates before installation."
-		
+
 		# Make sure the system will update and upgrade
 		if [ -e "/var/lib/apt/lists/lock" ]; then
 			rm "/var/lib/apt/lists/lock"
 		fi
-		
+
 		# Make sure the system will update and upgrade
 		if [ -e "/var/cache/apt/archives/lock" ]; then
 			rm "/var/cache/apt/archives/lock"
 		fi
-		
+
 		# Run update commands
 		apt-key update
 		apt-get update -y --allow-unauthenticated
@@ -628,16 +628,16 @@ function secureApache(){
 }
 
 function restartDaemons(){ # by earnolmartin@gmail.com
-	
+
 	# Restart MySQL Service
 	killAllMySQLAndRestart
-	
+
 	# Restart apache2 daemon
 	service apache2 restart
-	
+
 	# Restart the EHCP daemon after installation is completed
 	service ehcp restart
-	
+
 }
 
 # Secures BIND and prevents UDP Recursion Attacks:
@@ -648,26 +648,26 @@ function disableRecursiveBIND(){ # by earnolmartin@gmail.com
 	# Get Resolv.conf and do not run this code if nameserver is set to 127.0.0.1
 	RESOLVCOUNT=$(cat "/etc/resolv.conf" | grep -c "nameserver")
 	RESOLVLOCAL=$(cat "/etc/resolv.conf" | grep "nameserver 127.0.0.1")
-	
+
 	if [ "$RESOLVCOUNT" == "1" ] && [ ! -z "$RESOLVLOCAL" ]; then
 		echo -e "Skipping Bind Recursion Settings Due to 127.0.0.1 Nameserver"
 	else
 		bindOptionsFile="/etc/bind/named.conf.options"
 		bindBckFile="/etc/bind/named.conf.options_backup"
 		if [ -e "$bindOptionsFile" ]; then
-			
+
 			# Create a backup of the original
 			if [ ! -e "$bindBckFile" ]; then
 				cp "$bindOptionsFile" "$bindBckFile"
 			fi
-			
+
 			# Remove all blank lines at the end of the file:
 			# BINDNoEmptyLines=$(sed '/^ *$/d' "$bindOptionsFile")
 			# Better code here to strip out ending lines of empty text:   http://stackoverflow.com/questions/7359527/removing-trailing-starting-newlines-with-sed-awk-tr-and-friends
 			# Can also do this for leading and trailing empty lines:  sed -e :a -e '/./,$!d;/^\n*$/{$d;N;};/\n$/ba' file
 			BINDNoEmptyLines=$(sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' "$bindOptionsFile")
 			echo "$BINDNoEmptyLines" > "$bindOptionsFile"
-		
+
 			# Add recursion no
 			RecursiveSettingCheck=$( cat "$bindOptionsFile" | grep -o "^recursion .*" | grep -o " .*$" | grep -o "[^ ].*" )
 			if [ -z "$RecursiveSettingCheck" ]; then
@@ -676,7 +676,7 @@ function disableRecursiveBIND(){ # by earnolmartin@gmail.com
 			else
 				sed -i 's/^recursion .*/recursion no;/g' "$bindOptionsFile"
 			fi
-			
+
 			# Add additional-from-cache no
 			RecursiveCacheCheck=$( cat "$bindOptionsFile" | grep -o "^additional-from-cache .*" | grep -o " .*$" | grep -o "[^ ].*" )
 			if [ -z "$RecursiveCacheCheck" ]; then
@@ -692,10 +692,10 @@ function disableRecursiveBIND(){ # by earnolmartin@gmail.com
 function killAllMySQLAndRestart(){
 	# Stop service
 	service mysql stop
-		
+
 	# Get each PID of mysqld and kill it --- random bug occurs sometimes after install
 	ps -ef | grep mysqld | while read mysqlProcess ; do kill -9  $(echo $mysqlProcess | awk '{ print $2 }') ; done
-		
+
 	# Restart the service
 	service mysql restart
 }
@@ -707,11 +707,11 @@ function removeInstallSilently(){
 }
 
 function installAntiSpam(){
-	
+
 	# Only install this if extra mode has been chosen and Ubuntu version is greater than 10
 	if [ "$installmode" == "extra" ] && [ "$yrelease" -ge "10" ]; then
 		# Postfix must be installed
-		CURDIR=$(pwd)	
+		CURDIR=$(pwd)
 		ANTISPAMINSTALLED=$(which "spamassassin")
 		POSTFIXInstalled=$(which "postfix")
 		postFixUserExists=$(grep postfix /etc/passwd)
@@ -727,10 +727,10 @@ function installAntiSpam(){
 				CONTENTFILTER="/etc/amavis/conf.d/15-content_filter_mode"
 				SPAMASSASSCONF="/etc/spamassassin/local.cf"
 				AMAVISHOST="/etc/amavis/conf.d/05-node_id"
-				
+
 				# Install Anti-Spam Software
 				aptgetInstall "amavisd-new spamassassin clamav-daemon"
-				
+
 				# Install individually incase some packages are not found
 				aptgetInstall libnet-dns-perl
 				aptgetInstall pyzor
@@ -750,52 +750,52 @@ function installAntiSpam(){
 				aptgetInstall zip
 				aptgetInstall zoo
 				aptgetInstall unzoo
-				
+
 				# Only keep going if we have the basic packages installed
 				AMAVISINS=$(which amavisd-new)
 				SPAMASSASSINS=$(which spamassassin)
-				
+
 				if [ ! -z "$AMAVISINS" ] && [ ! -z "$SPAMASSASSINS" ]; then
-				
+
 					# Add Users
 					adduser clamav amavis
 					adduser amavis clamav
-					
+
 					# Enable SpamAssassin
 					if [ -e "$SPConfig" ]; then
 						sed -i "s#ENABLED=.*#ENABLED=1#g" "$SPConfig"
 						sed -i "s#CRON=.*#CRON=1#g" "$SPConfig"
-						
+
 						# More settings
 						if [ -e "$SPAMASSASSCONF" ]; then
 							# Rewrite the header
 							sed -i "s/#rewrite_header.*/rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*/g" "$SPAMASSASSCONF"
 							sed -i "s/# rewrite_header.*/rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*/g" "$SPAMASSASSCONF"
 							sed -i "s#rewrite_header.*#rewrite_header Subject \*\*\*\*\*SPAM\*\*\*\*\*#g" "$SPAMASSASSCONF"
-							
+
 							# Set the spam score
 							sed -i "s/#required_score.*/required_score 12.0/g" "$SPAMASSASSCONF"
 							sed -i "s/# required_score.*/required_score 12.0/g" "$SPAMASSASSCONF"
 							sed -i "s#required_score.*#required_score 12.0#g" "$SPAMASSASSCONF"
-							
+
 							# use bayes 1
 							sed -i "s/#use_bayes.*/use_bayes 1/g" "$SPAMASSASSCONF"
 							sed -i "s/# use_bayes.*/use_bayes 1/g" "$SPAMASSASSCONF"
 							sed -i "s#use_bayes.*#use_bayes 1#g" "$SPAMASSASSCONF"
-							
+
 							# use bayes auto learn
 							sed -i "s/#bayes_auto_learn.*/bayes_auto_learn 1/g" "$SPAMASSASSCONF"
 							sed -i "s/# bayes_auto_learn.*/bayes_auto_learn 1/g" "$SPAMASSASSCONF"
 							sed -i "s#bayes_auto_learn.*#bayes_auto_learn 1#g" "$SPAMASSASSCONF"
-							
+
 						fi
-						
+
 						service spamassassin restart
 					fi
-					
+
 					# Integrate into postfix
 					postconf -e "content_filter = smtp-amavis:[127.0.0.1]:10024"
-					
+
 					echo "use strict;
 
 # You can modify this file to re-enable SPAM checking through spamassassin
@@ -826,7 +826,7 @@ function installAntiSpam(){
 	-o disable_dns_lookups=yes
 	-o max_use=20" >> "$PostFixMaster"
 						fi
-						
+
 						POSTFIXMASCHECK2=$(cat "$PostFixMaster" | grep "127.0.0.1:10025")
 						if [ -z "$POSTFIXMASCHECK2" ]; then
 							echo "
@@ -850,26 +850,26 @@ function installAntiSpam(){
 	-o smtpd_client_connection_rate_limit=0
 	-o receive_override_options=no_header_body_checks,no_unknown_recipient_checks" >> "$PostFixMaster"
 						fi
-				
+
 					fi
-					
+
 					#http://stackoverflow.com/questions/11694980/using-sed-insert-a-line-below-or-above-the-pattern
 					POSTFIXMASCHECK3=$(cat "$PostFixMaster" | grep -A2 "pickup" | grep -v "pickup" | grep -o "\-o receive_override_options=no_header_body_checks$")
 					if [ -z "$POSTFIXMASCHECK3" ]; then
 						sed -i "/pickup.*/a\\\t-o receive_override_options=no_header_body_checks" "$PostFixMaster"
 					fi
-					
+
 					POSTFIXMASCHECK4=$(cat "$PostFixMaster" | grep -A2 'pickup' | grep -v "pickup" | grep -o "\-o content_filter=$")
 					if [ -z "$POSTFIXMASCHECK4" ]; then
 						sed -i "/pickup.*/a\\\t-o content_filter=" "$PostFixMaster"
 					fi
-					
+
 					# Prompt for FQDN
 					echo ""
 					echo -n "Please enter your Fully Qualified Domain Name (FQDN) for this mail server: "
 					read FQDNName
 					FQDNName=$(echo "$FQDNName" | awk '{print tolower($0)}')
-			
+
 					if [ -z "$FQDNName" ]; then
 						# Just replace it with ehcpforce.tk
 						sed -i "s/^#\$myhostname.*/\$myhostname = \"ehcpforce.tk\";/g" "$AMAVISHOST"
@@ -878,15 +878,15 @@ function installAntiSpam(){
 						sed -i "s/^#\$myhostname.*/\$myhostname = \"$FQDNName\";/g" "$AMAVISHOST"
 						sed -i "s#^\$myhostname.*#\$myhostname = \"$FQDNName\";#g" "$AMAVISHOST"
 					fi
-					
+
 					# Should be good to go?
-					
+
 					# Restart Amavis
 					service amavis restart
-					
+
 					# Restart services
 					service postfix restart
-				
+
 				fi
 			fi
 		fi
@@ -931,14 +931,14 @@ aptget_Update
 aptgetInstall python-software-properties # for add-apt-repository
 
 # apt-get upgrade  # may be cancelled later... this may be dangerous... server owner should do it manually...
-aptgetInstall php5 
-aptgetInstall php5-mysql 
-aptgetInstall php5-cli 
+aptgetInstall php5
+aptgetInstall php5-mysql
+aptgetInstall php5-cli
 aptgetInstall sudo
 aptgetInstall wget
 aptgetInstall aptitude
 
-# This is needed to provide a default answer for configuring certain packages such as mysql and phpmyadmin 
+# This is needed to provide a default answer for configuring certain packages such as mysql and phpmyadmin
 if [ ! -z "$unattended" ]; then
 	aptgetInstall debconf-utils
 fi
@@ -960,8 +960,8 @@ echo "now running install_1.php "
 #infoMail ehcp_2_install-starting-install_1.php
 php install_1.php $version $distro $noapt $unattended $installmode
 
-echo 
-echo 
+echo
+echo
 echo "STAGE 3"
 echo "====================================================================="
 echo "now running install_2.php "
@@ -973,7 +973,7 @@ php install_2.php $version $distro $noapt $unattended $installmode
 
 # Post Install Functions by Eric Arnol-Martin
 
-mv /var/www/new/ehcp/install_?.php /etc/ehcp/   # move it, to prevent later unauthorized access of installer from web
+# mv /var/www/new/ehcp/install_?.php /etc/ehcp/   # move it, to prevent later unauthorized access of installer from web
 cd "/var/www/new/ehcp"
 # Run VSFTPD Fix depending on version
 ubuntuVSFTPDFix
